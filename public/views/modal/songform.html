@@ -1,0 +1,44 @@
+  
+    
+    <carousel style = "cursor:default" interval="0">
+      <slide style ="height:1400"  ng-repeat="item in uploader.queue" active="slide.active">
+        <div class="modal-header">
+            <h3 class="modal-title" style = "white-space: nowrap;">{{ item.file.name }}</h3>
+        </div>
+        <div class="modal-body">
+
+
+
+        <div>
+
+          <form>
+           <p>Name: <input type="text" maxlength="25" ng-model="item.headers.songname" placeholder = "Name"></p>
+           
+           <div>Description:
+           <textarea type="text" maxlength="140" ng-model="item.headers.description" placeholder = "Write a description here..."></textarea>
+           </div>
+           <div>
+           
+           <p><input style="position: absolute; left: -9999px; width: 1px; height: 1px;" class="btn btn-primary"  type="submit" id="submit" value="Sign Up" /></p>
+         </form>
+
+            Tags:
+           <button class="btn btn-primary-xs" ng-click="addTag(item)">Add Tag</button>
+           <p ng-repeat="tag in item.headers.tagArray"><input maxlength="25" type="text" ng-model="tag.tag" placeholder = "Tag"> </p>
+           </div>
+
+        </div>
+      </slide>
+    </carousel>
+
+         <!-- <div ng-repeat="item in uploader.queue">{{ item.file.name }}</div> -->
+         
+        </div>
+        <div class="modal-footer">
+        <p id = "signupMessage">
+        <!-- {{message}} -->
+        {{ item.headers}}
+        </p>
+            <button class="btn btn-primary" ng-click="modalUploadAll()">Upload Everything</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>

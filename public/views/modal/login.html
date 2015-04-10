@@ -1,0 +1,15 @@
+        <div class="modal-header">
+            <h3 class="modal-title">Log In!</h3>
+        </div>
+        <div class="modal-body">
+    <form ng-submit="login()">
+           <input type="text" ng-model="userData.username" placeholder = "Username">
+           <input type="password" ng-model="userData.password" placeholder = "Password">
+           <input class="btn btn-primary"  type="submit" id="submit" value="Submit" />
+    </form>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="login()">Log in</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>

@@ -1,0 +1,91 @@
+
+<div class="playerBar">
+<!-- BRANDON use this for switching img tags with ngshow and ng hide-->
+<!-- <div ng-show="sound.paused">
+   <button ng-click='sound.paused ? sound.play() : sound.pause()'>Play</button>
+</div>
+<div ng-hide="sound.paused">
+   <button ng-click='sound.paused ? sound.play() : sound.pause()'>Pause</button>
+</div> -->
+
+<img src ='./media/pic/icon.jpg'/ class = 'playerLogo'>
+
+
+
+<!-- <div>
+  <form ng-submit="submit()">
+    <input ng-model="userData.username" type="text" name="user" placeholder="Username" />
+    <input ng-model="userData.password" type="password" name="pass" placeholder="Password" />
+    <input type="submit" value="Login" />
+  </form>
+</div> -->
+
+<span ng-show = "!user">
+<button type="button" class="btn btn-info btn-xs signupButton" ng-click="openSignupModal()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+    <span class="glyphicon glyphicon-pencil"></span> Signup
+</button>
+<div class = "loginForm">
+    <form ng-submit="login()">
+           <input type="text" ng-model="userData.username" placeholder = "Username">
+           <input type="password" ng-model="userData.password" placeholder = "Password">
+           <input class="btn btn-primary"  type="submit" id="submit" value="Login" />
+    </form>
+    <p>{{message}}</p>
+</div>
+<!-- <button type="button" class="btn btn-info btn-xs loginButton" ng-click="openLoginModal()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+    <span class="glyphicon glyphicon-log-in"></span> Login
+</button> -->
+
+</span>
+
+<span ng-show = "user">
+<button type="button" class="btn btn-info btn-xs logoutButton" ng-click="logout()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+    <span class="glyphicon glyphicon-log-out"></span> Logout
+    
+</button>
+<button class="btn btn-success btn-xs logoutButton" ng-click = "openProfileModal()">{{user.username}}</button>
+<!-- BRANDON DISPLAY USER DATA HERE 
+ Display user information here.
+-->
+
+</span>
+
+
+
+ <!-- Current Time -->
+<div class = 'playerInput'>
+
+<!--  BUTTONS FOR SOUND PLAYER
+<div class = "playerButtons">
+ <button ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()'>Play</button>
+ <button ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()'>Pause</button>
+ <button ng-click='sound.stop()'>Stop</button>
+
+ <button ng-hide="sound.muting" ng-click='sound.muting = !sound.muting'>Mute</button>
+ <button ng-show="sound.muting" ng-click='sound.muting = !sound.muting'>Unmute</button>
+
+  <button ng-click='likeSong()'>Like</button>
+  <button ng-click='dislikeSong()'>Dislike</button>
+ </div>
+ -->
+
+ <input class='form-control progressBar' type=range min=0 max =1 step=0.001 ng-model='sound.progress'>
+<!-- VOLUME BAR HERE
+ <label>Volume</label>
+ <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='sound.volume'> 
+ -->
+ <p style = "margin-left:24em">Current Station: {{currentStation}}</p>
+</div> 
+
+
+
+
+
+</div>
+<!-- BRANDON Safe to delete, keep for testing purposes
+<li><a ui-sref=".list">Route 1</a></li>
+<li><a ui-sref="route2">Route 2</a></li>
+ -->
+
+<div ui-view class = "view"></div>      
+

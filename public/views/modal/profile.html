@@ -1,0 +1,14 @@
+        <div class="modal-header">
+            <h3 class="modal-title">{{profile.username}}</h3>
+        </div>
+        <div class="modal-body">
+        <div ng-repeat = "song in profile.songs" style="border-style: double;">
+        <p>Name: {{song.name}}</p>
+        <p>Description: {{song.description}}</p>
+        <p>Upvotes: {{song.likes}} Downvotes: {{song.dislikes}}</p>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <p id = "signupMessage">{{message}}</p>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
