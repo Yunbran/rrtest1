@@ -212,14 +212,29 @@ exports.uploadSong = function(req, res) {
         //username is the username of the user who uploaded the song
         var username = req.user.username;
 
+            if (!fs.existsSync('./public/media/sound')){
+                fs.mkdirSync('./public/media/sound/');
+                console.log("./public/media/sound/ made!");
+            }
+            else
+            {
+                console.log("./public/media/sound/ not made!");
+            }
+
         //dir is the directory in which we store the mp3
         var dir = './public/media/sound/' + username;
 
         //if the username folder does not exist, the code snippet below will make one.
+            
             if (!fs.existsSync(dir)){
                 fs.mkdirSync(dir);
+                  console.log(dir +"made!");
             }
-      
+            else
+            {
+                console.log(dir +"not made!");
+            }
+          
         //if the songname is blank or undefined, it is set as the filename 
           if(req.headers.songname == '' || undefined || null) {
             var songname = req.headers.filepath;
@@ -255,12 +270,31 @@ exports.uploadSong = function(req, res) {
         req.pipe(writeStream);
 
 
+        //AZURE STORAGE START 
+
+
+        blobSvc.createContainerIfNotExists(username, {publicAccessLevel : 'blob'}, function(error, result, response){
+          if(!error){
+            console.log(username + " container created or exists");
+          }
+        });
+
+        //azure storage end
+
        var size = 0;
 
        //tells server what happens when, streaming data onto server
       req.on('data', function (data) {
           size += data.length;
-        // console.log('Got chunk: ' + data.length + ' total: ' + size);
+        
+         //console.log('Got chunk: ' + data.length + ' total: ' + size);
+
+            // blobSvc.createBlockBlobFromStream(username, songname, data, size, function (error) {
+            //     if (error) {
+            //         res.send(' Blob create: error ');
+            //     }
+            // });
+      
       });
 
       //end of streaming data onto server
