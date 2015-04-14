@@ -214,11 +214,11 @@ exports.uploadSong = function(req, res) {
 
             if (!fs.existsSync('./public/media/sound')){
                 fs.mkdirSync('./public/media/sound/');
-                console.log("./public/media/sound/ made!");
+               // console.log("./public/media/sound/ made!");
             }
             else
             {
-                console.log("./public/media/sound/ not made!");
+              // console.log("./public/media/sound/ not made!");
             }
 
         //dir is the directory in which we store the mp3

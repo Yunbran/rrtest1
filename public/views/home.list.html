@@ -1,14 +1,20 @@
 <div class = 'homeList'>
 
 	<div class = 'songBox'>
-
 <div class="col-md-12 searchDiv">
-  <input class="form-control searchBar" ng-model="formData.search.tag" placeholder="Search tags..."  />
+  <input class="form-control searchBar" ng-model="formData.search.name" placeholder="Search songs by name..."  />
   <span class="glyphicon glyphicon-search"></span>
 </div>
 
-	  <div class = 'repeatBoxes' ng-repeat="song in currentStationData.songs |  filter: formData.search | orderBy: '-likes' " ng-click="activateAndPlaySong(song)">{{song.name}} {{song.creator}} {{song.upvotes}} {{song.downvotes}} {{song.tag}}
-	  </div>
+<div class = "songBoxBuffer"></div>
+	  <div class = 'repeatBoxes' ng-repeat="song in currentStationData.songs |  filter: formData.search | orderBy: '-upvotes' " ng-click="activateAndPlaySong(song)">
+    <p style = "margin: 0px;text-align: center"> {{song.name}}</p>
+     <p style = "margin: 0px;text-align: center">{{song.creator}}</p>
+     <p style = "margin: 0px;text-align: center"> 
+     Up: {{song.upvotes}}
+     Down: {{song.downvotes}}
+     </p>
+    </div>
 	</div>
 
 	<div class = 'mainBox'>
@@ -22,7 +28,7 @@
       <img src = './media/pic/RadioRise5.jpg' class = 'logo'/>
 
       <div class = "playBox">
-       <button ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()'>Play</button>
+     <button ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()'>Play</button>
      <button ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()'>Pause</button>
   <div class = "playerSongData" ng-hide="sound.paused">
   <button ng-hide = "currentSong.rated" ng-click='upvoteSong()'>Upvote</button>
@@ -194,7 +200,7 @@ Rate the song to see information!
 <!-- <input ng-model="formData.searchText"/> -->
 <button ng-click="check()">Check!</button>
 
-
+<button ng-click="DESTROY()">DELETE DATABASE!</button>
 
 
 

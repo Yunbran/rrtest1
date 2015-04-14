@@ -92,6 +92,9 @@ app.get('/getDocs', function(req, res){
 // handler.createUser();
 // handler.findUser('');
 // handler.listSongs();
+app.get('/deleteDatabase', function(){
+  handler.listDatabase();
+});
 
 
 app.listen(port);

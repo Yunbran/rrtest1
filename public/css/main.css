@@ -145,6 +145,9 @@ border-width: 1px;
 	height:115%;
 	float:left;
 }
+.songBoxBuffer{
+	height:3.25%;
+}
 .repeatBoxes{
 	display: block;
     border-bottom: solid;

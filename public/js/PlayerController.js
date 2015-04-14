@@ -11,6 +11,7 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
  $scope.displayTags = ['should','not', 'work', 'yet'];
 
  $scope.currentStation = "all";
+ $scope.isStationPlaying = false;
  $scope.currentStationData = {};
  $scope.customSongArray = [];
  $scope.percentageArray = [];
@@ -25,7 +26,10 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
            songTag : '',
            currentSong : '',
            search: {
-            tag: '' }
+            tag: '', 
+            name: ''
+          }
+          
           };
  console.log( getLocalStorage("token"));
  User.authToken = getLocalStorage("token");
@@ -39,6 +43,7 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
   } 
   else {
       updatePage();
+      
   }
   
 
@@ -47,8 +52,8 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
  //Test function. DEV Function only
  $scope.check = function () {
 
- // console.log(getLocalStorage("token"));
- // console.log(User.authToken);
+    // console.log(getLocalStorage("token"));
+    // console.log(User.authToken);
     // console.log($scope.percentageArray);
     console.log($scope.currentSong); 
 
@@ -59,6 +64,13 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
 
    //$scope.sound = ngAudio.load("./media/sound/asda/test.mp3");
    //$scope.sound.play();
+ }
+
+  $scope.DESTROY = function () {
+     $http.get("/deleteDatabase")
+        .success(function(response) {
+          console.log("Database deleted");
+        });
  }
 
 
@@ -414,7 +426,6 @@ $scope.uploadAll = function()
         activateNextSong();
         playNextSong(); 
         } 
-
       }
 
       getStation(cb);
