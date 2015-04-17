@@ -88,12 +88,14 @@ app.get('/getDocs', function(req, res){
 
 // Test functions
 // handler.listDatabase();
-// handler.deleteDatabase();
 // handler.createUser();
 // handler.findUser('');
 // handler.listSongs();
 app.get('/deleteDatabase', function(){
-  handler.listDatabase();
+  console.log("Asd");
+  handler.deleteFolderRecursive("./public/media/sound/");
+  handler.deleteDatabase();
+  console.log("Data Deleted");
 });
 
 

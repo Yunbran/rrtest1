@@ -88,15 +88,14 @@ height:10%;
 /*home.list.html*/
 
 .playBox{
-margin-left: 35%;
-width: 30%;
+width: 100%;
 height: 30%;
-background-color: lightgray;
+background-color: #fcfcfc;
 }
 
 .playerSongData{
 	float: right;
-	background-color: lightgray;
+	background-color: #fcfcfc;
 }
 .uploadBox{
 margin-left: 25%;
@@ -104,7 +103,7 @@ margin-top: 5%;
 width: 50%;
 height: 35%;
  overflow-y: auto;
-background-color: lightgray;
+background-color: #fcfcfc;
 }
 .my-drop-zone{
 text-align: center;
@@ -141,7 +140,7 @@ border-width: 1px;
 	display: inline-block;
 	border-right: solid;
 	border-width: 1px;
-	width: 20%;
+	width: 15%;
 	height:115%;
 	float:left;
 }
@@ -184,9 +183,9 @@ margin-left: 20%;
 
 .mainBox{
 	display: inline-block;
-	width: 80%;
-	height:100%
-	;
+	width: 85%;
+	height:100%;
+	background-color: #f1f1f1;
 }
 
 .homeList{
@@ -255,7 +254,7 @@ input[type=range]::-webkit-slider-thumb:before {
 	right:0;
 	top:0;
 	bottom:0;
-	background: #cc181e;
+	background: #1677bb;
 }
 input[type=range]::-webkit-slider-thumb:after {
 	content: "";

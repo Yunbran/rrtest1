@@ -174,6 +174,9 @@ function getUser(){
 
       $scope.currentStation = $scope.user.station;
 
+    })
+    .error(function (data, status, headers, config) {
+      updatePage();
     }); 
 
 }

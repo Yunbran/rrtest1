@@ -8,7 +8,7 @@ var Tag = require('./database/models/tag.model');
 var expressJwt = require('express-jwt');
 var jwt = require('jsonwebtoken');
 var secret = "it's a secret to everybody";
-
+var fs = require('fs');
 
 //Signup User creates and stores a user mongoose document
 exports.createUser = function(req, res) {
@@ -265,6 +265,25 @@ Tag.findOne({ group: groupName })
 
               });
 }
+
+
+//Deletes folder and everything inside of it
+  exports.deleteFolderRecursive = function(path) {
+    var files = [];
+    if( fs.existsSync(path) ) {
+        files = fs.readdirSync(path);
+        files.forEach(function(file,index){
+            var curPath = path + "/" + file;
+            if(fs.lstatSync(curPath).isDirectory()) { // recurse
+                exports.deleteFolderRecursive(curPath);
+            } else { // delete file
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(path);
+    }
+};
+
 
 exports.authenticate =  function (req, res) {
   //TODO validate req.body.username and req.body.password
