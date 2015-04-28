@@ -497,6 +497,13 @@ $scope.uploadAll = function()
   });
 
   }
+  $scope.upvoteButtonSrc = './media/pic/design1upvotenormal.png';
+  $scope.downvoteButtonSrc = './media/pic/design1downvotenormal.png';
+    $scope.changeImage = function(imageSourceVar, newImageSource){
+      console.log(imageSourceVar, + " || " + newImageSource);
+    $scope[imageSourceVar] = newImageSource;
+  };
+
 //TEST STUFF BELOW
         var uploader = $scope.uploader = new FileUploader({
             url: '/api/uploadSong',

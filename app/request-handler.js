@@ -21,7 +21,12 @@ exports.createUser = function(req, res) {
   var type = "basic";
 console.log("createUser ran");
 
-  var newUser = new User({
+  //check  length of username
+  if(username.length < 3 || username.length > 13) {
+    res.status(300).send("Username must be between 3 and 13 characters.");
+  } else {
+
+    var newUser = new User({
           username: username,
           password: password,
           email: email,
@@ -35,21 +40,17 @@ console.log("createUser ran");
   //newUser.save saves the document and then redirects to root.
   //It's extremely important to run the save function.
   //without it there will be no change recorded in the database.
- newUser.save(function(err, newUser) {
-    if (err) {
-       console.log('errored out: ', err);    
-       res.status(400).json(err); 
-    } else {
-       console.log('successfully put user into database');
-       res.end('Successfully signed up!');
+   newUser.save(function(err, newUser) {
+      if (err) {
+         console.log('errored out: ', err);    
+         res.status(400).json(err); 
+      } else {
+         console.log('successfully put user into database');
+         res.end('Successfully signed up!');
+      }
+    });
+  }
 
-
-
-
-
-
-    }
-  });
 };
 
 exports.findSong = function(name){

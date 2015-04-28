@@ -36,16 +36,6 @@ module.exports = function(app) {
 
 //MIDDLEWARE FOR /MEDIA/SOUND/
 
-//AZURE STORAGE START 
-
-
-blobSvc.createContainerIfNotExists('mycontainer', {publicAccessLevel : 'blob'}, function(error, result, response){
-  if(!error){
-    // Container exists and allows 
-    // anonymous read access to blob 
-    // content and metadata within this container
-  }
-});
 
 // blobSvc.createBlockBlobFromLocalFile('mycontainer', 'testpark.mp3', 'testpark.mp3', function(error, result, response){
 //   if(!error){

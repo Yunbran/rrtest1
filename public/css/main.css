@@ -1,91 +1,71 @@
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
-html, body { height: 100%; width: 100%; margin: 0; }
+html, body { 
+  height: 100%; width: 100%; margin: 0; 
+}
 
+.flexParent {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
 .view {
 		height:100%;
 		width:100%;
 }
 
 /*home.html*/
-.playerBar{
+
+.homeBar{
+  	order: 0;
 	border-bottom: solid;
-    border-width: 1px;
+    border-width: .1em;
     height: 12%;
+    width:100%;
+    display:flex;
 }
 
-.playerLogo{
-	float: left;
+.homeLogo {
+	order:0;
 	height:90%;
 	margin:5px;
-
 }
 
-.signupButton
-{
-float: left;
-margin-left: 4%;
-margin-top: 2%;
-height: 40%;
-width: 5%;
-}
-.loginButton
-{
-float: left;
-margin-left: 0.5%;
-margin-top: 2%;
-height: 40%;
-width: 5%;
-}
-.loginForm
-{
-float: left;
-margin-left: 0.5%;
-margin-top: 2%;
-height: 40%;
-width: 25%;
-}
-.logoutButton
-{
-float: left;
-margin-left: 0.5%;
-margin-top: 2%;
-height: 40%;
-width: 5%;
+.userArea{
+	order:1;
+	margin-top: 1%;
 }
 
+.signupButton {
+}
 
+.loginButton {
+}
+
+.loginForm {
+}
+
+.logoutButton {
+}
+
+.homeMessage{
+	order:2;
+}
 
 
 
 .playerInput{
-	float: left;
-	height: 80%;
-	margin-left: 20%;
-    width: 30%;
 }
 
 .playerButtons{
-	float: left;
-	margin-left: 25%;
 }
 
 
-
-.progressBar{
-	margin-top: 8%;
-	margin-left: -53%
-}
-.progress{
-height:10%;
-}
-.miniprogress{
-	height:100%;
-}
 
 
 
 /*home.list.html*/
+
 
 .playBox{
 width: 100%;
@@ -212,7 +192,26 @@ margin-top: 10px;
 margin-bottom: 10px;
 }
 
-/*range for playerbar*/
+.upvoteButton{
+width:10%;
+}
+
+.downvoteButton{
+width:10%;
+}
+
+/*playerbar*/
+.progressBar{
+	margin-top: 8%;
+	margin-left: -53%
+}
+.progress{
+height:10%;
+}
+.miniprogress{
+	height:100%;
+}
+
 input[type=range] {
 	-webkit-appearance: none;
 	border-radius: 0px;
@@ -281,7 +280,8 @@ input[type=range]:disabled::-webkit-slider-thumb:before {
 input[type=range]:disabled::-webkit-slider-thumb:after {
 	background: #adadad !important;
 }
-/*range for playerbar*/
+/*end of playerbar*/
+
 /*bootstrap override*/
 input[type="range"] {
 display: block;

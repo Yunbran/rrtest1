@@ -19,20 +19,24 @@
 
 	<div class = 'mainBox'>
         <div class="tagBox">   <div class = 'repeatTags' ng-repeat="tag in displayTags" ng-click="activateStation(tag)"> {{tag.name}}
-      </div>
-<!-- 
-        <div class = "historyTag">History</div>  
+        </div>
+  <!--  <div class = "historyTag">History</div>  
         <div class = "historyTag">More</div> -->
       
       </div>
-  <!--     <img src = './media/pic/RadioRise5.jpg' class = 'logo'/>
- -->
+  <!--     <img src = './media/pic/RadioRise5.jpg' class = 'logo'/> -->
       <div class = "playBox">
+       <input class='form-control progressBar' type=range min=0 max =1 step=0.001 ng-model='sound.progress'>
+  <!-- VOLUME BAR HERE
+    <label>Volume</label>
+    <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='sound.volume'> -->
      <button ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()'>Play</button>
      <button ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()'>Pause</button>
   <div class = "playerSongData" ng-hide="sound.paused">
-  <button ng-hide = "currentSong.rated" ng-click='upvoteSong()'>Upvote</button>
-  <button ng-hide = "currentSong.rated" ng-click='downvoteSong()'>Downvote</button>
+  <img ng-src = '{{upvoteButtonSrc}}'  ng-mouseenter = "changeImage('upvoteButtonSrc', './media/pic/design1upvoteselected.png')" ng-mouseleave = "changeImage('upvoteButtonSrc', './media/pic/design1upvotenormal.png')" ng-hide = "currentSong.rated" ng-click='upvoteSong()' class = "upvoteButton"></img>
+  <img ng-src = '{{downvoteButtonSrc}}' ng-mouseenter = "changeImage('downvoteButtonSrc', './media/pic/design1downvoteselected.png')"
+   ng-mouseleave = "changeImage('downvoteButtonSrc', './media/pic/design1downvotenormal.png')"
+    ng-hide = "currentSong.rated" ng-click='downvoteSong()' class = "downvoteButton"></img>
  
 
   <button ng-show = "currentSong.rated" ng-click='skipSong()'>Skip</button>

@@ -36,16 +36,7 @@ app.all('/*', function(req, res, next) {
   next();
 });
 
-//Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InQiLCJ0eXBlIjoiYmFzaWMiLCJpZCI6IjU1MjYzNTk1ZjhjMTE2MWMxMzUzNTM1NyIsInN0YXRpb24iOiJhbGwiLCJpYXQiOjE0Mjg1NzY0MzgsImV4cCI6MTQyODU5NDQzOH0.XYwRIpI1-0qznxc9TS-66jYvgiVOES5M1vybKygMMnQ
-
-
 app.use(express.static(__dirname + '/public'));
-
-// app.use('*', function(req,res,next){
-// console.log("test middleware");
-// console.log(req.headers);
-// next();
-// });
 
 //These are server calls that anyone without auth token can access
 app.post('/authenticate', handler.authenticate);
@@ -63,7 +54,7 @@ app.use('/api', expressJwt({secret: secret}));
 //everything in /api/ requires an authToken
 require('./app/routes')(app); 
 
-
+/*START OF NON PRODUCTION CODE*/
 
 //DOCUMENTING API BELOW
 var docs_handler = express.static(__dirname + '/app/docs/swagger-ui/');
@@ -83,8 +74,14 @@ app.get('/getDocs', function(req, res){
   var jt = require('./app/docs/swagger.json');
   res.json(jt);
 });
+
 //DOCUMENTING API ABOVE
 
+// app.use('*', function(req,res,next){
+// console.log("test middleware");
+// console.log(req.headers);
+// next();
+// });
 
 // Test functions
 // handler.listDatabase();
@@ -92,12 +89,12 @@ app.get('/getDocs', function(req, res){
 // handler.findUser('');
 // handler.listSongs();
 app.get('/deleteDatabase', function(){
-  console.log("Asd");
   handler.deleteFolderRecursive("./public/media/sound/");
   handler.deleteDatabase();
   console.log("Data Deleted");
 });
 
+/*END OF NON PRODUCTION CODE*/
 
 app.listen(port);
 console.log('app listening in on port ', port);
