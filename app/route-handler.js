@@ -83,7 +83,8 @@ exports.getProfile = function(req, res) {
       var name = req.body.name;
       var userObj = req.user;
       //console.log(req.body);
-   Song.find({name : name},function (err, songs) {
+
+   Song.find({name : name}, function (err, songs) {
       if(err) {
         res.send(err);
       }
@@ -203,7 +204,7 @@ exports.downvoteSong = function(req, res) {
 exports.uploadSong = function(req, res) {
         // console.log(req.headers);
         //console.log(req.user);
-// console.log(req.headers);
+        // console.log(req.headers);
         
 
         //When instantiated, filepath is always the filename: Ex. "song.mp3"

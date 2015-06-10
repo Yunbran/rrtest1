@@ -75,7 +75,7 @@
                     "Default"
                 ],
                 "summary": "Returns a list of songs inside of a tag.",
-                "description":"Input the name of the tag/station you are looking for to recieve the tag Data.",
+                "description": "Input the name of the tag/station you are looking for to recieve the tag Data.",
                 "parameters": [
                     {
                         "in": "formData",
@@ -100,7 +100,7 @@
                     "Default"
                 ],
                 "summary": "Returns a list of tags by group.",
-                 "description":"Input the group of the tag/station you are looking for to recieve the tag Data. Tags generated will default to 'genre'. Other viable groups: 'location', 'school'(Not implemented yet)",
+                "description": "Input the group of the tag/station you are looking for to recieve the tag Data. Tags generated will default to 'genre'. Other viable groups: 'location', 'school'(Not implemented yet)",
                 "parameters": [
                     {
                         "in": "formData",
@@ -114,6 +114,33 @@
                 "responses": {
                     "200": {
                         "description": "Sends tag by group."
+                    }
+                }
+            }
+        },
+        "/tempUploadSong": {
+            "post": {
+                "x-swagger-router-controller": "Default",
+                "tags": [
+                    "Default"
+                ],
+                "summary": "Uploads a song.",
+                "description": "Should not be attempted through swagger ui. In order to upload a song you need to add the headers below. The body should be multipart data of the song",
+                "parameters": [
+                    {
+                        "in": "Headers",
+                        "name": "SongUploadHeaders",
+                        "description": "The Song Headers that goes along with multipart data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SongUploadHeaders"
+                        }
+                    }
+                ],
+                "operationId": "petIdGet",
+                "responses": {
+                    "200": {
+                        "description": "Song has been uploaded"
                     }
                 }
             }
@@ -150,6 +177,30 @@
                 }
             }
         },
+        "/getSongById": {
+            "post": {
+                "x-swagger-router-controller": "Default",
+                "tags": [
+                    "Default"
+                ],
+                "summary": "returns Song Data by Id",
+                "description": "send the Id to get song Data.",
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "id",
+                        "description": "Id of song trying to get",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
         "/api/getUser": {
             "get": {
                 "x-swagger-router-controller": "Default",
@@ -172,7 +223,7 @@
                     "Protected"
                 ],
                 "summary": "Returns tag data with songs",
-                "description":"Returns tag list with songs. It also returns a new Authentication token that should be updated.",
+                "description": "Returns tag list with songs. It also returns a new Authentication token that should be updated.",
                 "parameters": [
                     {
                         "in": "formData",
@@ -197,7 +248,7 @@
                     "Protected"
                 ],
                 "summary": "Upvotes a Song.",
-                "description":"Adds one to the upvotes parameter of a song. The song will add one to its respective tag category. The Users authentication token dictates which category the upvote goes into.Adds the user onto the rated list. Adds the song to the users upvote list",
+                "description": "Adds one to the upvotes parameter of a song. The song will add one to its respective tag category. The Users authentication token dictates which category the upvote goes into.Adds the user onto the rated list. Adds the song to the users upvote list",
                 "parameters": [
                     {
                         "in": "formData",
@@ -222,7 +273,7 @@
                     "Protected"
                 ],
                 "summary": "Downvotes a Song.",
-                "description":"Adds one to the downvote parameter of a song. The song will add one to its respective tag category. The Users authentication token dictates which category the downvote goes into. Adds the user onto the rated list. Adds the song to the users downvote list.",
+                "description": "Adds one to the downvote parameter of a song. The song will add one to its respective tag category. The Users authentication token dictates which category the downvote goes into. Adds the user onto the rated list. Adds the song to the users downvote list.",
                 "parameters": [
                     {
                         "in": "formData",

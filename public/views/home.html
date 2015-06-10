@@ -1,5 +1,47 @@
 
 <div class="homeBar">
+
+    <div ng-show = "!user" class = "userArea">
+    <div class = "loginForm">
+        <form ng-submit="login()">
+               <input type="text" ng-model="userData.username" placeholder = "Username">
+               <input type="password" ng-model="userData.password" placeholder = "Password">
+               <input class="btn btn-primary"  type="submit" id="submit" value="Login" />
+    <button type="button" class="btn btn-primary signupButton" ng-click="openSignupModal()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+        <span class="glyphicon glyphicon-pencil"></span> Signup
+    </button>
+        </form>
+        <p>{{message}}</p>
+    </div>
+    <!-- <button type="button" class="btn btn-info btn-xs loginButton" ng-click="openLoginModal()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+        <span class="glyphicon glyphicon-log-in"></span> Login
+    </button> -->
+    </div>
+
+    <div ng-show = "user" class = "userArea">
+    <button type="button" class="btn btn-info btn-xs logoutButton" ng-click="logout()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+        <span class="glyphicon glyphicon-log-out"></span> Logout
+        
+    </button>
+    <button class="btn btn-success btn-xs logoutButton" ng-click = "openProfileModal()">{{user.username}}</button>
+    <!-- BRANDON DISPLAY USER DATA HERE 
+     Display user information here.
+    -->
+
+    </div>
+
+ <!-- <div class = "homeMessage">Current Station: {{currentStation}}</div> -->
+
+ <img src ='./media/pic/RadioRise5.jpg'/ class = 'homeLogo'>
+
+</div>
+
+
+
+
+
+<div ui-view class = "view"></div>      
+
 <!-- BRANDON use this for switching img tags with ngshow and ng hide-->
 <!-- <div ng-show="sound.paused">
    <button ng-click='sound.paused ? sound.play() : sound.pause()'>Play</button>
@@ -8,64 +50,9 @@
    <button ng-click='sound.paused ? sound.play() : sound.pause()'>Pause</button>
 </div> -->
 
-<img src ='./media/pic/RadioRise5.jpg'/ class = 'homeLogo'>
+<!-- BRANDON Safe to delete, keep for testing purposes -->
 
-
-
-<!-- <div>
-  <form ng-submit="submit()">
-    <input ng-model="userData.username" type="text" name="user" placeholder="Username" />
-    <input ng-model="userData.password" type="password" name="pass" placeholder="Password" />
-    <input type="submit" value="Login" />
-  </form>
-</div> -->
-
-<div ng-show = "!user" class = "userArea">
-<div class = "loginForm">
-    <form ng-submit="login()">
-           <input type="text" ng-model="userData.username" placeholder = "Username">
-           <input type="password" ng-model="userData.password" placeholder = "Password">
-           <input class="btn btn-primary"  type="submit" id="submit" value="Login" />
-    </form>
-    <p>{{message}}</p>
+<div class = "footer">
+    <div style = "margin-right: 4%"><a ui-sref=".list">Home</a></div>
+    <div style = "margin-right: 4%"><a ui-sref=".about">About</a></div>
 </div>
-<button type="button" class="btn btn-info btn-xs signupButton" ng-click="openSignupModal()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-    <span class="glyphicon glyphicon-pencil"></span> Signup
-</button>
-<!-- <button type="button" class="btn btn-info btn-xs loginButton" ng-click="openLoginModal()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-    <span class="glyphicon glyphicon-log-in"></span> Login
-</button> -->
-
-</div>
-
-<div ng-show = "user" class = "userArea">
-<button type="button" class="btn btn-info btn-xs logoutButton" ng-click="logout()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-    <span class="glyphicon glyphicon-log-out"></span> Logout
-    
-</button>
-<button class="btn btn-success btn-xs logoutButton" ng-click = "openProfileModal()">{{user.username}}</button>
-<!-- BRANDON DISPLAY USER DATA HERE 
- Display user information here.
--->
-
-</div>
-
-
-
-
-
- <div class = "homeMessage">Current Station: {{currentStation}}</div>
-
-
-
-
-
-
-</div>
-<!-- BRANDON Safe to delete, keep for testing purposes
-<li><a ui-sref=".list">Route 1</a></li>
-<li><a ui-sref="route2">Route 2</a></li>
- -->
-
-<div ui-view class = "view"></div>      
-

@@ -2,6 +2,12 @@
 
 html, body { 
   height: 100%; width: 100%; margin: 0; 
+    margin-left:auto;
+    margin-right:auto;
+    margin-bottom:auto;
+    margin-top:auto;
+    width:1920px;
+    height: 1080px;	
 }
 
 .flexParent {
@@ -18,22 +24,30 @@ html, body {
 
 .homeBar{
   	order: 0;
-	border-bottom: solid;
-    border-width: .1em;
-    height: 12%;
+    height: 30%;
     width:100%;
     display:flex;
+    flex-direction: column;
+    align-items:  center;
+    justify-content:  center;
 }
 
 .homeLogo {
-	order:0;
-	height:90%;
-	margin:5px;
+	order:1;
+  width: 55%;
+  padding-right: 13%;
+  padding-left: 13%;
+  border-top: solid;
+  border-bottom: solid;
+  border-color: rgba(192, 192, 192, 0.50);
+  border-width: 1.5px;
 }
 
 .userArea{
-	order:1;
+	order:0;
 	margin-top: 1%;
+	margin-left: 1%;
+	height: 25%;
 }
 
 .signupButton {
@@ -67,28 +81,281 @@ html, body {
 /*home.list.html*/
 
 
-.playBox{
-width: 100%;
-height: 30%;
-background-color: #fcfcfc;
+.homeList{
+	height: 50%;
+	display: flex;
+	align-items:  center;
+	flex-wrap:wrap;
+    justify-content:  center;
 }
 
-.playerSongData{
-	float: right;
-	background-color: #fcfcfc;
+.footer{
+	display: flex;
+    flex-direction: row;
+	
+	width: 100%;
+	height: 0%;
+	border-top: solid 1px;
+	order:0;
+}
+
+.mainBox{
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 60%;
+  height: 70%;
+  margin-top: 2%;
+  /*background-color: black;*/
+  order: 0;
+	
+}
+
+.leftTagBox{
+
+	order: 0;
+	width: 100%;
+  	height: 100%;
+  	display: flex;
+  	flex-direction: column;
+	justify-content: space-around;
+}
+
+.rightTagBox{
+
+	order: 0;
+	width: 100%;
+  	height: 100%;
+  	display: flex;
+  	flex-direction: column;
+	justify-content: space-around;
+}
+
+.mainTagBox{
+
+	order: 0;
+	width: 100%;
+  	height: 100%;
+  	display: flex;
+  	flex-direction: column;
+	justify-content: space-around;
+	background-color: #f1f1f1;
+
+}
+.tagBox{
+
+  	height: 52%;
+	display: flex;
+	justify-content: space-around;
+    width: 100%;
+    /*delete below and change height to 50% if you want to remove border*/
+  	background-color: #fcfcfc;
+ 	padding-bottom: 1%;
+ 	padding-top: 1%;	
+    border-top: solid;
+    border-bottom: solid;
+    border-color:silver;
+    border-width: 1.5px;
+}
+.rightTagBoxDivider{
+
+  	height: 51.5%;
+	display: flex;
+	justify-content: flex-start;
+    width: 100%;
+    /*delete below and change height to 50% if you want to remove border*/
+  	background-color: #fcfcfc;
+	
+    border-top: solid;
+    border-bottom: solid;
+    border-color:silver;
+    border-width: 1.5px;
+
+}
+.leftTagBoxDivider{
+
+  	height: 51.5%;
+	display: flex;
+	justify-content: flex-end;
+    width: 100%;
+    /*delete below and change height to 50% if you want to remove border*/
+  	background-color: #fcfcfc;
+    border-top: solid;
+    border-bottom: solid;
+    border-color:silver;
+    border-width: 1.5px;
+
+}
+.repeatTags{
+    border-radius: 10px;
+    border: solid;
+    height: 100%;
+ 	border-width: 1px;
+  	width: 15%;
+    font-size: 18px;
+	color: white;
+	background: #1677bb;
+	display: flex;
+	align-items:  center;
+    justify-content:  center;
+    -moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	cursor: pointer;
+}
+
+.tagDivider {
+	width:100%;
+	font-weight: 700;
+	text-align: center;
+
+    word-wrap: break-word;
+}
+
+.repeatTags:hover {
+	color:#1677bb;
+
+	background-color: white;
+}
+.repeatTagsSelected {
+	display: inline;
+    border-right: solid;
+    border-width: 1px;
+}
+
+
+.playBox{
+
+	order: 0;
+	width: 100%;
+  	height: 100%;
+  	display: flex;
+  	flex-wrap: wrap;
+	background-color: #f1f1f1;
+
+}
+
+
+.leftContainer{
+  order:0;
+  width: 15%;
+  height: 70%;
+  display: flex;
+  flex-wrap: wrap;
+  /*background-color: red;*/
+}
+
+.mainContainer{
+  order: 1;
+  width: 70%;
+  height: 70%;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #f1f1f1;
+
+    border-style: solid;
+  border-width: 1px;
+  border-color: silver;
+}
+.rightContainer{
+  order:2;
+  width: 15%;
+  height: 70%;
+  display: flex;
+  flex-wrap: wrap;
+  /*background-color: red;*/
+
 }
 .uploadBox{
-margin-left: 25%;
-margin-top: 5%;
-width: 50%;
-height: 35%;
- overflow-y: auto;
+order: 3;
+width: 70%;
+height:30%;
+margin-left: 15%;
 background-color: #fcfcfc;
+
 }
 .my-drop-zone{
-text-align: center;
+	text-align: center;
+	border-top: solid 2px lightgray;
+	font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+	height: 100%;
+	font-size: x-large;
+	  display:flex;
+	  flex-direction: column;
+	  justify-content: space-around;
+	  align-items: center;
+	      border-style: solid;
+  border-width: 1px;
+  border-color: silver;
 }
 
+
+.tagArrowDiv{
+	  display:flex;
+	  flex-direction: row;
+	  justify-content: space-between;
+}
+.tagArrowRight{
+margin-top: 33.5%;
+width: 0;
+height: 0;
+margin-left: 10%;
+border-style: solid;
+border-width: 10px 0 10px 20px;
+border-color: transparent transparent transparent #007bff;
+}
+
+.tagArrowRight:hover{
+margin-top: 33.5%;
+width: 0;
+height: 0;
+margin-left: 10%;
+border-style: solid;
+border-width: 10px 0 10px 20px;
+border-color: transparent transparent transparent black;
+}
+
+.tagArrowLeft{
+margin-top: 33.5%;
+width: 0;
+height: 0;
+margin-right: 10%;
+border-style: solid;
+border-width: 10px 20px 10px 0;
+border-color: transparent #007bff transparent transparent;
+}
+
+.tagArrowLeft:hover{
+margin-top: 33.5%;
+width: 0;
+height: 0;
+margin-right: 10%;
+border-style: solid;
+border-width: 10px 20px 10px 0;
+border-color: transparent black transparent transparent;
+}
+
+.genreListBox{
+	order: 5;
+	margin-left: 15%;
+	width: 70%;
+  	margin-top: 10%;
+  	height: 35%;
+  	display: flex;
+  	flex-direction: column;
+	justify-content: space-around;
+	background-color: #f1f1f1;
+
+    border-style: solid;
+    border-width: 1px;
+    border-color:silver;
+}
+
+.playMessage{
+	width:100%;
+	text-align: center;
+}
 .uploadboxes
 {
 	height:20%;
@@ -96,36 +363,66 @@ text-align: center;
 
 .uploadBoxButtons{
 margin-left: 25%;
-width: 50%;
+width: 45%;
 height: 5%;
 background-color: gray;
 }
 
 
-.searchDiv {
-	margin-left: -4%;
-}
-.searchBar {
-width:109%;
-border: solid;
-border-width: 1px;
-}
-.tagBox{
-	display: block;
-    border-bottom: solid;
-    border-width: 1px;
-    height:27px;
-}
+
+
 .songBox{
-	display: inline-block;
+	display: flex;
 	border-right: solid;
 	border-width: 1px;
 	width: 15%;
 	height:115%;
 	float:left;
+    flex-direction: column;
 }
 .songBoxBuffer{
-	height:3.25%;
+	width:100%;
+	height:4.25%;
+	text-align: center;
+	vertical-align: middle;
+    border-bottom: solid;
+	 font-size: 1.4em;
+}
+.repeatSongBoxes{
+    border-bottom: solid;
+    border-width: 1px;
+    display:flex;
+    height:6%;
+    flex-wrap: wrap;
+ 	border: 1px solid #aaa;
+}
+.repeatSongBoxes:hover{
+    border-bottom: solid;
+    background-color: grey;
+    cursor:pointer;
+}
+
+.repeatSongNameBox{
+ order: 0; 
+ width:75%;
+ font-weight: bold;
+ font-size: 1.25em;
+ text-align: center;
+ white-space: nowrap;
+}
+.repeatSongUserBox{
+ color: #31a5ff;
+ font-size: .75em;
+}
+.repeatSongUpBox{
+ width:25%;
+
+ text-align: center;
+ order: 1;
+}
+.repeatSongUpBoxImg{
+	margin-top: 10%;
+	width:25px;
 }
 .repeatBoxes{
 	display: block;
@@ -134,15 +431,16 @@ border-width: 1px;
 }
 .repeatBoxes:hover{
 	background-color: grey;
-	cursor:pointer
+	cursor:pointer;
 }
-.repeatTags{
-	display: inline;
-    border-right: solid;
-    border-width: 1px;
-    padding:2px;
-    font-size: 18px;
+
+.repeatBoxesSelected{
+	background-color: grey;
+	cursor:pointer;
+	color:white; 
 }
+
+
 /*.historyTag{
 	display: inline;
     border-left: solid;
@@ -151,32 +449,15 @@ border-width: 1px;
     padding-left:2px;
     font-size: 18px;
 }*/
-.repeatTags:hover{
-	background-color: grey;
-	cursor:pointer
-}
+
 
 .logo{
 width: 45%;
 margin-left: 20%;
 }
 
-.mainBox{
-	display: inline-block;
-	width: 85%;
-	height:100%;
-	background-color: #f1f1f1;
-}
 
-.homeList{
-	height: 100%;
-/*	background-color:lightgrey;*/
-}
 
-.my-drop-zone {
- border: dotted 2px lightgray;
- /*	background-color:lightgrey;*/
- }
  
 .nv-file-over { 
 	border: dotted 1.5px green; 
@@ -192,18 +473,101 @@ margin-top: 10px;
 margin-bottom: 10px;
 }
 
+.radioButtons{
+width:15%;
+display:flex;
+flex-direction: column;
+justify-content: space-around;
+/*background-color: blue;*/
+align-items: center;
+}
+.playerSongData{
+      width: 82%;
+ 	  height: 75%;
+  	  text-align: center;
+  	  display:flex;
+
+	  flex-direction: column;
+	  justify-content: space-around;
+	  background: #f9f9f9;
+  	  margin: 1.2em 0 6px 0;
+      border: 1px solid #ddd;
+}
+
+.rateItMessage{
+	  font-size: x-large;
+	 display:flex;
+	 height:40%;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+	 /*background-color: white;*/
+}
+.votingArea{
+	display:flex;
+	flex-direction: row;
+	justify-content: space-around;
+  /*background-color: green;*/
+
+}
+
 .upvoteButton{
-width:10%;
+zoom: 60%;
+width:99px;
+height:99px;
+background: url('../media/pic/upvote.png') 0px 0px;
+border:none;
+}
+.upvoteButton:hover{
+width:99px;
+height:99px;
+background: url('../media/pic/upvote.png') 99px 0px;
 }
 
 .downvoteButton{
-width:10%;
+	zoom: 60%;
+width:99px;
+height:99px;
+background: url('../media/pic/downvote.png') 0px 0px;
+
+}
+
+
+.downvoteButton:hover{
+width:99px;
+height:99px;
+background: url('../media/pic/downvote.png') 99px 0px;
+
+}
+
+.playButton{
+zoom: 70%;
+width:99px;
+height:99px;
+background: url('../media/pic/play.png') 0px 0px;
+}
+.playButton:hover{
+width:99px;
+height:99px;
+background: url('../media/pic/play.png') 99px 0px;
+}
+.pauseButton{
+zoom: 70%;
+width:99px;
+height:99px;
+background: url('../media/pic/pause.png') 0px 0px;
+}
+.pauseButton:hover{
+width:99px;
+height:99px;
+background: url('../media/pic/pause.png') 99px 0px;
 }
 
 /*playerbar*/
 .progressBar{
-	margin-top: 8%;
-	margin-left: -53%
+	order:0;
+	height:15%;
+	width:100%;
 }
 .progress{
 height:10%;
@@ -216,7 +580,6 @@ input[type=range] {
 	-webkit-appearance: none;
 	border-radius: 0px;
 	vertical-align: middle;
-	margin: 4em 0 0 0;
 	outline: none;
 	border:none;
 	padding: 0;
@@ -272,7 +635,7 @@ input[type=range]:focus {
 }
 input[type=range]:hover::-webkit-slider-thumb:after,
 input[type=range]:focus::-webkit-slider-thumb:after {
-	background: #cc181e;
+	background: black;
 }
 input[type=range]:disabled::-webkit-slider-thumb:before {
 	background-color: #a1151a;
@@ -284,9 +647,7 @@ input[type=range]:disabled::-webkit-slider-thumb:after {
 
 /*bootstrap override*/
 input[type="range"] {
-display: block;
-width: 100%;
-height: 20%;
+
 }
 
 .form-control {
@@ -319,7 +680,3 @@ height: 20%;
   background-color: #FF7600;
 
 }
-
-
-
-

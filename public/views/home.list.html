@@ -1,61 +1,109 @@
 <div class = 'homeList'>
 
-	<div class = 'songBox'>
-<div class="col-md-12 searchDiv">
-  <input class="form-control searchBar" ng-model="formData.search.name" placeholder="Search songs by name..."  />
-  <span class="glyphicon glyphicon-search"></span>
-</div>
 
-<div class = "songBoxBuffer"></div>
-	  <div class = 'repeatBoxes' ng-repeat="song in currentStationData.songs |  filter: formData.search | orderBy: '-upvotes' " ng-click="activateAndPlaySong(song)">
-    <p style = "margin: 0px;text-align: center"> {{song.name}}</p>
-     <p style = "margin: 0px;text-align: center">{{song.creator}}</p>
-     <p style = "margin: 0px;text-align: center"> 
-     Up: {{song.upvotes}}
-     Down: {{song.downvotes}}
-     </p>
-    </div>
-	</div>
+    <!-- {{currentStation}}  -->
 
-	<div class = 'mainBox'>
-        <div class="tagBox">   <div class = 'repeatTags' ng-repeat="tag in displayTags" ng-click="activateStation(tag)"> {{tag.name}}
-        </div>
-  <!--  <div class = "historyTag">History</div>  
-        <div class = "historyTag">More</div> -->
-      
-      </div>
-  <!--     <img src = './media/pic/RadioRise5.jpg' class = 'logo'/> -->
-      <div class = "playBox">
-       <input class='form-control progressBar' type=range min=0 max =1 step=0.001 ng-model='sound.progress'>
-  <!-- VOLUME BAR HERE
+
+
+
+   <div class = 'mainBox' >
+   <div class = "leftContainer">
+       <div class = "leftTagBox  fx-fade-down  fx-speed-400" ng-hide = 'currentStation' >
+     <div class = "leftTagBoxDivider" >   
+      <div class ="tagArrowLeft" ng-click = "getTagsLeft()" ng-hide = "tagIndexStart === 0;"></div>
+<!-- <div class ="tagArrowRight" ng-click = "getTagsRight()" ng-hide = "tagIndexEnd > tagArray.length;"></div> -->
+     
+     </div>
+
+
+  </div>
+   </div>
+    <div class = "mainContainer">
+      <div class = "playBox fx-fade-left  fx-speed-400"  ng-show = 'isStationPlaying '>
+    
+<!--   VOLUME BAR HERE
     <label>Volume</label>
     <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='sound.volume'> -->
-     <button ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()'>Play</button>
-     <button ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()'>Pause</button>
-  <div class = "playerSongData" ng-hide="sound.paused">
-  <img ng-src = '{{upvoteButtonSrc}}'  ng-mouseenter = "changeImage('upvoteButtonSrc', './media/pic/design1upvoteselected.png')" ng-mouseleave = "changeImage('upvoteButtonSrc', './media/pic/design1upvotenormal.png')" ng-hide = "currentSong.rated" ng-click='upvoteSong()' class = "upvoteButton"></img>
-  <img ng-src = '{{downvoteButtonSrc}}' ng-mouseenter = "changeImage('downvoteButtonSrc', './media/pic/design1downvoteselected.png')"
-   ng-mouseleave = "changeImage('downvoteButtonSrc', './media/pic/design1downvotenormal.png')"
-    ng-hide = "currentSong.rated" ng-click='downvoteSong()' class = "downvoteButton"></img>
- 
+    <div class = "radioButtons">
+     <div ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "playButton "></div>
+     <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
+    
+
+
 
   <button ng-show = "currentSong.rated" ng-click='skipSong()'>Skip</button>
+</div>
 
+<div class =  "playerSongData fx-bounce-left fx-speed-400" >
+
+    
   <div ng-show="currentSong.rated">
   {{currentSong.name}}
   {{currentSong.creator}}
   upvotes: {{currentSong.upvotes}}
   downvotes: {{currentSong.downvotes}}
-
   <h1>{{currentSong.description}}</h1>
   </div>
-<div ng-hide="currentSong.rated">
-Rate the song to see information!
-</div>
+  
+    <div ng-hide="currentSong.rated" class = "rateItMessage">
+    <div style = "margin-left:10%">
+     Rate for info!
+    </div> 
+       <div class = "votingArea">
+      <div ng-hide = "currentSong.rated " ng-click='upvoteSong()' class = "upvoteButton"></div>
+      <div ng-hide = "currentSong.rated" ng-click='downvoteSong()' class = "downvoteButton">
+    </div>
+
+  </div>
+  </div>
 
  </div>
-{{playMessage}}
+
+  <div class = " progressBar">
+       <input class='form-control' type=range min=0 max =1 step=0.001 ng-model='sound.progress'>
+  </div>
+
+</div>
+
+
+  <div class = "mainTagBox  fx-fade-down  fx-speed-400" ng-hide = 'currentStation' >
+     <div class = "tagBox" >   
+     <!--  <div class ="tagArrowLeft" ng-click = "getTagsLeft()" ng-hide = "tagIndexStart === 0;"></div> -->
+ 
+        <div class = 'repeatTags fx-fade-down  fx-speed-400' ng-hide = 'currentStation' ng-repeat="tag in displayTags" ng-click="activateStation(tag);" > 
+          <div class = "tagDivider">
+            {{tag.name}}
+          </div>
+        </div>
+<!-- <div class ="tagArrowRight" ng-click = "getTagsRight()" ng-hide = "tagIndexEnd > tagArray.length;"></div> -->
+     
      </div>
+
+
+  </div>
+
+
+</div>
+
+<div class = "rightContainer">
+
+       <div class = "rightTagBox  fx-fade-down  fx-speed-400" ng-hide = 'currentStation' >
+        <div class = "rightTagBoxDivider" >   
+        <!--  <div class ="tagArrowLeft" ng-click = "getTagsLeft()" ng-hide = "tagIndexStart === 0;"></div> -->
+        <div class ="tagArrowRight" ng-click = "getTagsRight()" ng-hide = "tagIndexEnd  > tagArray.length;"></div>
+        </div>
+
+      </div> 
+
+</div>
+
+
+<!-- 
+  <div class = 'repeatTags fx-fade-down ' ng-class="{repeatTagsSelected: tag.name == currentStation}" ng-repeat="tag in displayTags" ng-click="activateStation(tag);" > 
+          <div class = "tagDivider">
+            {{tag.name}}
+          </div>
+        </div> -->
 
 
 
@@ -65,9 +113,10 @@ Rate the song to see information!
 
 
             <div class="uploadBox" nv-file-drop="" uploader="uploader" filters="lengthFilter, formatFilter,sizeFilter">
-                <div class="well my-drop-zone" nv-file-over=""  uploader="uploader">
-                    Drop a song in here!
-                    {{songMessage}}
+                <div class="my-drop-zone" nv-file-over=""  uploader="uploader">
+                <div >
+                    Drop a file or click here to upload!
+                    </div>
                 </div>
                 <div class ="uploadboxes" ng-repeat="item in uploader.queue">
                     <div><strong>{{ item.file.name }}</strong>                                 <td ng-show="uploader.isHTML5" nowrap> - {{ item.file.size/1024/1024|number:2 }} MB</td></div>
@@ -89,7 +138,7 @@ Rate the song to see information!
 
                 </div>
             </div>
-            <div class = "uploadBoxButtons">
+<!--             <div class = "uploadBoxButtons">
                             <div class="progress" style="">
                                 <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
                             </div>
@@ -104,7 +153,7 @@ Rate the song to see information!
                         <button type="button" class="btn btn-danger btn-xs" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
                             <span class="glyphicon glyphicon-trash"></span> Remove all
                         </button>
-            </div>
+            </div> -->
   
  <!--
      <div class="col-md-3">
@@ -124,8 +173,9 @@ Rate the song to see information!
                     </div>
 
                     <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
+                    
  <!--   
-                    <input type="file" nv-file-select="" uploader="uploader" multiple  /><br/>
+                    <br/>
                 </div>
 
                 <div class="col-md-9" style="margin-bottom: 40px">
@@ -198,19 +248,44 @@ Rate the song to see information!
 
 
 
-   <!--         <p>Name: <input type="text" ng-model="formData.songName"></p>
+   <!--    <p>Name: <input type="text" ng-model="formData.songName"></p>
            <p>Tag: <input type="text" ng-model="formData.songTag"></p> -->
   <!--     <p>{{ songTag }}</p> -->
 <!-- <input ng-model="formData.searchText"/> -->
-<button ng-click="check()">Check!</button>
 
-<button ng-click="DESTROY()">DELETE DATABASE!</button>
-
+<!-- <button ng-click="DESTROY()">DELETE DATABASE!</button> -->
 
 
 
+ <div class = "genreListBox  fx-fade-down  fx-speed-400"  ng-show = 'currentStation'>
+     <div class = "tagBox" >   
+        <div class = 'repeatTags fx-fade-down' ng-repeat="tag in displayTags" ng-click="activateStation(tag);" > 
+          <div class = "tagDivider">
+            {{tag.name}}
+          </div>
+        </div>
+
+     </div>
+ </div>
 
 
-	</div>
+  </div>
+
 
 </div>
+
+<p ng-class="{'fx-fade-down': deleted, bold: important, 'has-error': error}" ng-show ="testbool">Map Syntax Example</p>
+<label>
+   <input type="checkbox" ng-model="deleted">
+   deleted (apply "strike" class)
+</label><br>
+<label>
+   <input type="checkbox" ng-model="important">
+   important (apply "bold" class)
+</label><br>
+<label>
+   <input type="checkbox" ng-model="error">
+   error (apply "has-error" class)
+</label>
+<!-- <input type="file" nv-file-select="" uploader="uploader" multiple  /> -->
+<button ng-click="check()">Check!</button>

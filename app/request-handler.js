@@ -7,8 +7,24 @@ var User = require('./database/models/user.model');
 var Tag = require('./database/models/tag.model');
 var expressJwt = require('express-jwt');
 var jwt = require('jsonwebtoken');
+var azure = require('azure-storage');
 var secret = "it's a secret to everybody";
 var fs = require('fs');
+var chance = require('chance').Chance();
+var bcrypt = require('bcryptjs');
+
+var _ = require('lodash');
+var nconf = require('nconf');
+
+nconf.env()
+     .file({ file: 'config.json'});
+var tableName = nconf.get("TABLE_NAME");
+var partitionKey = nconf.get("PARTITION_KEY");
+var accountName = nconf.get("STORAGE_NAME");
+var accountKey = nconf.get("STORAGE_KEY");
+var blobSvc = azure.createBlobService(accountName, accountKey), tableName, partitionKey;
+
+
 
 //Signup User creates and stores a user mongoose document
 exports.createUser = function(req, res) {
@@ -22,7 +38,9 @@ exports.createUser = function(req, res) {
 console.log("createUser ran");
 
   //check  length of username
-  if(username.length < 3 || username.length > 13) {
+  if(username === "anonymous") {
+    res.status(300).send("Username is unavailable.");
+  } else if(username.length < 3 || username.length > 13) {
     res.status(300).send("Username must be between 3 and 13 characters.");
   } else {
 
@@ -233,7 +251,9 @@ exports.getStation = function(req, res) {
 Tag.findOne({ name: tagName })
               .populate('songs') // populates mongoose user song table with songdata
               .exec(function (err, tag) {
-                if (err) return handleError(err);
+                if (err) {
+                   res.send(err);
+                  }
               
                 res.json(tag);
 
@@ -246,8 +266,8 @@ exports.getTagByName = function(req, res) {
 Tag.findOne({ name: tagName })
               .populate('songs') // populates mongoose user song table with songdata
               .exec(function (err, tag) {
-                if (err) return handleError(err);
-      
+                if (err) { res.send(err); }
+
                 res.json(tag);
 
               });
@@ -260,13 +280,26 @@ exports.getTagsByGroup = function(req, res) {
 Tag.findOne({ group: groupName })
               .populate('songs') // populates mongoose user song table with songdata
               .exec(function (err, tag) {
-                if (err) return handleError(err);
-              
+                if (err) { res.send(err); }
+                
                 res.json(tag);
 
               });
 }
 
+exports.getSongById = function(req, res) {
+
+  var idToBeSearched = req.body.id;
+  
+  Song.findOne({ _id: idToBeSearched }) // populates mongoose user song table with songdata
+              .exec(function (err, song) {
+               if (err) { res.send(err); }
+              
+              console.log("song found");
+                res.json(song);
+
+              });
+}
 
 //Deletes folder and everything inside of it
   exports.deleteFolderRecursive = function(path) {
@@ -332,6 +365,263 @@ exports.authenticate =  function (req, res) {
 
 };
 
+exports.uploadTempSong = function(req, res) {
+        // console.log(req.headers);
+        // console.log(req.user);
+        // console.log(req.headers);
+        
+
+        //When instantiated, filepath is always the filename: Ex. "song.mp3"
+        var filepath = req.headers.filepath;
+        
+        var username = 'anonymous';
+
+            if (!fs.existsSync('./public/media/sound/')){
+                fs.mkdirSync('./public/media/sound/');
+            }
+            else{ }
+
+        //dir is the directory in which we store the mp3
+        var dir = './public/media/sound/anonymous';
+
+        //if the username folder does not exist, the code snippet below will make one.
+            
+            if (!fs.existsSync(dir)){
+                fs.mkdirSync(dir);
+                  console.log(dir +" made!");
+            }
+            else
+            {
+                console.log(dir +" not made!");
+            }
+          
+        //if the songname is blank or undefined, it is set as the filename 
+          if(req.headers.songname == '' || undefined || null) {
+            var songname = req.headers.filepath;
+          } else {
+            var songname = req.headers.songname;
+          }
+
+          //query the database to find the user that uploaded song
+          //this is to check if a song has been uploaded or not
+          User.findOne({ username: username })
+              .populate('songs') // populates mongoose user song table with songdata
+              .exec(function (err, user) {
+                if (err) return handleError(err);
+  
+                //cycles through the song array to check if the name or filepath exists.
+                for (var i = 0; i < user.songs.length ; i++) {
+               
+                 //if user.song[i].name exists then end the call
+                 if( user.songs[i].name === songname){
+                  res.end('The name of the file exists on your account.');
+                 }
+                 //if user.song[i].filepath exists then end the call
+                 if(user.songs[i].filepath === './media/sound/' + username + '/' +  filepath) {
+                
+                  res.end('The filepath of the file exists on your account.');
+                 }
+
+                };
+
+        // This pipes the data into the writeStream file path.
+        // the file path is put into the username folder
+        var writeStream = fs.createWriteStream('./public/media/sound/' + username + '/' +  filepath);
+        req.pipe(writeStream);
+
+
+        //AZURE STORAGE START 
+
+
+        blobSvc.createContainerIfNotExists(username, {publicAccessLevel : 'blob'}, function(error, result, response){
+          if(!error){
+            console.log(username + " container created or exists");
+          }
+        });
+
+        //azure storage end
+
+       var size = 0;
+
+       //tells server what happens when, streaming data onto server
+      req.on('data', function (data) {
+          size += data.length;
+        
+         //console.log('Got chunk: ' + data.length + ' total: ' + size);
+
+            // blobSvc.createBlockBlobFromStream(username, songname, data, size, function (error) {
+            //     if (error) {
+            //         res.send(' Blob create: error ');
+            //     }
+            // });
+      
+      });
+
+      //end of streaming data onto server
+      req.on('end', function () {
+
+
+          // console.log("total size = " + size);
+
+          //Since this is tempupload use anonymous as username
+          var username = 'anonymous';
+          
+          //query the username in order to add song to the username table
+          User.find({'username': username},function (err, users) {
+              if (err) return console.error(err);
+            
+
+                //console.log(req.headers);
+                var username = 'anonymous';
+                var tagarray = JSON.parse(req.headers.tagarray);
+                var filepath = req.headers.filepath;
+                var description = req.headers.description;
+                //name is name of song that is assigned from the request
+                var songname = req.headers.songname;
+
+
+               
+                //if songname is undefined then set it to the filepath
+                if(songname == undefined || songname == 'undefined' || songname == '' || songname == null) {
+
+                  var songname = req.headers.filepath;
+
+                } else {
+                
+                  var songname = req.headers.songname;
+                  songname = songname.trim();
+                
+                }
+
+                //if tagarray is greater than 5 they cheated and it'll be cut down to five
+                if(tagarray.length > 5)
+                  {
+                    tagarray = tagarray.slice(0,5);
+                  }
+
+                //The tag array automatically gets the all tag. this possibly makes it 6
+                tagarray.push('all');
+
+                //The values in tag array will be lowercased
+                tagarray = _.map(tagarray , function(item){
+                   return item.toLowerCase();
+                  });
+
+                //tagarray will be removed of duplicates
+                tagarray = _.uniq(tagarray);
+
+                //tagarray will be removed of undefined or empty strings.
+                tagarray = _.filter(tagarray, function(item){
+                  if(item === undefined || item === '' ||item === null || item === 'undefined')
+                  {
+                    return false;
+                  }
+                  else
+                  {
+                    return true;
+                  }
+                });
+
+                console.log(tagarray);
+                console.log("User " + username +" found");
+                console.log("User will now be put into test Song.");
+
+                //Schema creation for song
+                var creatorID = users[0]._id;
+                var creator = users[0].username;
+                var views = 0;
+                var upvotes = 0;
+                var downvotes = 0;
+                var description = description;
+                var createdAt = new Date();
+                var filepath = './media/sound/' + username + '/' +  filepath;
+
+                //Creates a string of characters 24 long. 
+                var unhashedClaimString = chance.string({length: 24});
+                //Hashes the string of characters
+                var hashedClaimString = bcrypt.hashSync(unhashedClaimString);
+
+
+               //Test Purpose only, free to delete
+                console.log("unhashed claim string: " + unhashedClaimString);
+
+                console.log("hashed string: " + hashedClaimString);
+                var bool = bcrypt.compareSync(unhashedClaimString, hashedClaimString);
+
+                //test purpose only, free to delete
+                console.log("bool" + bool);
+
+
+                //tagObjArr will create objects for each tag and put it into tagObjArr
+                var tagObjArr = [];
+
+
+                console.log("createSong ran");
+                //fill out Song Schema
+                var newSong = new Song({
+                        name: songname,
+                        creatorID: creatorID,
+                        creator: creator,
+                        views: views,
+                        upvotes: upvotes,
+                        downvotes: downvotes,
+                        tags: tagObjArr,
+                        description: description,
+                        createdAt: createdAt,
+                        filepath: filepath,
+                        claimHash: hashedClaimString 
+                      });
+                
+                //when newSong saves it will run the tag query and insert the song into the right tags
+
+
+                newSong.save(function(err, newSong) {
+                  if (err) {
+                     console.log('errored out: ', err);     
+                  } else {
+                          users[0].songs.push(newSong);
+
+                         users[0].save(function(err, user) {
+                            if (err) {
+                               console.log('errored out: ', err);
+                            } else {
+                               console.log('successfully put song into anonymous');
+                            }
+                          });
+
+                        
+                         console.log('successfully put song into database');
+                         
+                         res.json({songObj: newSong, unhashedClaimCode: unhashedClaimString});
+
+                      }
+                    });
+
+
+     });
+
+
+  });        
+      
+
+//Brace for end of user query
+ }); 
+
+    req.on('error', function(e) {
+        console.log("ERROR ERROR: " + e.message);
+        res.end(e.message);
+    });
+
+//Brace for end of route
+}
+
+
+
+
+
+
+
+
 
 
   //   Song.find({},function (err, songs) {
@@ -341,3 +631,63 @@ exports.authenticate =  function (req, res) {
   // }
   //   });
 
+function generateUser(username, password, email, adminCode) {
+  
+
+  var username = username;
+  var password = password;
+  var email = email;
+  var createdAt = new Date();
+  
+  var secretAdminCode = nconf.get("adminCode");
+  if(adminCode === secretAdminCode) {
+  var type = "admin";
+  }
+  else {
+    var type = "basic";
+  }
+
+  console.log("generateUser ran");
+
+  //check  length of username
+  if(username.length < 3 || username.length > 13) {
+    return false;
+  } else {
+
+    var newUser = new User({
+          username: username,
+          password: password,
+          email: email,
+          type: type,
+          createdAt: createdAt,
+          songs: [],
+          upvoted: [],
+          downvoted:[],
+          favorite: []
+        });
+  //newUser.save saves the document and then redirects to root.
+  //It's extremely important to run the save function.
+  //without it there will be no change recorded in the database.
+   newUser.save(function(err, newUser) {
+      if (err) {
+         console.log('errored out: ', err);    
+         return false;
+      } else {
+         console.log('successfully put user into database');
+        return true;
+      }
+    });
+  
+
+  }
+}
+exports.createAdmins = function(req, res) {
+
+  var adminCode = req.body.adminCode;
+
+
+  var anonymousPassword = nconf.get("anonymousPassword");
+  //username, password, email, adminCode
+  generateUser("anonymous", anonymousPassword, "anonymous@radioRise.com", adminCode);
+  res.end("CreateAdmins has been called");
+};

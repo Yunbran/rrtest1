@@ -1,24 +1,25 @@
-app.controller('PlayerController', function($scope, $http, $modal, $log, $window, ngAudio, FileUploader, localStorageService, User) {
+app.controller('PlayerController', function($scope, $http, $modal, $log, $stateParams, $window, $timeout, ngAudio, FileUploader, localStorageService, User) {
 
 //START OF INSTANTIATION--------------------------------------------------
 
-
  //instantiates the variables inside PlayerController 
-
+ 
  //displaySongs is populated with getStation()
  $scope.displaySongs = ['should','not', 'work', 'yet'];
   //displayTags is populated with getTags();
- $scope.displayTags = ['should','not', 'work', 'yet'];
+ //$scope.displayTags = ['should','not', 'work', 'yet'];
 
- $scope.currentStation = "all";
+ $scope.currentStation = null;
  $scope.isStationPlaying = false;
  $scope.currentStationData = {};
  $scope.customSongArray = [];
  $scope.percentageArray = [];
-//currentSong is the song that is loaded by ngAudio
+ $scope.tagArray = [];
+ //test variable
+ $scope.testbool = true;
+ //currentSong is the song that is loaded by ngAudio
  $scope.currentSong = {name:''};
  $scope.nextSong = '';
-
  //optimization variables!
  $scope.ratedSongTableObj = {};
 //formData used for post requests to the server
@@ -35,6 +36,8 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
  User.authToken = getLocalStorage("token");
   
 
+//logic Train STARTS HERE
+ 
 //if the window has an authToken go ahead and get the Profile  
   if(User.authToken && User.authToken !== 'undefined')
   {
@@ -46,6 +49,25 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
       
   }
   
+  if($stateParams["songId"]){
+    var tempPostObj = {};
+
+    tempPostObj["id"] = $stateParams["songId"];
+
+     $http.post("/getSongById", tempPostObj)
+      .success(function(response) {
+      console.log(response);
+      console.log($stateParams["songId"]);
+      if(response["_id"] === $stateParams["songId"])
+      {
+      $scope.activateAndPlaySong(response);
+      $scope.currentStation = response["tags"][0];
+      $scope.currentSong.rated = true;
+      $scope.isStationPlaying = true;
+      }
+    });
+  }  
+//logic Train ENDS HERE
 
 //END OF INSTANTIATION-------------------------------------------------
 
@@ -55,15 +77,19 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
     // console.log(getLocalStorage("token"));
     // console.log(User.authToken);
     // console.log($scope.percentageArray);
-    console.log($scope.currentSong); 
+    // console.log($scope.currentStation); 
+    // console.log($scope.currentSong); 
+    // console.log($scope.tagArrayStack);
+    //$scope.currentStation = "asd";
 
-       // $http.get("/https://practicespace.blob.core.windows.net/mycontainer/testpark.mp3")
-       //  .success(function(response) {
-       //    console.log(response);
-       //  });
+    $scope.testbool = !$scope.testbool;
 
-   //$scope.sound = ngAudio.load("./media/sound/asda/test.mp3");
-   //$scope.sound.play();
+
+   // $http.post("/createAdmins", {adminCode: "snake"})
+   //      .success(function(response) {
+   //        console.log(response);
+   //      });
+
  }
 
   $scope.DESTROY = function () {
@@ -200,8 +226,16 @@ function getUser(){
  function getTags(){
   $http.get("/getTags")
   .success(function(response) {
-    $scope.displayTags = response;
+   // $scope.displayTags = response;
+     $scope.displayTags = [];
+     $scope.tagIndexStart = 0;
+     $scope.tagIndexEnd = 5;
+     $scope.tagArray = [{name: "Rock"}, {name: "Pop"}, {name: "Rap"}, {name: "Classical"}, {name: "Electronic"}, {name: "CRAP"}, {name: "dasdasfas"}, {name: "Casdasdad"}, {name: "ERGERG"}];
+  
+   $scope.displayTags = $scope.tagArray.slice(0, 5);
+
   });
+
 }
 
 //GETS TAGS FROM SERVER AND LISTS THEM
@@ -272,11 +306,12 @@ function getUser(){
         if($scope.currentStation === "all")
         {
            var weightNumber = ((songArray[i]['upvotes'] + 3) - songArray[i]['downvotes']);
+         
           if(weightNumber < 1){
             weightNumber = 0;
           }
 
-      percentageArray.push(weightNumber);
+          percentageArray.push(weightNumber);
           $scope.customSongArray.push(songArray[i]);
         
         } else {
@@ -420,7 +455,7 @@ $scope.uploadAll = function()
 
     $scope.activateStation = function(tag){
       $scope.currentStation = tag.name;
-
+      //cb means Callback
       var cb = function(){
         runStationAlgorithm();
        
@@ -432,6 +467,10 @@ $scope.uploadAll = function()
       }
 
       getStation(cb);
+
+         $timeout(function(){
+        $scope.isStationPlaying = true;
+      }, 400);
   }
 
   $scope.skipSong = function(){
@@ -497,17 +536,24 @@ $scope.uploadAll = function()
   });
 
   }
-  $scope.upvoteButtonSrc = './media/pic/design1upvotenormal.png';
-  $scope.downvoteButtonSrc = './media/pic/design1downvotenormal.png';
-    $scope.changeImage = function(imageSourceVar, newImageSource){
-      console.log(imageSourceVar, + " || " + newImageSource);
-    $scope[imageSourceVar] = newImageSource;
-  };
+  
+ 
+ $scope.getTagsRight = function(){
+     $scope.tagIndexStart =  $scope.tagIndexStart + 5;
+     $scope.tagIndexEnd = $scope.tagIndexEnd + 5;
+     $scope.displayTags = $scope.tagArray.slice($scope.tagIndexStart,$scope.tagIndexEnd);
+ }
 
+ $scope.getTagsLeft = function(){
+   $scope.tagIndexStart =  $scope.tagIndexStart - 5;
+     $scope.tagIndexEnd = $scope.tagIndexEnd - 5;
+     $scope.displayTags = $scope.tagArray.slice($scope.tagIndexStart,$scope.tagIndexEnd);
+
+ }
 //TEST STUFF BELOW
         var uploader = $scope.uploader = new FileUploader({
-            url: '/api/uploadSong',
-            queueLimit: 10   
+            url: '/uploadTempSong',
+            queueLimit: 1   
         });
     
       $scope.songMessage = "";
@@ -526,19 +572,10 @@ $scope.uploadAll = function()
           }
       });
 
-      uploader.filters.push({
-          name: 'sizeFilter',
-          fn: function(item) {
-            if(item.size <= 10000000 && item.size > 0){
-              return true;
-            }
-            else
-            {
-              $scope.songMessage = "Maximum of 10 MB per file!" + item.size;
-              return false;
-            }
-          }
-      });
+      uploader.filters.push({     name: 'sizeFilter',     fn: function(item) {
+      if(item.size <= 10000000 && item.size > 0){   return true; } else {
+      $scope.songMessage = "Maximum of 10 MB per file!" + item.size;   return
+      false; }     } });
 
 //lengthFilter not working
       uploader.filters.push({
@@ -549,7 +586,7 @@ $scope.uploadAll = function()
             }
             else
             {
-              $scope.songMessage = "Maximum of 10 files!";
+              $scope.songMessage = "Maximum of 1 file!";
               return false;
             }
           }
@@ -573,7 +610,8 @@ $scope.uploadAll = function()
         };
         uploader.onAfterAddingAll = function(addedFileItems) {
             console.info('onAfterAddingAll', addedFileItems);
-            $scope.openSongModal();
+           // $scope.openSongModal();
+           uploader.uploadAll();
         };
         uploader.onBeforeUploadItem = function(item) {
             console.info('onBeforeUploadItem', item);
@@ -600,7 +638,7 @@ $scope.uploadAll = function()
         };
         uploader.onSuccessItem = function(fileItem, response, status, headers) {
             console.info('onSuccessItem', fileItem, response, status, headers);
-            fileItem.tempURL = "http://localhost:8000/" + response._id;
+            fileItem.tempURL = "http://risingtest.azurewebistes.com/#/s/553572a83c77568410615037" + response._id;
            
         };
         uploader.onErrorItem = function(fileItem, response, status, headers) {

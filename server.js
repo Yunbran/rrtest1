@@ -11,6 +11,7 @@ var expressJwt = require('express-jwt');
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 
+
 var User = require('./app/database/models/user.model');
 var Song = require('./app/database/models/song.model');
 var db = require('./app/database/db');
@@ -45,6 +46,11 @@ app.get('/getTags', handler.getTags);
 app.get('/getUsers', handler.getUsers);
 app.post('/getTagByName', handler.getTagByName);
 app.post('/getTagsByGroup', handler.getTagsByGroup);
+app.post('/getSongById', handler.getSongById);
+
+//need to be documented below
+app.post('/uploadTempSong', handler.uploadTempSong);
+//dont forget to document these
 
 // We are protecting all /api routes with JWT
 var secret = "it's a secret to everybody";
@@ -54,7 +60,7 @@ app.use('/api', expressJwt({secret: secret}));
 //everything in /api/ requires an authToken
 require('./app/routes')(app); 
 
-/*START OF NON PRODUCTION CODE*/
+/*START OF DEV CODE*/
 
 //DOCUMENTING API BELOW
 var docs_handler = express.static(__dirname + '/app/docs/swagger-ui/');
@@ -88,13 +94,15 @@ app.get('/getDocs', function(req, res){
 // handler.createUser();
 // handler.findUser('');
 // handler.listSongs();
+
 app.get('/deleteDatabase', function(){
   handler.deleteFolderRecursive("./public/media/sound/");
   handler.deleteDatabase();
   console.log("Data Deleted");
 });
 
-/*END OF NON PRODUCTION CODE*/
+app.post('/createAdmins', handler.createAdmins);
+/*END OF DEV CODE*/
 
 app.listen(port);
 console.log('app listening in on port ', port);

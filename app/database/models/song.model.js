@@ -62,6 +62,9 @@ var SongSchema = new Schema({
     required: true,
     unique: true,
     trim: true
+  },
+  claimHash:{
+    type: String
   }
 
 });
