@@ -122,15 +122,6 @@ html, body {
 	justify-content: space-around;
 }
 
-.rightTagBox{
-
-	order: 0;
-	width: 100%;
-  	height: 100%;
-  	display: flex;
-  	flex-direction: column;
-	justify-content: space-around;
-}
 
 .mainTagBox{
 
@@ -158,6 +149,18 @@ html, body {
     border-color:silver;
     border-width: 1.5px;
 }
+
+
+.rightTagBox{
+
+	order: 0;
+	width: 100%;
+  	height: 100%;
+  	display: flex;
+  	flex-direction: column;
+	justify-content: space-around;
+}
+
 .rightTagBoxDivider{
 
   	height: 51.5%;
@@ -165,14 +168,17 @@ html, body {
 	justify-content: flex-start;
     width: 100%;
     /*delete below and change height to 50% if you want to remove border*/
-  	background-color: #fcfcfc;
-	
+  /*	background-color: #fcfcfc;
     border-top: solid;
     border-bottom: solid;
     border-color:silver;
-    border-width: 1.5px;
+    border-width: 1.5px;*/
 
 }
+
+
+
+
 .leftTagBoxDivider{
 
   	height: 51.5%;
@@ -180,13 +186,29 @@ html, body {
 	justify-content: flex-end;
     width: 100%;
     /*delete below and change height to 50% if you want to remove border*/
-  	background-color: #fcfcfc;
+/*  	background-color: #fcfcfc;
     border-top: solid;
     border-bottom: solid;
     border-color:silver;
-    border-width: 1.5px;
+    border-width: 1.5px;*/
 
 }
+
+.leftStationBoxDivider{
+  	height: 51.5%;
+	display: flex;
+	justify-content: center;
+    width: 100%;
+    /*delete below and change height to 50% if you want to remove border*/
+/*
+  	background-color: #fcfcfc;
+   border-top: solid;
+    border-bottom: solid;
+    border-color:silver;
+    border-width: 1.5px;*/
+
+}
+
 .repeatTags{
     border-radius: 10px;
     border: solid;
@@ -204,7 +226,24 @@ html, body {
 	user-select: none;
 	cursor: pointer;
 }
-
+.repeatSelectedTag{
+    border-radius: 10px;
+    border: solid;
+  margin-top: 5%;
+  height: 88%;
+  border-width: 1px;
+  width: 70%;
+    font-size: 18px;
+	color: white;
+	background: #1677bb;
+	display: flex;
+	align-items:  center;
+    justify-content:  center;
+    -moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	cursor: pointer;
+}
 .tagDivider {
 	width:100%;
 	font-weight: 700;
@@ -486,7 +525,7 @@ align-items: center;
  	  height: 75%;
   	  text-align: center;
   	  display:flex;
-
+  	  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 	  flex-direction: column;
 	  justify-content: space-around;
 	  background: #f9f9f9;

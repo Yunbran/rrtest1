@@ -8,18 +8,28 @@
 
    <div class = 'mainBox' >
    <div class = "leftContainer">
-       <div class = "leftTagBox  fx-fade-down  fx-speed-400" ng-hide = 'currentStation' >
+    <div class = "leftTagBox" ng-hide = 'currentStation' >
      <div class = "leftTagBoxDivider" >   
       <div class ="tagArrowLeft" ng-click = "getTagsLeft()" ng-hide = "tagIndexStart === 0;"></div>
-<!-- <div class ="tagArrowRight" ng-click = "getTagsRight()" ng-hide = "tagIndexEnd > tagArray.length;"></div> -->
-     
      </div>
 
 
   </div>
+  <div class = "leftTagBox  fx-fade-right  fx-speed-500" ng-show = 'currentStation' >
+     <div class = "leftStationBoxDivider" >  
+    
+              <div class = 'repeatSelectedTag fx-fade-right fx-speed-500' ng-show = 'currentStation' > 
+          <div class = "tagDivider">
+            {{currentStation}}
+          </div>
+        </div>
+    
+    </div>
+
+  </div>
    </div>
     <div class = "mainContainer">
-      <div class = "playBox fx-fade-left  fx-speed-400"  ng-show = 'isStationPlaying '>
+      <div class = "playBox fx-fade-left  fx-speed-500"  ng-show = 'isStationPlaying '>
     
 <!--   VOLUME BAR HERE
     <label>Volume</label>
@@ -34,7 +44,7 @@
   <button ng-show = "currentSong.rated" ng-click='skipSong()'>Skip</button>
 </div>
 
-<div class =  "playerSongData fx-bounce-left fx-speed-400" >
+<div class =  "playerSongData fx-bounce-left fx-speed-500" >
 
     
   <div ng-show="currentSong.rated">
@@ -66,16 +76,18 @@
 </div>
 
 
-  <div class = "mainTagBox  fx-fade-down  fx-speed-400" ng-hide = 'currentStation' >
+  <div class = "mainTagBox  fx-fade-down  fx-speed-500" ng-hide = 'currentStation' >
      <div class = "tagBox" >   
-     <!--  <div class ="tagArrowLeft" ng-click = "getTagsLeft()" ng-hide = "tagIndexStart === 0;"></div> -->
+
  
-        <div class = 'repeatTags fx-fade-down  fx-speed-400' ng-hide = 'currentStation' ng-repeat="tag in displayTags" ng-click="activateStation(tag);" > 
+        <div class = 'repeatTags'ng-class="{'fx-fade-right': specificTagSelected,'fx-speed-500': specificTagSelected,
+         'fx-fade-down' : !specificTagSelected && currentStation ,
+         'fx-speed-400' : !specificTagSelected && currentStation }" ng-hide = 'currentStation' ng-repeat="tag in displayTags" ng-click="activateStation(tag); specificTagSelected = true;" > 
           <div class = "tagDivider">
             {{tag.name}}
           </div>
         </div>
-<!-- <div class ="tagArrowRight" ng-click = "getTagsRight()" ng-hide = "tagIndexEnd > tagArray.length;"></div> -->
+
      
      </div>
 
@@ -87,10 +99,10 @@
 
 <div class = "rightContainer">
 
-       <div class = "rightTagBox  fx-fade-down  fx-speed-400" ng-hide = 'currentStation' >
-        <div class = "rightTagBoxDivider" >   
-        <!--  <div class ="tagArrowLeft" ng-click = "getTagsLeft()" ng-hide = "tagIndexStart === 0;"></div> -->
-        <div class ="tagArrowRight" ng-click = "getTagsRight()" ng-hide = "tagIndexEnd  > tagArray.length;"></div>
+       <div class = "rightTagBox" ng-hide = 'currentStation' >
+        <div class = "rightTagBoxDivider"  >   
+
+          <div class ="tagArrowRight" ng-click = "getTagsRight()" ng-hide = "tagIndexEnd  > tagArray.length;"></div>
         </div>
 
       </div> 
@@ -257,7 +269,7 @@
 
 
 
- <div class = "genreListBox  fx-fade-down  fx-speed-400"  ng-show = 'currentStation'>
+ <div class = "genreListBox  fx-fade-down  fx-speed-500"  ng-show = 'currentStation'>
      <div class = "tagBox" >   
         <div class = 'repeatTags fx-fade-down' ng-repeat="tag in displayTags" ng-click="activateStation(tag);" > 
           <div class = "tagDivider">
@@ -274,7 +286,7 @@
 
 </div>
 
-<p ng-class="{'fx-fade-down': deleted, bold: important, 'has-error': error}" ng-show ="testbool">Map Syntax Example</p>
+<p ng-class="{'fx-fade-down': deleted, bold: important, 'has-error': error}">Map Syntax Example</p>
 <label>
    <input type="checkbox" ng-model="deleted">
    deleted (apply "strike" class)

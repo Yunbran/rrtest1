@@ -15,6 +15,7 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $stateP
  $scope.customSongArray = [];
  $scope.percentageArray = [];
  $scope.tagArray = [];
+ 
  //test variable
  $scope.testbool = true;
  //currentSong is the song that is loaded by ngAudio
