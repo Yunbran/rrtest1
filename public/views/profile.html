@@ -1,0 +1,375 @@
+
+<div class="homeBar" >
+
+    <div ng-show = "!user" class = "userArea" >
+
+     <img src ='./media/pic/icon.png'  class = ' headerLogo'/>
+
+        <form class = "loginForm" ng-submit="login()">
+               <input type="text" ng-model="userData.username" placeholder = "Username" class = "loginInput">
+               <input type="password" ng-model="userData.password" placeholder = "Password" class = "passwordInput">
+               <input class="btn btn-primary loginButton"  type="submit" id="submit" value="Login" />
+               <button type="button" class="btn btn-primary signupButton" ng-click="openSignupModal('lg')" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+               <span class="glyphicon glyphicon-pencil"></span> Signup
+               </button>
+        </form>
+        <p>{{message}}</p>
+
+    <!-- <button type="button" class="btn btn-info btn-xs loginButton" ng-click="openLoginModal()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+        <span class="glyphicon glyphicon-log-in"></span> Login
+    </button> -->
+    </div>
+
+    <div ng-show = "user" class = "userArea" >
+         <img src ='./media/pic/icon.png' class = ' headerLogo'/>
+
+    <button class="btn btn-primary profileButton" ng-click = "goToHome()">Home</button>
+    <button type="button" class="btn btn-primary  logoutButton" ng-click="logout()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+        <span class="glyphicon glyphicon-log-out"></span> Logout
+        
+    </button>
+    <!-- BRANDON DISPLAY USER DATA HERE 
+     Display user information here.
+    -->
+
+    </div>
+
+ <!-- <div class = "homeMessage">Current Station: {{currentStation}}</div> -->
+
+ <!-- <img src ='./media/pic/RadioRise5.jpg'/ class = 'homeLogo'> -->
+
+</div>
+
+<div class = 'profileWrapper'>
+<div class = 'introProfileDiv'>
+  <div class = 'introProfileName'> {{userProfile.username}}</div>
+ <div class = 'introProfileSubMessage'> Welcome to {{userProfile.username}}'s profile page!</div>
+
+ </div>
+<tabset>
+<tab style = "padding-left: 33.5%;">
+    <tab-heading>
+        Upload <div style = "margin-left:5px;" class="glyphicon glyphicon-cloud"></div >
+    </tab-heading>
+
+            <v-accordion style = "width:100%" class="vAccordion--default">
+
+              <v-pane class = "songPane" ng-repeat="song in userProfile.songs">
+                <v-pane-header class = "songPaneHeader"  ng-click = "activateOrPauseSong(song)">
+                  {{ song.name }}
+                </v-pane-header>
+                <!-- START OF PANE -->
+                <v-pane-content class = "songPaneContent">
+
+            <div class = "songPanePlayer" ng-hide = "editMode">
+
+
+ 
+        <uib-progress style = "margin-left:650px; width:600px; height:4px;"><uib-bar ng-repeat="bar in stacked track by $index"  class="progress-striped active" value="bar.value" type="{{bar.type}}"><span ng-hide="bar.value < 5"></span></uib-bar></uib-progress>
+        <div style = "width:35%;"></div>  <div class = "songPaneTagRack"><div class = "songPaneTags" ng-repeat= "tag in currentSong.tags">{{tag.tagname}}</div></div>
+        
+        <div class = "songPaneAudio">
+            <div class = "songPaneAudioButtons">
+                 <div style = "margin-top:-37px;" ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "playButton "></div>
+                 <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
+          </div>
+          <div class = "songPaneAudioLine">
+              <div style = "margin-top: -0.75%;" class = " songPaneAudioProgressBar ">
+                       <md-slider step = "0.001" flex="" ng-model="sound.progress" min="0" max="1" aria-label="blue" id="blue-slider" class="md-primary">
+                       </md-slider>
+              </div>
+          </div>
+          </div>
+          <div class = "songPaneDescriptionLine">
+      <div ng-show = "moreMode" style = "    
+    width: 500px;
+    margin-left: 37%; 
+    margin-top: 5px;">{{currentSong.description}}</div>
+          </div>
+          <div class = "songPaneButtonLine">
+                    <button  style = "margin-left: 33.5%;" type="button" class="btn btn-info noselect" ng-click="setEditModeTrue(song)">
+                    <span class="glyphicon glyphicon-edit"></span> 
+                </button>
+                    <button style = "margin-left: .75%;" type="button" class="btn btn-info noselect" ng-click="setMoreMode()">
+                    <span class="glyphicon glyphicon-plus"></span> 
+                </button>
+     <div  style = "    
+    width: 90px;
+    margin-left: 5%;">Upvotes: {{currentSong.upvotes}}
+    <br> Downvotes: {{currentSong.downvotes}}</div>
+                    <div  ng-show = "moreMode" style = "margin-top:-5.5%; margin-left:5%"
+                    socialshare 
+                    socialshare-provider="twitter"
+                    socialshare-text= ""
+                    socialshare-url="http://radiorise.com/#/s/{{currentSong._id}}"
+                    class = 'twitterShareButton'> </div>
+                    <div  ng-show = "moreMode"  style = "margin-top:-5.5%;"
+                    socialshare 
+                    socialshare-provider="facebook"
+                    socialshare-text= ""
+                    socialshare-url="http://radiorise.com/#/s/{{currentSong._id}}"
+                    class = 'facebookShareButton'> </div>
+                    <div  ng-show = "moreMode" style = "margin-top:-5.5%;"
+                    socialshare 
+                    socialshare-provider="google+"
+                    socialshare-text= ""
+                    socialshare-url="http://radiorise.com/#/s/{{currentSong._id}}"
+                    class = 'googleShareButton'> </div>
+
+          </div>
+          
+
+
+            </div>
+
+<!-- START OF EDIT CONTENT -->
+            <div class = "songPanePlayer" ng-show = "editMode">
+
+              <div class = "songPanePlayDivider">
+
+                <div class = "songPaneRadioButtons">
+                 <div style = "    margin-left: 240%;
+    margin-top: 17%;
+" ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "playButton "></div>
+                 <div style = "margin-left: 240%;
+    margin-top: 17%;" ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
+                
+            </div>
+  <div style ="    width: 35%;
+    font-size: 16px;
+    margin-left: 18%;
+    margin-top: -1%;" layout="" layout-sm="column">
+        <uib-progress style = "    margin-left:22px;
+    width: 600px;
+    margin-top: -19px;
+    height: 4px;"><uib-bar ng-repeat="bar in stacked track by $index"  class="progress-striped active" value="bar.value" type="{{bar.type}}"><span ng-hide="bar.value < 5"></span></uib-bar></uib-progress>
+         <tags-input ng-model="currentSong.tags" display-property="name" 
+                      placeholder="Station Tags" 
+                      replace-spaces-with-dashes="false"
+                      max-tags = "5"
+                      id = "tagsInputBox"
+                      enforce-max-tags>
+            <auto-complete 
+                     min-length="0"
+                     load-on-focus="true"
+                     load-on-empty="true"
+                     max-results-to-show="32"
+                     source="loadTags($query)"
+                     template="autocomplete-template"></auto-complete>
+          </tags-input>
+        <md-input-container flex="">
+          <label>Song Name</label>
+          <input ng-model="editChangesObj.name">
+        </md-input-container>
+        <md-input-container md-no-autogrow='true' flex>
+        <label>Description</label>
+        <textarea  ng-model="editChangesObj.description" columns="1" md-maxlength="140"></textarea>
+
+      </md-input-container>
+  </div>
+       
+<div class = "flexVerticalStart" style = "
+    margin-left: 3.5%;">
+        <button style = "
+    height: 15%;
+    margin-top:100%;" class="btn btn-danger" ng-click="setEditModeFalse()">Cancel</button>        
+        <button style = "
+    height: 15%;
+    margin-top:10%;" class="btn btn-success" ng-click="sendEdits(song)">Confirm</button>
+ </div>    
+            </div>
+  
+
+  </div>
+
+
+
+                </v-pane-content>
+              </v-pane>
+
+            </v-accordion>
+
+</tab>
+<tab style>
+    <tab-heading>
+        Favorites <div style = "margin-left:5px;" class="glyphicon glyphicon-star"></div >
+    </tab-heading>
+
+            <v-accordion style = "width:100%" class="vAccordion--default">
+
+              <v-pane class = "songPane" ng-repeat="song in userProfile.favorite">
+                <v-pane-header class = "songPaneHeader"  ng-click = "activateOrPauseSong(song)">
+                  {{ song.name }}
+                </v-pane-header>
+                <!-- START OF PANE -->
+                <v-pane-content class = "songPaneContent">
+
+            <div class = "songPanePlayer" ng-hide = "editMode">
+
+
+ 
+        <uib-progress style = "margin-left:650px; width:600px; height:4px;"><uib-bar ng-repeat="bar in stacked track by $index"  class="progress-striped active" value="bar.value" type="{{bar.type}}"><span ng-hide="bar.value < 5"></span></uib-bar></uib-progress>
+        <div style = "width:35%;"></div>  <div class = "songPaneTagRack"><div class = "songPaneTags" ng-repeat= "tag in currentSong.tags">{{tag.tagname}}</div></div>
+        
+        <div class = "songPaneAudio">
+            <div class = "songPaneAudioButtons">
+                 <div style = "margin-top:-37px;" ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "playButton "></div>
+                 <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
+          </div>
+          <div class = "songPaneAudioLine">
+              <div style = "margin-top: -0.75%;" class = " songPaneAudioProgressBar ">
+                       <md-slider step = "0.001" flex="" ng-model="sound.progress" min="0" max="1" aria-label="blue" id="blue-slider" class="md-primary">
+                       </md-slider>
+              </div>
+          </div>
+          </div>
+          <div class = "songPaneDescriptionLine">
+      <div ng-show = "moreMode" style = "    
+    width: 500px;
+    margin-left: 37%; 
+    margin-top: 5px;">{{currentSong.description}}</div>
+          </div>
+          <div class = "songPaneButtonLine">
+                    <button style = "margin-left: 34.25%;" type="button" class="btn btn-info noselect" ng-click="setMoreMode()">
+                    <span class="glyphicon glyphicon-plus"></span> 
+                </button>
+     <div  style = "    
+    width: 90px;
+    margin-left: 5%;">Upvotes: {{currentSong.upvotes}}
+    <br> Downvotes: {{currentSong.downvotes}}</div>
+                    <div  ng-show = "moreMode" style = "margin-top:-5.5%; margin-left:5%"
+                    socialshare 
+                    socialshare-provider="twitter"
+                    socialshare-text= ""
+                    socialshare-url="http://radiorise.com/#/s/{{currentSong._id}}"
+                    class = 'twitterShareButton'> </div>
+                    <div  ng-show = "moreMode"  style = "margin-top:-5.5%;"
+                    socialshare 
+                    socialshare-provider="facebook"
+                    socialshare-text= ""
+                    socialshare-url="http://radiorise.com/#/s/{{currentSong._id}}"
+                    class = 'facebookShareButton'> </div>
+                    <div  ng-show = "moreMode" style = "margin-top:-5.5%;"
+                    socialshare 
+                    socialshare-provider="google+"
+                    socialshare-text= ""
+                    socialshare-url="http://radiorise.com/#/s/{{currentSong._id}}"
+                    class = 'googleShareButton'> </div>
+
+          </div>
+          
+
+
+            </div>
+
+
+
+
+                </v-pane-content>
+              </v-pane>
+
+            </v-accordion>
+
+</tab>
+<tab style>
+    <tab-heading>
+        Upvoted <div style = "margin-left:5px;" class="glyphicon glyphicon-arrow-up"></div >
+    </tab-heading>
+
+            <v-accordion style = "width:100%" class="vAccordion--default">
+
+              <v-pane class = "songPane" ng-repeat="song in userProfile.upvoted">
+                <v-pane-header class = "songPaneHeader"  ng-click = "activateOrPauseSong(song)">
+                  {{ song.name }}
+                </v-pane-header>
+                <!-- START OF PANE -->
+                <v-pane-content class = "songPaneContent">
+
+            <div class = "songPanePlayer" ng-hide = "editMode">
+
+
+ 
+        <uib-progress style = "margin-left:650px; width:600px; height:4px;"><uib-bar ng-repeat="bar in stacked track by $index"  class="progress-striped active" value="bar.value" type="{{bar.type}}"><span ng-hide="bar.value < 5"></span></uib-bar></uib-progress>
+        <div style = "width:35%;"></div>  <div class = "songPaneTagRack"><div class = "songPaneTags" ng-repeat= "tag in currentSong.tags">{{tag.tagname}}</div></div>
+        
+        <div class = "songPaneAudio">
+            <div class = "songPaneAudioButtons">
+                 <div style = "margin-top:-37px;" ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "playButton "></div>
+                 <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
+          </div>
+          <div class = "songPaneAudioLine">
+              <div style = "margin-top: -0.75%;" class = " songPaneAudioProgressBar ">
+                       <md-slider step = "0.001" flex="" ng-model="sound.progress" min="0" max="1" aria-label="blue" id="blue-slider" class="md-primary">
+                       </md-slider>
+              </div>
+          </div>
+          </div>
+          <div class = "songPaneDescriptionLine">
+      <div ng-show = "moreMode" style = "    
+    width: 500px;
+    margin-left: 37%; 
+    margin-top: 5px;">{{currentSong.description}}</div>
+          </div>
+          <div class = "songPaneButtonLine">
+                    <button style = "margin-left: 34.25%;" type="button" class="btn btn-info noselect" ng-click="setMoreMode()">
+                    <span class="glyphicon glyphicon-plus"></span> 
+                </button>
+     <div  style = "    
+    width: 90px;
+    margin-left: 5%;">Upvotes: {{currentSong.upvotes}}
+    <br> Downvotes: {{currentSong.downvotes}}</div>
+                    <div  ng-show = "moreMode" style = "margin-top:-5.5%; margin-left:5%"
+                    socialshare 
+                    socialshare-provider="twitter"
+                    socialshare-text= ""
+                    socialshare-url="http://radiorise.com/#/s/{{currentSong._id}}"
+                    class = 'twitterShareButton'> </div>
+                    <div  ng-show = "moreMode"  style = "margin-top:-5.5%;"
+                    socialshare 
+                    socialshare-provider="facebook"
+                    socialshare-text= ""
+                    socialshare-url="http://radiorise.com/#/s/{{currentSong._id}}"
+                    class = 'facebookShareButton'> </div>
+                    <div  ng-show = "moreMode" style = "margin-top:-5.5%;"
+                    socialshare 
+                    socialshare-provider="google+"
+                    socialshare-text= ""
+                    socialshare-url="http://radiorise.com/#/s/{{currentSong._id}}"
+                    class = 'googleShareButton'> </div>
+
+          </div>
+          
+
+
+            </div>
+
+
+
+
+                </v-pane-content>
+              </v-pane>
+
+            </v-accordion>
+
+</tab>
+   
+<tab style>
+    <tab-heading>
+        Stations <div style = "margin-left:5px;" class="glyphicon glyphicon-music"></div >
+    </tab-heading>
+    </tab>
+  </tabset>
+
+
+
+  
+</div>
+<!-- <a ui-sref="home.list">Show List</a> -->
+<div ui-view></div>
+
+<div go-away class = "footer">
+    <div style="
+    margin-left: 1%;" class = "footerButton"><a class = "footerLink" ui-sref="home.list">Home</a></div>
+    <div class = "footerButton"><a class = "footerLink" ui-sref="home.about">About</a></div>
+    <button class = "check" ng-click="check()">Check!</button>
+</div>

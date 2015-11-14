@@ -1,44 +1,199 @@
-  
-    
-    <carousel style = "cursor:default" interval="0">
-      <slide style ="height:1400"  ng-repeat="item in uploader.queue" active="slide.active">
-        <div class="modal-header">
-            <h3 class="modal-title" style = "white-space: nowrap;">{{ item.file.name }}</h3>
-        </div>
-        <div class="modal-body">
+        <div class="uploadHeader">
+        <div class = "flexHorizontal uploadHeaderRow uploadHeaderRow1">{{currentSong.name}}</div>
+            <!-- <h3 class="modal-title">{{userProfile.username}}</h3> -->
+          <div class = "flexHorizontal uploadHeaderRow uploadHeaderRow2">
+            <div class = "uploadHeaderRadioButtons">
+                 <div ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "playButton "></div>
+                 <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
+          </div>
+              <div class = " uploadProgressBar ">
+                       <md-slider step = "0.001" flex="" ng-model="sound.progress" min="0" max="1" aria-label="blue" id="blue-slider" class="md-primary">
+      </md-slider>
+              </div>
+            </div>
+
+<div class="mainUploadModalDiv" ng-class = '{mainUploadModalDivAnimation: animationSwitch}'>
+        
+        <div class = "uploadPaneContent">
 
 
+  <!-- START OF LOGGEDIN CHECK -->
 
-        <div>
+        <div class = "uploadSongPanePlayer" ng-hide = "editMode">
 
+   <div class =  "uploadSongPaneFormArea" ng-show = "currentSong.filepath">
+
+
+   <tabset>
+    <tab heading="Log in">
+    <form ng-submit="login()">
+      
+
+      <div style ="width: 50%;
+    font-size: 16px;
+    margin-left: 25%;
+        margin-top: 3.75%;" layout="" layout-sm="column">
+        <md-input-container flex="">
+          <label>Username</label>
+          <input ng-model="userData.username">
+        </md-input-container>
+        <md-input-container flex="">
+          <label>Password</label>
+          <input type="password" ng-model="userData.password">
+        </md-input-container>
+      </div> 
+        
+
+            <p id = "signupMessage">{{message}}</p>
+           <p><input style="" class="btn btn-primary"  type="submit" id="submit" value="Login" /> 
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </p>
+
+
+    </form>
+    </tab>
+    <tab heading="Sign Up">
+    <form ng-submit="signup()">
+
+
+  <div style ="width: 50%;
+    font-size: 16px;
+    margin-left: 25%;
+        margin-top: 3.75%;" layout="" layout-sm="column">
+        <md-input-container flex="">
+          <label>Username</label>
+          <input ng-model="userData.username">
+        </md-input-container>
+                <md-input-container flex="">
+          <label>Email</label>
+          <input ng-model="userData.email">
+        </md-input-container>
+        <md-input-container flex="">
+          <label>Password</label>
+          <input type="password" ng-model="userData.password">
+        </md-input-container>
+         <!-- <md-input-container flex="">
+          <label>Confirm Password</label>
+          <input type="password" ng-model="userData.passwordConfirm">
+        </md-input-container> -->
+      </div> 
+
+
+            <p id = "signupMessage">{{message}}</p>
+
+           <p><input style="" class="btn btn-primary"  type="submit" id="submit" value="Sign Up" />
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+           </p>
+
+    </form>
+    </tab>
+  </tabset>
+  </div>
+  </div>
+<!-- START OF EDIT CONTENT -->
+            <div class = "uploadSongPanePlayer" ng-show = "editMode">
+            <div class =  "uploadSongPanePlayerSongData" ng-show = "currentSong.filepath">
           <form>
-           <p>Name: <input type="text" maxlength="25" ng-model="item.headers.songname" placeholder = "Name"></p>
-           
-           <div>Description:
-           <textarea type="text" maxlength="140" ng-model="item.headers.description" placeholder = "Write a description here..."></textarea>
-           </div>
-           <div>
-           
-           <p><input style="position: absolute; left: -9999px; width: 1px; height: 1px;" class="btn btn-primary"  type="submit" id="submit" value="Sign Up" /></p>
+  <div style ="width: 50%;
+    font-size: 16px;
+    margin-left: 25%;
+        margin-top:-20%;
+        height:200px;" layout="" layout-sm="column">
+                <tags-input ng-model="currentSong.tags" display-property="name" 
+                      placeholder="Station Tags" 
+                      replace-spaces-with-dashes="false"
+                      max-tags = "5"
+                      id = "tagsInputBox"
+                      enforce-max-tags>
+            <auto-complete 
+                     min-length="0"
+                     load-on-focus="true"
+                     load-on-empty="true"
+                     max-results-to-show="32"
+                     source="loadTags($query)"
+                     template="autocomplete-template"></auto-complete>
+          </tags-input>
+        <md-input-container flex="">
+          <label>Song Name</label>
+          <input ng-model="editChangesObj.name">
+        </md-input-container>
+        <md-input-container md-no-autogrow='true' flex>
+        <label>Description</label>
+        <textarea  ng-model="editChangesObj.description" columns="1" md-maxlength="140"></textarea>
+
+      </md-input-container>
+  </div>
+       
+
+        <button style = "margin-top: 100px;" class="btn btn-warning" ng-click="sendEdits(currentSong)">Confirm</button>
+
          </form>
 
-            Tags:
-           <button class="btn btn-primary-xs" ng-click="addTag(item)">Add Tag</button>
-           <p ng-repeat="tag in item.headers.tagArray"><input maxlength="25" type="text" ng-model="tag.tag" placeholder = "Tag"> </p>
-           </div>
+            <!-- Tags: -->
+<!--            <button class="btn btn-primary-xs" ng-click="addTag(song)">Add Tag</button>
+           <p ng-repeat="tag in song.tags"><input maxlength="25" type="text" ng-model="tag.tagname" placeholder = "Tag"> </p> -->
+
+
+            </div>
+            </div>
+
+
+
+
+
+
+
+</div>
 
         </div>
-      </slide>
-    </carousel>
+                       <div class = " uploadHeaderRow uploadHeaderRow3">
+                  
+                    Share link: <b>{{shareURL}}</b>
+                    
+                    <!-- <input class = "uploadShareURL" type="text" ng-model="shareURL" onClick="this.select();" readonly /> -->
+                  </div> 
 
-         <!-- <div ng-repeat="item in uploader.queue">{{ item.file.name }}</div> -->
-         
+                  <div class = "uploadHeaderRow uploadHeaderRow4">
+                    <div
+                    socialshare 
+                    socialshare-provider="twitter"
+                    socialshare-text= ""
+                    socialshare-url="http://risingtest.azurewebsites.net/#/s/{{currentSong._id}}"
+                    class = 'twitterShareButton'> </div>
+                    <div
+                    socialshare 
+                    socialshare-provider="facebook"
+                    socialshare-text= ""
+                    socialshare-url="http://risingtest.azurewebsites.net/#/s/{{currentSong._id}}"
+                    class = 'facebookShareButton'> </div>
+                    <div
+                    socialshare 
+                    socialshare-provider="google+"
+                    socialshare-text= ""
+                    socialshare-url="http://risingtest.azurewebsites.net/#/s/{{currentSong._id}}"
+                    class = 'googleShareButton'> </div>
+
+                 </div>
+
         </div>
-        <div class="modal-footer">
-        <p id = "signupMessage">
-        <!-- {{message}} -->
-        {{ item.headers}}
-        </p>
-            <button class="btn btn-primary" ng-click="modalUploadAll()">Upload Everything</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+
+
+        <div class="modal-footer songFormFooter">
+          <div class = "flexHorizontal" ng-show = "editMode">
+          Choose some station tags to have your song rated!
+          </div>
+          <div class = "flexHorizontal" ng-hide = "editMode">
+          Sign up to enjoy rating music and uploading songs!
+          </div>
         </div>
+
+<script type="text/ng-template" id="autocomplete-template">
+      <div class="autocomplete-template">
+        <div class="left-panel">
+        </div>
+        <div class="right-panel">
+          <span style = "font-weight:900">{{data.name}}</span>
+          <span>Created By: findest</span>
+        </div>
+      </div>
+    </script>

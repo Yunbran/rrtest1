@@ -35,6 +35,13 @@ exports.createUser = function(req, res) {
   var email = req.body.email;
   var createdAt = new Date();
   var type = "basic";
+
+      var hashedPassword = bcrypt.hashSync(password);
+
+
+      //Test Purpose only, free to delete
+      console.log("hashedPassword string: " + hashedPassword);
+
 console.log("createUser ran");
 
   //check  length of username
@@ -46,7 +53,7 @@ console.log("createUser ran");
 
     var newUser = new User({
           username: username,
-          password: password,
+          password: hashedPassword,
           email: email,
           type: type,
           createdAt: createdAt,
@@ -342,9 +349,11 @@ exports.authenticate =  function (req, res) {
             }
 
 
+            var isPasswordHashCorrect = bcrypt.compareSync(password, users[0].password);
             console.log(users[0]);
-
-            if(users[0].password === password){
+            
+           
+            if(isPasswordHashCorrect){
 
               var profile = {
                 username: users[0].username,
@@ -359,6 +368,8 @@ exports.authenticate =  function (req, res) {
               res.json({ token: token });
 
 
+            } else {
+            res.json("Password is Incorrect");
             }
 
           });
@@ -379,7 +390,8 @@ exports.uploadTempSong = function(req, res) {
             if (!fs.existsSync('./public/media/sound/')){
                 fs.mkdirSync('./public/media/sound/');
             }
-            else{ }
+            else{ 
+            }
 
         //dir is the directory in which we store the mp3
         var dir = './public/media/sound/anonymous';
@@ -408,28 +420,35 @@ exports.uploadTempSong = function(req, res) {
               .populate('songs') // populates mongoose user song table with songdata
               .exec(function (err, user) {
                 if (err) return handleError(err);
-  
+                
+                var counterForSameFileName = 0;
+
+                var counterForSamePathName = 0;
                 //cycles through the song array to check if the name or filepath exists.
                 for (var i = 0; i < user.songs.length ; i++) {
                
                  //if user.song[i].name exists then end the call
                  if( user.songs[i].name === songname){
-                  res.end('The name of the file exists on your account.');
+                  counterForSameFileName++;
                  }
                  //if user.song[i].filepath exists then end the call
                  if(user.songs[i].filepath === './media/sound/' + username + '/' +  filepath) {
-                
-                  res.end('The filepath of the file exists on your account.');
+                  counterForSamePathName++;
                  }
-
                 };
 
+                  if(counterForSamePathName > 0) {
+                 filepath = '('+ counterForSamePathName + ')' + filepath ;
+                 var extraParens = true;
+                  }
         // This pipes the data into the writeStream file path.
         // the file path is put into the username folder
         var writeStream = fs.createWriteStream('./public/media/sound/' + username + '/' +  filepath);
         req.pipe(writeStream);
 
+        console.log(filepath);
 
+        console.log('./public/media/sound/' + username + '/' +  filepath);
         //AZURE STORAGE START 
 
 
@@ -493,34 +512,8 @@ exports.uploadTempSong = function(req, res) {
                 
                 }
 
-                //if tagarray is greater than 5 they cheated and it'll be cut down to five
-                if(tagarray.length > 5)
-                  {
-                    tagarray = tagarray.slice(0,5);
-                  }
-
-                //The tag array automatically gets the all tag. this possibly makes it 6
-                tagarray.push('all');
-
-                //The values in tag array will be lowercased
-                tagarray = _.map(tagarray , function(item){
-                   return item.toLowerCase();
-                  });
-
-                //tagarray will be removed of duplicates
-                tagarray = _.uniq(tagarray);
-
-                //tagarray will be removed of undefined or empty strings.
-                tagarray = _.filter(tagarray, function(item){
-                  if(item === undefined || item === '' ||item === null || item === 'undefined')
-                  {
-                    return false;
-                  }
-                  else
-                  {
-                    return true;
-                  }
-                });
+                //anonymous songs will not be put into tags
+                tagarray = [];
 
                 console.log(tagarray);
                 console.log("User " + username +" found");
@@ -543,13 +536,13 @@ exports.uploadTempSong = function(req, res) {
 
 
                //Test Purpose only, free to delete
-                console.log("unhashed claim string: " + unhashedClaimString);
+                // console.log("unhashed claim string: " + unhashedClaimString);
 
-                console.log("hashed string: " + hashedClaimString);
+                // console.log("hashed string: " + hashedClaimString);
                 var bool = bcrypt.compareSync(unhashedClaimString, hashedClaimString);
 
                 //test purpose only, free to delete
-                console.log("bool" + bool);
+                // console.log("bool" + bool);
 
 
                 //tagObjArr will create objects for each tag and put it into tagObjArr
@@ -603,14 +596,14 @@ exports.uploadTempSong = function(req, res) {
 
   });        
       
+    req.on('error', function(e) {
+        console.log("ERROR ERROR: " + e.message);
+        res.status(300).end(e.message);
+    });
 
 //Brace for end of user query
  }); 
 
-    req.on('error', function(e) {
-        console.log("ERROR ERROR: " + e.message);
-        res.end(e.message);
-    });
 
 //Brace for end of route
 }

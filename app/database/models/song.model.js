@@ -42,7 +42,7 @@ var SongSchema = new Schema({
          type:Number
        }
     })],
-   description: {
+  description: {
     type: String
   },
   upvoteList: {
@@ -60,7 +60,6 @@ var SongSchema = new Schema({
   filepath:{
     type: String,
     required: true,
-    unique: true,
     trim: true
   },
   claimHash:{

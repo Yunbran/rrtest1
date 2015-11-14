@@ -49,13 +49,21 @@ module.exports = function(app) {
    router.route('/downvoteSong')
     .post(handler.downvoteSong);
 
+   router.route('/favoriteSong')
+    .post(handler.favoriteSong);
+
    router.route('/uploadSong')
     .post(handler.uploadSong);
+   
+   router.route('/editSong')
+    .post(handler.editSong);
 
    router.route('/getUser')
     .get(handler.getUser);
 
-
+  //needs to be documented   
+   router.route('/claimSong')
+    .post(handler.claimSong);
 
 
 

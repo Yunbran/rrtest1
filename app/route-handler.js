@@ -16,7 +16,7 @@ var _ = require('lodash');
 var expressJwt = require('express-jwt');
 var jwt = require('jsonwebtoken');
 var secret = "it's a secret to everybody";
-
+var bcrypt = require('bcryptjs');
 var nconf = require('nconf');
 nconf.env()
      .file({ file: 'config.json'});
@@ -32,7 +32,8 @@ exports.getProfile = function(req, res) {
   
   User.findOne({ username: req.user.username })
               .populate('songs') // populates mongoose user song table with songdata
-              .populate('rated') 
+              .populate('favorite')
+              .populate('upvoted') 
               .exec(function (err, user) {
                 if(err) {
                   res.send(err);
@@ -82,7 +83,8 @@ exports.getProfile = function(req, res) {
       console.log("upvoteSong activated");
       var name = req.body.name;
       var userObj = req.user;
-      //console.log(req.body);
+      // console.log(req.body);
+      // console.log(req.user);
 
    Song.find({name : name}, function (err, songs) {
       if(err) {
@@ -107,6 +109,7 @@ exports.getProfile = function(req, res) {
      // console.log(songs[0]);
 
       var relevantTag = retrieveRelevantTagFromSong(songs[0] , req.user.station);
+      console.log(relevantTag);
       relevantTag['upvotes'] = relevantTag['upvotes'] + 1;
       songs[0].upvotes = songs[0].upvotes + 1;
       console.log("relevantTag: " + relevantTag);
@@ -201,10 +204,71 @@ exports.downvoteSong = function(req, res) {
 
 }
 
+ exports.favoriteSong = function(req, res) {
+      console.log("favoriteSong activated");
+      var name = req.body.name;
+      var userObj = req.user;
+      var song = req.body;
+                    
+              console.log('song favorited');
+             
+              User.findOne({ username: req.user.username }) 
+              .exec(function (err, user) {
+                user.favorite.push(song._id);
+                user.save(function(){
+                  res.json("Successfully favorited song!");
+                });
+              })
+
+    
+}
+ exports.claimSong = function(req, res){
+        console.log("claimSong activated");
+      var songToBeClaimed = req.body.songToBeClaimed;
+      var unhashedClaimCode = req.body.unhashedClaimCode;
+      var userObj = req.user;
+
+   Song.find({_id : req.body.songToBeClaimed._id}, function (err, songs) {
+      if(err) {
+        res.send(err);
+      }
+       // console.log("triggered");
+      if(songs[0] === undefined) {
+       res.send("Song does not exist");
+      } else {
+        //START OF CLAIM OPERATIONS
+                console.log("bool " + unhashedClaimCode);
+                console.log('as ' + songs[0].claimHash)
+        var bool = bcrypt.compareSync(unhashedClaimCode, songs[0].claimHash);
+
+        if(bool){
+          if(songs[0].creator == "anonymous"){
+
+           User.findOne({ username: req.user.username }) 
+              .exec(function (err, user) {
+                user.songs.push(songToBeClaimed._id);
+                user.save(function(){
+                  songs[0].creatorID = user._id;
+                  songs[0].creator = user.username;
+                  songs[0].save(function(){
+                  res.json("Successfully claimed song!");
+                    
+                  });
+                });
+              })
+          }
+        } else {
+          res.send("Song cannot be claimed. Please Upload again.");
+        }
+      }
+ });
+             
+ 
+
+ }
 exports.uploadSong = function(req, res) {
         // console.log(req.headers);
-        //console.log(req.user);
-        // console.log(req.headers);
+        // console.log(req.user);
         
 
         //When instantiated, filepath is always the filename: Ex. "song.mp3"
@@ -255,15 +319,24 @@ exports.uploadSong = function(req, res) {
                
                  //if user.song[i].name exists then end the call
                  if( user.songs[i].name === songname){
-                  res.end('The name of the file exists on your account.');
+                  res.status(300).end('The name of the file exists on your account.');
+                  var exists = true;
+                  break;
                  }
+
                  //if user.song[i].filepath exists then end the call
                  if(user.songs[i].filepath === './media/sound/' + username + '/' +  filepath) {
-                
-                  res.end('The filepath of the file exists on your account.');
+                  var exists = true;                  
+                  res.status(300).end('The filepath of the file exists on your account.');
+                  break;
                  }
 
                 };
+if(exists){
+
+}
+else {
+
 
         // This pipes the data into the writeStream file path.
         // the file path is put into the username folder
@@ -341,7 +414,7 @@ exports.uploadSong = function(req, res) {
                   }
 
                 //The tag array automatically gets the all tag. this possibly makes it 6
-                tagarray.push('all');
+                tagarray.unshift('all');
 
                 //The values in tag array will be lowercased
                 tagarray = _.map(tagarray , function(item){
@@ -423,6 +496,8 @@ exports.uploadSong = function(req, res) {
                                console.log('successfully put song into user');
                             }
                           });
+//ASYNC OPERATIONS
+
 
                           //For each tag in newSong tags we will fire off a new async call.
                           for(var i = 0; i < newSong.tags.length;i++)
@@ -446,12 +521,14 @@ exports.uploadSong = function(req, res) {
                             tempSongArr.push(newSong._id);
                             
                             var tagname =  tagNameAsync;
-                            
+                            var songRankArr = [];
+
                             var newTag = new Tag({
                                     name: tagname,
                                     views: 0,
                                     group: "genre",
-                                    songs: tempSongArr
+                                    songs: tempSongArr,
+                                    songRankings: songRankArr
                                   });
 
                             newTag.save(function(err , tag){
@@ -484,8 +561,9 @@ exports.uploadSong = function(req, res) {
           
 
             }
+
                          console.log('successfully put song into database');
-                         res.json(newSong);
+                         res.json({songObj: newSong});
 
                       }
                     });
@@ -497,16 +575,292 @@ exports.uploadSong = function(req, res) {
   });        
       
 
-//Brace for end of user query
- }); 
-
     req.on('error', function(e) {
         console.log("ERROR ERROR: " + e.message);
         res.end(e.message);
     });
 
+}
+//Brace for end of user query
+ }); 
+
 //Brace for end of route
 }
+
+//editSongs
+exports.editSong = function(req, res) {
+      
+        console.log(req.body);
+        console.log(req.user);
+      
+      var idOfSong = req.body._id;
+      var userObj = req.user;
+      //console.log(req.body);
+      var editChangesObj = req.body;
+                        
+
+   Song.find({_id : idOfSong}, function (err, songs) {
+      if(err) {
+        res.send(err);
+      }
+       // console.log("triggered");
+      if(songs[0] === undefined) {
+      
+       res.send("Song does not exist");
+      
+      } else {
+     // START OF EDITING OPERATIONS
+     if(userObj.id != songs[0].creatorID) {
+      res.send("Permission to edit song denied. (ID does not match)");
+     }
+
+     if(songs[0].creator === 'anonymous') {
+      res.send("Permission to edit song denied. (anonymous songs cant be edited)");
+     }
+                        // name: songname,
+                        // creatorID: creatorID,
+                        // creator: creator,
+                        // views: views,
+                        // upvotes: upvotes,
+                        // downvotes: downvotes,
+                        // tags: tagObjArr,
+                        // description: description,
+                        // createdAt: createdAt,
+                        // filepath: filepath
+        if(editChangesObj.name != undefined){
+         songs[0].name = editChangesObj.name;         
+        }
+
+         if(editChangesObj.description != undefined){
+         songs[0].description = editChangesObj.description;         
+        }
+
+         if(editChangesObj.tags.length  > 0){
+         var tagsToBeAdded = [];
+         var tagsToBeRemoved = [];
+         var tagsUnchanged = [];
+         var tagsFromDB = songs[0].tags;
+         var editChangesObjArr = editChangesObj.tags;
+         var databaseTagsConvertedToStrArr = [];  
+         var editTagsConvertedToStrArr = [];    
+
+
+        for(var i = 0; i < tagsFromDB.length; i ++) {
+           if(tagsFromDB[i]['name']){
+            databaseTagsConvertedToStrArr.push(tagsFromDB[i]['name'].toLowerCase());
+           }
+            
+          }   
+        for(var i = 0; i < editChangesObj.tags.length; i ++) {
+          
+            if(editChangesObj.tags[i]['name']) {
+              editTagsConvertedToStrArr.push(editChangesObj.tags[i]['name'].toLowerCase());
+             }
+          }   
+          console.log('databaseTagsConvertedToStrArr: ' + databaseTagsConvertedToStrArr);
+
+          console.log('editTagsConvertedToStrArr: ' + editTagsConvertedToStrArr);
+      
+       editTagsConvertedToStrArr.unshift('all');
+       editTagsConvertedToStrArr = _.uniq(editTagsConvertedToStrArr);
+
+       tagsToBeAdded = _.difference(editTagsConvertedToStrArr, databaseTagsConvertedToStrArr);
+       tagsToBeRemoved = _.difference(databaseTagsConvertedToStrArr, editTagsConvertedToStrArr);
+
+         console.log('tagsToBeAdded: ' + tagsToBeAdded);
+         console.log('tagsToBeRemoved: ' + tagsToBeRemoved);
+          
+          if(tagsToBeAdded.length > 5) {
+            tagsToBeAdded = tagsToBeAdded.slice(0,5);
+          }
+
+        //delete below 
+          for(var i = 0; i < tagsToBeAdded.length; i ++) {
+            console.log(tagsToBeAdded);
+          } 
+        //delete above
+ 
+ 
+               var tagObjArr = songs[0].tags;
+
+                for(var tagKey in tagsToBeAdded)
+                {
+                    var tempObj = {
+                      tagname: tagsToBeAdded[tagKey],
+                      views: 0,
+                      upvotes: 0,
+                      downvotes: 0
+                    }
+                    tagObjArr.push(tempObj);
+                }
+
+                if(tagsToBeRemoved.length > 0){
+                  for(var tagKey in tagsToBeRemoved){
+                    
+                    for(var i = 0; i < tagObjArr.length; i++){
+                      if(tagObjArr[i].tagname == tagsToBeRemoved[tagKey]){
+                        tagObjArr.splice(i,1);
+                        i--;
+                      }
+                    }
+                
+                  }
+                }
+
+             }
+
+         songs[0].save(function(err, newSong) {
+            if (err) {
+               res.send(err); 
+            } else {
+                    
+             addTagsToSong(newSong, tagsToBeAdded);
+             removeSongFromTags(newSong, tagsToBeRemoved);
+              res.json(newSong);
+       
+          }
+        });
+
+        
+      
+     }
+
+   }
+ );
+
+// End of EditSong Brace
+
+}
+
+
+
+
+
+//ASYNC OPERATIONS
+function addTagsToSong(newSong, tagsToBeAdded){
+  console.log('addTagsToSong has activated');
+                       function TagOperations(tagName, newSong){
+                             
+                            Tag.find({'name': tagName},function (err, tags) {
+                          if (err) return console.error(err);
+                            //console.log( tagName + " inside tag");
+                          //if the tag was not found in the tag collection, it will create one
+                           if(tags[0] == undefined || null)
+                           {
+                            //tempSongArr generated for pushing song ID into the tag collection
+                            var tempSongArr = [];
+
+                            tempSongArr.push(newSong._id);
+                            
+                            var tagname =  tagName;
+                            var songRankArr = [];
+
+                            var newTag = new Tag({
+                                    name: tagname,
+                                    views: 0,
+                                    group: "genre",
+                                    songs: tempSongArr,
+                                    songRankings: songRankArr
+                                  });
+
+                            newTag.save(function(err , tag){
+                                if (err) {
+                                 console.log('errored out: ', err);
+                              } else {
+                                 console.log('successfully created Tag');
+                             }
+
+                          });
+
+                           }
+                           else
+                           {
+                            tags[0].songs.push(newSong._id);
+                            tags[0].save(function(err , tag){
+                                if (err) {
+                                 console.log('errored out: ', err);
+                              } else {
+                                 console.log('successfully pushed song into tag');
+                              } 
+                            });
+
+                           }
+                     });
+                  
+                 }
+
+                                //if tagarray is greater than 5 they cheated and it'll be cut down to five
+                if(tagsToBeAdded.length > 5)
+                  {
+                    tagsToBeAdded = tagsToBeAdded.slice(0,5);
+                  }
+
+
+                //The values in tag array will be lowercased
+                tagsToBeAdded = _.map(tagsToBeAdded , function(item){
+                   return item.toLowerCase();
+                  });
+
+                //tagsToBeAdded will be removed of duplicates
+                tagsToBeAdded = _.uniq(tagsToBeAdded);
+
+                //tagsToBeAdded will be removed of undefined or empty strings.
+                tagsToBeAdded = _.filter(tagsToBeAdded, function(item){
+                  if(item === undefined || item === '' ||item === null || item === 'undefined')
+                  {
+                    return false;
+                  }
+                  else
+                  {
+                    return true;
+                  }
+                });
+
+                          //For each tag in newSong tags we will fire off a new async call.
+                          for(var i = 0; i < tagsToBeAdded.length;i++)
+                          {
+                                console.log(tagsToBeAdded[i]);
+
+                          var passIntoAsync = tagsToBeAdded[i]; 
+                         // console.log( passIntoAsync );                    
+                         TagOperations(passIntoAsync,newSong); //We pass our tagname into our closure.
+                         }
+  
+}
+
+function removeSongFromTags(songToBeRemoved, tagsToBeRemovedFrom){
+  console.log('removeSongFromTags  has activated');
+
+                for(var i = 0; i < tagsToBeRemovedFrom.length; i++){
+
+                   Tag.find({'name': tagsToBeRemovedFrom[i]},function (err, tags) {
+                          if (err) return console.error(err);
+                       
+                          //if the tag was not found in the tag collection, it will do nothing
+                           if(tags[0] == undefined || null) {
+
+                           }
+                           else
+                           {
+                            var indexOfSong = _.indexOf(tags[0].songs, songToBeRemoved._id);
+                            console.log(tags[0].songs);
+                            console.log(indexOfSong);
+                            tags[0].songs.splice(indexOfSong,1);
+                            // tags[0].songs.push(newSong._id);
+                            // tags[0].save(function(err , tag){
+                            //     if (err) {
+                            //      console.log('errored out: ', err);
+                            //   } else {
+                            //      console.log('successfully pushed song into tag');
+                            //   } 
+                            // });
+
+                           }
+                     });
+                }
+  
+}
+
 
 exports.getUser = function (req, res) {
   console.log('user ' + req.user.username + ' is calling /api/restricted');

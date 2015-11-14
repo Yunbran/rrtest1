@@ -1,292 +1,267 @@
-<div class = 'homeList'>
-
-
-    <!-- {{currentStation}}  -->
-
-
-
-
-   <div class = 'mainBox' >
-   <div class = "leftContainer">
-    <div class = "leftTagBox" ng-hide = 'currentStation' >
-     <div class = "leftTagBoxDivider" >   
-      <div class ="tagArrowLeft" ng-click = "getTagsLeft()" ng-hide = "tagIndexStart === 0;"></div>
-     </div>
-
-
-  </div>
-  <div class = "leftTagBox  fx-fade-right  fx-speed-500" ng-show = 'currentStation' >
-     <div class = "leftStationBoxDivider" >  
-    
-              <div class = 'repeatSelectedTag fx-fade-right fx-speed-500' ng-show = 'currentStation' > 
-          <div class = "tagDivider">
-            {{currentStation}}
-          </div>
+  <div ng-hide ="accessBool" class = "landingDiv">        <md-input-container flex="">
+          <label>CODE</label>
+          <input type = "password" ng-model="accessCode.code">
+        </md-input-container>
+            <button class="btn btn-warning" ng-click="checkCode()">Confirm Code</button>
         </div>
-    
-    </div>
-
-  </div>
-   </div>
-    <div class = "mainContainer">
-      <div class = "playBox fx-fade-left  fx-speed-500"  ng-show = 'isStationPlaying '>
-    
-<!--   VOLUME BAR HERE
-    <label>Volume</label>
-    <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='sound.volume'> -->
-    <div class = "radioButtons">
-     <div ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "playButton "></div>
-     <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
-    
-
-
-
-  <button ng-show = "currentSong.rated" ng-click='skipSong()'>Skip</button>
-</div>
-
-<div class =  "playerSongData fx-bounce-left fx-speed-500" >
-
-    
-  <div ng-show="currentSong.rated">
-  {{currentSong.name}}
-  {{currentSong.creator}}
-  upvotes: {{currentSong.upvotes}}
-  downvotes: {{currentSong.downvotes}}
-  <h1>{{currentSong.description}}</h1>
-  </div>
-  
-    <div ng-hide="currentSong.rated" class = "rateItMessage">
-    <div style = "margin-left:10%">
-     Rate for info!
-    </div> 
-       <div class = "votingArea">
-      <div ng-hide = "currentSong.rated " ng-click='upvoteSong()' class = "upvoteButton"></div>
-      <div ng-hide = "currentSong.rated" ng-click='downvoteSong()' class = "downvoteButton">
-    </div>
-
-  </div>
-  </div>
-
- </div>
-
-  <div class = " progressBar">
-       <input class='form-control' type=range min=0 max =1 step=0.001 ng-model='sound.progress'>
-  </div>
-
-</div>
-
-
-  <div class = "mainTagBox  fx-fade-down  fx-speed-500" ng-hide = 'currentStation' >
-     <div class = "tagBox" >   
-
- 
-        <div class = 'repeatTags'ng-class="{'fx-fade-right': specificTagSelected,'fx-speed-500': specificTagSelected,
-         'fx-fade-down' : !specificTagSelected && currentStation ,
-         'fx-speed-400' : !specificTagSelected && currentStation }" ng-hide = 'currentStation' ng-repeat="tag in displayTags" ng-click="activateStation(tag); specificTagSelected = true;" > 
-          <div class = "tagDivider">
-            {{tag.name}}
-          </div>
-        </div>
-
      
-     </div>
+<div  class = 'introDiv' ng-class = "{growDown: currentStation}" >
 
+<div style = 'height: 100%;' class = 'fx-fade-normal fx-speed-100 fx-trigger' ng-hide = "currentStation">
+  <div  class = 'introMessage'> The Ultimate Music Democracy</div>
 
-  </div>
+    <carousel introsibs class = "introSubMessage" style = "cursor:default" interval="9000">
+      <slide ng-repeat="item in subMessageArray" active="slide.active">
+        {{item.msg}} 
+      </slide>
+   </carousel>
 
-
-</div>
-
-<div class = "rightContainer">
-
-       <div class = "rightTagBox" ng-hide = 'currentStation' >
-        <div class = "rightTagBoxDivider"  >   
-
-          <div class ="tagArrowRight" ng-click = "getTagsRight()" ng-hide = "tagIndexEnd  > tagArray.length;"></div>
-        </div>
-
-      </div> 
-
-</div>
-
-
-<!-- 
-  <div class = 'repeatTags fx-fade-down ' ng-class="{repeatTagsSelected: tag.name == currentStation}" ng-repeat="tag in displayTags" ng-click="activateStation(tag);" > 
-          <div class = "tagDivider">
-            {{tag.name}}
-          </div>
-        </div> -->
-
-
-
-
-
-
-
-
-            <div class="uploadBox" nv-file-drop="" uploader="uploader" filters="lengthFilter, formatFilter,sizeFilter">
-                <div class="my-drop-zone" nv-file-over=""  uploader="uploader">
-                <div >
-                    Drop a file or click here to upload!
+        <input type="file" nv-file-select="" uploader="uploader" id = "hiddenUploadButton" />
+            <div file-button class="uploadBox" nv-file-drop="" uploader="uploader" filters="lengthFilter, formatFilter,sizeFilter" ng-click = "clickUpload()">
+                <div class="my-drop-zone" nv-file-over=""  uploader="uploader" ng-hide = "uploader.queue.length > 0">
+                 <div class = " glyphicon glyphicon-cloud-upload">
+                    <div style = "font-size: 75%;">
+                    {{uploadFeedbackMessage }}
                     </div>
+                 </div>
                 </div>
-                <div class ="uploadboxes" ng-repeat="item in uploader.queue">
-                    <div><strong>{{ item.file.name }}</strong>                                 <td ng-show="uploader.isHTML5" nowrap> - {{ item.file.size/1024/1024|number:2 }} MB</td></div>
-                              <div>
+                <div class ="my-drop-zone-filled" ng-repeat="item in uploader.queue">
+                    <div class = "uploadNameDiv"><strong>{{ item.file.name }}</strong> 
+                    <td ng-show="uploader.isHTML5" nowrap> - {{ item.file.size/1024/1024|number:2 }} MB</td></div>
+                              <div class = "uploadButtons"> 
                                <!--      <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
                                         <span class="glyphicon glyphicon-upload"></span> Upload
                                     </button> -->
                                 <!--     <button type="button" class="btn btn-warning btn-xs" ng-click="openSongModal()" ng-disabled="item.isUploading">
                                          <span class="glyphicon  glyphicon-edit"></span> Edit
                                     </button> -->
-                                    <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+<!--                                     <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove();">
+                                      
                                         <span class="glyphicon glyphicon-trash"></span> Remove
-                                    </button>
+                                    </button> -->
+                                       {{uploadMessage}}
                               </div>
-                            <div class = "progress" style="margin-bottom: 0;">
-                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+
+                            <div class = "uploadProgressBar " style="margin-bottom: 0;">
+                                <div class="progress-bar " role="progressbar" ng-style="{ 'width': item.progress + '%' }" >
+                                  
+                                </div>
                             </div>
                                
 
                 </div>
             </div>
-<!--             <div class = "uploadBoxButtons">
-                            <div class="progress" style="">
-                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
-                            </div>
-                     <div>
-                        </div>
-                        <button type="button" class="btn btn-success btn-xs" ng-click="uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
-                            <span class="glyphicon glyphicon-upload"></span> Upload all
-                        </button>
-                        <button type="button" class="btn btn-warning btn-xs" ng-click="openSongModal()" ng-disabled="!uploader.queue.length">
-                            <span class="glyphicon glyphicon-edit"></span> Edit All
-                        </button>
-                        <button type="button" class="btn btn-danger btn-xs" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
-                            <span class="glyphicon glyphicon-trash"></span> Remove all
-                        </button>
-            </div> -->
-  
- <!--
-     <div class="col-md-3">
-
-                    <h3>Drop and Upload!</h3>
-
-                    <div ng-show="uploader.isHTML5">
-                        <!-- 3. nv-file-over uploader="link" over-class="className" -->
-
-                        <!-- Example: nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
-                      <!--   <div nv-file-drop="" uploader="uploader" options="{ url: '/foo' }">
-                            <div nv-file-over="" uploader="uploader" over-class="another-file-over-class" class="well my-drop-zone">
-                                TEST AREA DON'T PUT ANYTHING IN THIS ZONE
-                            </div>
-                        </div> -->
- <!--
-                    </div>
-
-                    <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
-                    
- <!--   
-                    <br/>
-                </div>
-
-                <div class="col-md-9" style="margin-bottom: 40px">
-
-                    <h3>Upload queue</h3>
-                    <p>Queue length: {{ uploader.queue.length }}</p>
-
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th width="50%">Name</th>
-                                <th ng-show="uploader.isHTML5">Size</th>
-                                <th ng-show="uploader.isHTML5">Progress</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="item in uploader.queue">
-                                <td><strong>{{ item.file.name }}</strong>
-     <div class="itemURL alert alert-success" ng-show="item.isSuccess ">{{item.tempURL}}</div>
-                                </td>
-                                <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
-                                <td ng-show="uploader.isHTML5">
-                                    <div class="progress" style="margin-bottom: 0;">
-                                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
-                                    <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
-                                    <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
-                                </td>
-                                <td nowrap>
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-                                        <span class="glyphicon glyphicon-upload"></span> Upload
-                                    </button>
-                                    <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
-                                         <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
-                                        <span class="glyphicon glyphicon-trash"></span> Remove
-                                    </button>
-                              </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div>
-                        <div>
-                            Queue progress:
-                            <div class="progress" style="">
-                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
-                            <span class="glyphicon glyphicon-upload"></span> Upload all
-                        </button>
-                        <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
-                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
-                        </button>
-                        <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
-                            <span class="glyphicon glyphicon-trash"></span> Remove all
-                        </button>
-                    </div>
-                </div>
--->
-
-
-
-
-
-   <!--    <p>Name: <input type="text" ng-model="formData.songName"></p>
-           <p>Tag: <input type="text" ng-model="formData.songTag"></p> -->
-  <!--     <p>{{ songTag }}</p> -->
-<!-- <input ng-model="formData.searchText"/> -->
-
-<!-- <button ng-click="DESTROY()">DELETE DATABASE!</button> -->
-
-
-
- <div class = "genreListBox  fx-fade-down  fx-speed-500"  ng-show = 'currentStation'>
-     <div class = "tagBox" >   
-        <div class = 'repeatTags fx-fade-down' ng-repeat="tag in displayTags" ng-click="activateStation(tag);" > 
-          <div class = "tagDivider">
-            {{tag.name}}
-          </div>
-        </div>
-
-     </div>
- </div>
-
 
   </div>
 
 
+
+  <div class = 'mainBox fx-fade-right fx-speed-1000' ng-show = 'animationSwitch'>
+   <!-- LEFT CONTAINER START -->
+   <div class = "leftPlayerContainer">
+  
+
+  <div class = "leftTagBox" ng-show = 'currentStation' >
+     <div class = "tagLinerLeft" >  
+    
+    
+    </div>
+
+  </div>
+   </div>
+  <!-- LEFT CONTAINER END -->
+
+<!--START OF REGULAR CONTAINER-->
+    <div class = "mainPlayerContainer">
+      <div class = "playBox ">
+       
+      <c class = 'playBoxHeader' ng-class = '{playBoxHeaderAnimation:animationSwitch2}'> 
+       <div class = 'flexHorizontalStart'>
+          <div>
+          Station
+          </div>
+       <div class = 'stationLabel' style = 'opacity: 0.95;' >
+          <div class = 'stationLabelLiner'>
+                {{currentStation}}
+         </div>
+        </div>  
+        </div>
+        <div ng-class = '{playHorizontalAnimation:animationSwitch1}' class ="playHorizontal"> </div>  
+        </c>
+<!--   VOLUME BAR HERE
+    <label>Volume</label>
+    <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='sound.volume'> -->
+
+  <div class = "playDivider">
+
+<div class =  "playerBuffer">
+</div>
+<div class =  "playerSongData fx-fade-in fx-speed-1500" ng-show = "currentSong.filepath">
+
+     <div ng-hide="currentSong.rated" class = "rateItMessage">
+         <div class = "votingArea">
+      <div ng-hide = "currentSong.rated " ng-click='upvoteSong()' class = "upvoteButton"></div>
+      <div ng-hide = "currentSong.rated" ng-click='downvoteSong()' class = "downvoteButton"></div>
+    </div>
+
+    <div class = "questionMarks">???
+     <div class = "questionNotice">Rate the song to see its information!</div>
+    </div> 
+
+  </div>  
+       <div ng-show="currentSong.rated" class = "rateItMessage">
+         <div class = "votingAreaRated">
+
+  <div ng-show = "currentSong.rated" class = "favoriteButton" ng-click='favoriteSong()'></div>
+  <div ng-show = "currentSong.rated" class = "skipButton" ng-click='skipSong()'></div>
+
+    </div>
+
+ <div class = "songInformation flexVertical" ng-show="currentSong.rated">
+ <div style = "font-size:50px">
+  {{currentSong.name}}
+ </div> 
+ <div style = "font-size:25px">
+  {{currentSong.creator}}
+ </div>
+  <h1>{{currentSong.description}}</h1>
+  upvotes: {{currentSong.upvotes}}
+  downvotes: {{currentSong.downvotes}}
+        <uib-progress style = "    margin-left: 100px;
+    width: 500px;
+    height: 4px;"><uib-bar ng-repeat="bar in stacked track by $index"  class="progress-striped active" value="bar.value" type="{{bar.type}}"><span ng-hide="bar.value < 5"></span></uib-bar></uib-progress>
+  </div>
+
+  </div>  
+ 
+  
+   
+
+ </div>
+</div>
+<div class = "progessDivider">
+    <div class = "radioButtons">
+     <div ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "playButton "></div>
+     <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
+    </div>
+  <div class = " progressBar">
+
+      <md-slider step = "0.001" flex="" ng-model="sound.progress" min="0" max="1" aria-label="blue" id="blue-slider" class="md-primary">
+      </md-slider>
+    <!--    <input class='form-control' type=range min=0 max =1 step =0.01  ng-model='sound.progress'> -->
+  </div>
+</div>
 </div>
 
-<p ng-class="{'fx-fade-down': deleted, bold: important, 'has-error': error}">Map Syntax Example</p>
+
+</div>
+<!-- END OF REGULAR CONTAINER -->
+
+
+<!-- START OF RIGHT CONTAINER -->
+<div class = "rightPlayerContainer">
+
+        <div class = "historyBox" ng-class = '{playVerticalAnimation:animationSwitch1}' >
+        History
+         <div class = "historyContainer"  ng-class = '{historyContainerAnimation:animationSwitch2}'>  
+                
+            <div class = 'historyNameDiv' ng-repeat="song in historyArray" ng-click="activateStation(tag);" >     <div ng-show = "song.rated">
+                  {{song.name}}
+                </div>  
+
+                <div ng-show = "!song.rated">
+                  ???
+                </div>  
+        </div> 
+    
+    </div>
+
+  </div> 
+
+</div>
+
+<!-- END OF RIGHT CONTAINER -->
+
+
+  </div>
+
+</div>
+  
+ 
+
+<div class = 'homeList' >
+
+    <!-- {{currentStation}}  -->
+
+
+
+
+  <div class = 'mainBox' >
+   <!-- LEFT CONTAINER START -->
+   <div class = "leftContainer">
+  
+
+
+   </div>
+  <!-- LEFT CONTAINER END -->
+
+<!--START OF REGULAR CONTAINER-->
+    <div class = "mainContainer">
+
+
+  <div class = "mainTagBox" >
+      <div class = 'tagBoxHeader'> Station <c style = "color: #1677bb">Tags</c></div>
+     <div class = "tagBox" >   
+    
+    <carousel  class = "tagCarousel" style = "cursor:default" interval="0">
+      <slide ng-repeat="demoArray in demoTagArrays" active="slide.active">
+         <div class = "tagLiner" > 
+        <!-- repeatTags Start Div -->
+            <div class = 'repeatTags' ng-repeat="tag in demoArray"  ng-click="activateStation(tag);" >    
+             <div class = 'rotateButton'>
+                             <div class = "tagDivider"> 
+               Total Songs: {{tag.songs.length}}
+              </div>
+             </div>
+              <div class = "tagDisplayButton"> 
+                <div class = "tagDivider"> 
+                {{tag.name}}
+                </div>
+              </div>
+
+        </div> 
+        <!-- repeatTag End Div -->  
+        </div>
+
+      </slide>
+   </carousel>
+  
+  </div>
+
+
+  </div>
+</div>
+<!-- END OF REGULAR CONTAINER -->
+
+
+<!-- START OF RIGHT CONTAINER -->
+<div class = "rightContainer">
+
+
+</div>
+
+<!-- END OF RIGHT CONTAINER -->
+
+
+  </div>
+
+</div>
+
+
+<!-- <input type="file" nv-file-select="" uploader="uploader" multiple  /> -->
+
+<!-- FEEL FREE TO DELETE BELOW -->
+<!-- <p ng-class="{'fx-fade-down': deleted, bold: important, 'has-error': error}">Map Syntax Example</p>
 <label>
    <input type="checkbox" ng-model="deleted">
    deleted (apply "strike" class)
@@ -298,6 +273,11 @@
 <label>
    <input type="checkbox" ng-model="error">
    error (apply "has-error" class)
-</label>
-<!-- <input type="file" nv-file-select="" uploader="uploader" multiple  /> -->
-<button ng-click="check()">Check!</button>
+</label> -->
+  
+<div go-away class = "footer">
+    <div style="
+    margin-left: 1%;" class = "footerButton"><a class = "footerLink" ui-sref="home.list">Home</a></div>
+    <div class = "footerButton"><a class = "footerLink" ui-sref="home.about">About</a></div>
+    <button class = "check" ng-click="check()">Check!</button>
+</div>

@@ -1,14 +1,107 @@
         <div class="modal-header">
-            <h3 class="modal-title">{{profile.username}}</h3>
+            <h3 class="modal-title">{{userProfile.username}}</h3>
         </div>
-        <div class="modal-body">
-        <div ng-repeat = "song in profile.songs" style="border-style: double;">
-        <p>Name: {{song.name}}</p>
-        <p>Description: {{song.description}}</p>
-        <p>Upvotes: {{song.likes}} Downvotes: {{song.dislikes}}</p>
+        <div class="mainProfileDiv">
+           
+     <!--        <div ng-repeat = "song in userProfile.songs" style="border-style: double;">
+            <p>Name: {{song.name}}</p>
+            <p>Description: {{song.description}}</p>
+            <p>Upvotes: {{song.likes}} Downvotes: {{song.dislikes}}</p>
+            </div> -->
+            <v-accordion style = "width:100%" class="vAccordion--default">
+
+              <v-pane class = "songPane" ng-repeat="song in userProfile.songs">
+                <v-pane-header  ng-click = "activateOrPauseSong(song)">
+                  {{ song.name }}
+                </v-pane-header>
+                <!-- START OF PANE -->
+                <v-pane-content class = "songPaneContent">
+
+            <div class = "songPanePlayer" ng-hide = "editMode">
+              <div class = "songPanePlayDivider">
+                <div class = "songPaneRadioButtons">
+                 <div ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "playButton "></div>
+                 <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
+                
+            </div>
+
+            <div class =  "songPanePlayerSongData" ng-show = "currentSong.filepath">
+
+                  <div style = "">
+                  
+                    <input type="text" style = "width: 75%;"  ng-model="shareURL" readonly />
+                  </div> 
+              
+                <div class = "rateItMessage">
+                <button type="button" class="btn btn-info noselect" ng-click="setEditModeTrue(song)">
+                    <span class="glyphicon glyphicon-edit">Edit</span> 
+                </button>
+                 {{ song.description }}
+
+<div
+socialshare 
+socialshare-provider="twitter"
+socialshare-text= "Check out this cool guitar riff! @"
+socialshare-url="http://risingtest.azurewebsites.net/#/s/{{song._id}}"
+class = 'twitterShareButton'> </div>
+
+              </div>
+
+             </div>
+            </div>
+              <div class = " progressBar">
+                   <input class='form-control' type=range min=0 max =1 step=0.001 ng-model='sound.progress'>
+              </div>
+
+            </div>
+
+<!-- START OF EDIT CONTENT -->
+            <div class = "songPanePlayer" ng-show = "editMode">
+
+              <div class = "songPanePlayDivider">
+                <div class = "songPaneRadioButtons">
+                 <div ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "playButton "></div>
+                 <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
+                
+            </div>
+
+            <div class =  "songPanePlayerSongData" ng-show = "currentSong.filepath">
+
+
+          <form>
+           <p>Name: <input type="text" maxlength="25" ng-model="editChangesObj.name" placeholder = "Name"></p>
+           
+           <div>Description:
+           <textarea type="text" maxlength="140" ng-model="editChangesObj.description" placeholder = "Write a description here..."></textarea>
+           </div>
+
+           <!-- 
+           <p><input style="position: absolute; left: -9999px; width: 1px; height: 1px;" class="btn btn-primary"  type="submit" id="submit" value="Sign Up" /></p> -->
+         </form>
+
+            Tags:
+           <button class="btn btn-primary-xs" ng-click="addTag(song)">Add Tag</button>
+           <p ng-repeat="tag in song.tags"><input maxlength="25" type="text" ng-model="tag.tagname" placeholder = "Tag"> </p>
+      
+            </div>
+        <button class="btn btn-warning" ng-click="sendEdits(song)">Confirm</button>
+            </div>
+              <div class = " progressBar">
+                   <input class='form-control' type=range min=0 max =1 step=0.001 ng-model='sound.progress'>
+              </div>
+
+  </div>
+
+
+
+                </v-pane-content>
+              </v-pane>
+
+            </v-accordion>
+
         </div>
-        </div>
+
         <div class="modal-footer">
         <p id = "signupMessage">{{message}}</p>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-warning" ng-click="cancel()">Exit</button>
         </div>

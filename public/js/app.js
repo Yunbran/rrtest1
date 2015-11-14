@@ -2,10 +2,14 @@ var app = angular.module('radioApp',
  ['ui.router',
   'ngAudio',
   'angularFileUpload',
+  'ngAnimate',
   'ui.bootstrap',
   'LocalStorageModule',
   'ngFx',
-  'ngAnimate']);
+  'vAccordion',
+  '720kb.socialshare',
+  'ngTagsInput',
+  'ngMaterial']);
    
 
 app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvider){
@@ -28,6 +32,11 @@ app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvi
               url: "/about",
               templateUrl: "views/home.about.html"
           })
+        .state('profile', {
+            url: "/profile",
+            templateUrl: "views/profile.html",
+            controller: 'ProfileController'
+        })
       //sharedSong access
         .state('sharedSong', {
               url: "/s/{songId}",
@@ -47,7 +56,7 @@ app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvi
               templateUrl: "views/home.list.html"
           })
           //placeholder for other views
-        .state('route2', {
+          .state('route2', {
             url: "/route2",
             templateUrl: "views/route2.html"
         })

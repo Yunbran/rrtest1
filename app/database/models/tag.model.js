@@ -19,6 +19,9 @@ var TagSchema = new Schema({
   },
   songs: {
     type: [{ type: Schema.Types.ObjectId, ref: 'Song' }]
+  },
+  songRankings: {
+    type: [{}] 
   }
 });
 
