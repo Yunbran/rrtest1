@@ -37,6 +37,17 @@
     <script src='lib/ng-tags-input/ng-tags-input.min.js'></script>
 
 
+<!-- CSS TEST SCRIPT -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $(window).on('load resize', function(){
+      console.log("SA");
+    $('body').width($(this).width());
+});
+});
+</script>
+
 <!-- running 'gulp' inserts all scripts in ./js/ under here -->
 <!-- AngularFiles:js -->
 <script src="js/app.js"></script>

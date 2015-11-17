@@ -20,8 +20,11 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $timeou
  //LANDING PAGE BOOLEAN
  $scope.accessBool = false;
  $scope.accessCode = {code: ""};
-
- $scope.checkCode = function(){
+ $scope.checkCode = function(bool){
+  if(bool)
+  {
+    $scope.accessBool = true;
+  }
   console.log("asdasd", $scope.accessCode);
   console.log($scope.accessCode.code);
 if($scope.accessCode.code === "makeitinthecards"){
@@ -29,6 +32,7 @@ if($scope.accessCode.code === "makeitinthecards"){
  $scope.accessBool = true;
 }
  }
+// $scope.checkCode(true);
 
  $scope.uploadMessage = "";
  $scope.uploadFeedbackMessage = "";
