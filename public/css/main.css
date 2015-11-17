@@ -23,7 +23,7 @@ html, body {
 .landingDiv{
  height:100%;
  width:100%;
- background-color: grey;
+ background-color:white;
 }
 .flexParent {
   display: flex;

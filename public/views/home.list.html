@@ -1,8 +1,12 @@
-  <div ng-hide ="accessBool" class = "landingDiv">        <md-input-container flex="">
+  <div ng-hide ="accessBool" class = "landingDiv ">       <img src ='./media/pic/icon.png'  style = "    height: 10%;
+      margin-top: 5%;
+    margin-left: 33.5%;"/> <div style = "margin-left: 20%;
+        margin-top: 2%;
+    font-size: x-large;" >Welcome to RadioRise: The Ultimate Music Democracy!</div>     <md-input-container flex="">
           <label>CODE</label>
           <input type = "password" ng-model="accessCode.code">
         </md-input-container>
-            <button class="btn btn-warning" ng-click="checkCode()">Confirm Code</button>
+            <button class="btn btn-success" ng-click="checkCode()">Confirm Code</button>
         </div>
      
 <div  class = 'introDiv' ng-class = "{growDown: currentStation}" >
@@ -275,7 +279,7 @@
    error (apply "has-error" class)
 </label> -->
   
-<div go-away class = "footer">
+<div go-away ng-hide ="!accessBool" class = "footer">
     <div style="
     margin-left: 1%;" class = "footerButton"><a class = "footerLink" ui-sref="home.list">Home</a></div>
     <div class = "footerButton"><a class = "footerLink" ui-sref="home.about">About</a></div>
