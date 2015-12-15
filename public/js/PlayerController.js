@@ -1,4 +1,4 @@
-app.controller('PlayerController', function($scope, $http, $modal, $log, $timeout, $stateParams, $state, $window, $timeout, ngAudio, FileUploader, basket, localStorageService, User) {
+app.controller('PlayerController', function($scope, $http, $modal, $log, $timeout, $stateParams, $state, $window, $timeout, ngAudio, FileUploader, basket, localStorageService, stripe, User) {
 
 //START OF INSTANTIATION--------------------------------------------------
  
@@ -17,22 +17,7 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $timeou
  $scope.hasUploaded = false;
  $scope.subMessageArray =[{msg: "where the best music always rises to the top"},{msg: "you decide the breakout songs of tomorrow"},{msg: "your music could be the hit of the century!"},{msg: "Upload below!"},{msg: "Choose a Station Tag!"}]
  
- //LANDING PAGE BOOLEAN
- $scope.accessBool = false;
- $scope.accessCode = {code: ""};
- $scope.checkCode = function(bool){
-  if(bool)
-  {
-    $scope.accessBool = true;
-  }
-  console.log("asdasd", $scope.accessCode);
-  console.log($scope.accessCode.code);
-if($scope.accessCode.code === "makeitinthecards"){
-  console.log("Asdasddasdas");
- $scope.accessBool = true;
-}
- }
-// $scope.checkCode(true);
+ 
 
  $scope.uploadMessage = "";
  $scope.uploadFeedbackMessage = "";
@@ -51,8 +36,8 @@ if($scope.accessCode.code === "makeitinthecards"){
           }
           
           };
- console.log( getLocalStorage("token"));
- console.log( getLocalStorage("data"));
+ // console.log( getLocalStorage("token"));
+ // console.log( getLocalStorage("data"));
 
  User.authToken = getLocalStorage("token");
  User.storedData = getLocalStorage("data");
@@ -128,8 +113,50 @@ if($scope.accessCode.code === "makeitinthecards"){
    //        });
    //      });
 
-
  }
+
+// $scope.goToPayment = function () {
+//     basket["userProfile"] = $scope.userProfile;
+//     console.log(basket["userProfile"] );
+//     console.log(basket);
+//     stopSong();
+//     $state.go('payment');
+//  }
+
+$scope.payment = {
+  card:{
+    number: undefined,
+    cvc: undefined,
+    exp_month: undefined,
+    exp_year: undefined
+  }
+}
+  $scope.charge = function () {
+$scope.payment.plan = "premium";
+    console.log("Asdasd", $scope.payment.card);
+
+    var chargeResponse = stripe.card.createToken($scope.payment.card)
+      .then(function (response) {
+        console.log('token created for card ending in ', response.card.last4);
+        var payment = angular.copy($scope.payment);
+        payment.card = void 0;
+        payment.token = response.id;
+        return $http.post('/api/chargePremium', payment);
+      })
+      .then(function (payment) {
+        console.log('successfully submitted payment for $', payment.amount);
+      })
+      .catch(function (err) {
+        if (err.type && /^Stripe/.test(err.type)) {
+          console.log('Stripe error: ', err.message);
+        }
+        else {
+          console.log('Other error occurred, possibly with your API', err.message);
+        }
+      });
+  console.log(chargeResponse);
+  };
+
 
   $scope.DESTROY = function () {
      $http.get("/deleteDatabase")
@@ -321,7 +348,7 @@ function getUser(){
   .success(function(response) {
    $scope.tagArray = response;
    basket['currentTags'] = response;
-   console.log(response);
+   // console.log(response);
      //$scope.displayTags = [];
      // $scope.tagArray = [{name: "Rock"}, {name: "Pop"}, {name: "Rap"}, {name: "Classical"}, {name: "Electronic"}, {name: "CRAP"}, {name: "dasdasfas"}, {name: "Casdasdad"}, {name: "ERGERG"}];
     
@@ -388,7 +415,7 @@ function getUser(){
     $http.post("/getTagByName", currentStationObj)
     .success(function(response) {
       $scope.currentStationData = response;
-      console.log($scope.currentStationData);
+      // console.log($scope.currentStationData);
       
       if(callback)
       callback();
@@ -1075,6 +1102,26 @@ $scope.$on('fade-normal:enter', function(){
 
 
     });
+
+
+
+
+//CSS JQUERY SECTION
+ // function circleDesign(){
+ //  console.log("circleDesign executed");
+ //      angular.element('#bubbleDiv').prepend("<div></div>");
+ //      angular.element('#bubbleDiv').prepend("<div></div>");
+ //      angular.element('#bubbleDiv').prepend("<div></div>");
+ //      angular.element('#bubbleDiv').prepend("<div></div>");
+ //      angular.element('#bubbleDiv').prepend("<div></div>");
+ //    }
+
+ //    $timeout(function(){
+ //    circleDesign();
+      
+ //    },10);
+//CSS END SECTION
+
 
 });
 //end of PlayerController

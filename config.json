@@ -4,5 +4,6 @@
     "PARTITION_KEY": "",
     "TABLE_NAME": "",
     "adminCode": "snake",
-    "anonymousPassword": "a"
+    "anonymousPassword": "a",
+    "STRIPE_KEY":"sk_test_xFjxzY53cPUz7ZzTXygItGcp"
 }

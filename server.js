@@ -47,6 +47,8 @@ app.get('/getUsers', handler.getUsers);
 app.post('/getTagByName', handler.getTagByName);
 app.post('/getTagsByGroup', handler.getTagsByGroup);
 app.post('/getSongById', handler.getSongById);
+app.post("/stripeEnd", handler.postStripeEnd);
+
 
 //need to be documented below
 app.post('/uploadTempSong', handler.uploadTempSong);
@@ -92,7 +94,7 @@ app.get('/getDocs', function(req, res){
 // Test functions
 // handler.listDatabase();
 // handler.createUser();
-// handler.findUser('ass');
+handler.findUser('findest');
 // handler.listSongs();
 
 app.get('/deleteDatabase', function(req,res){

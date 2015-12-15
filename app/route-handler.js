@@ -25,6 +25,7 @@ var partitionKey = nconf.get("PARTITION_KEY");
 var accountName = nconf.get("STORAGE_NAME");
 var accountKey = nconf.get("STORAGE_KEY");
 var blobSvc = azure.createBlobService(accountName, accountKey), tableName, partitionKey;
+var stripe = require("stripe")('sk_test_xFjxzY53cPUz7ZzTXygItGcp');
 
 
 
@@ -862,8 +863,77 @@ function removeSongFromTags(songToBeRemoved, tagsToBeRemovedFrom){
 }
 
 
+exports.chargePremium = function (req, res) {
+  console.log(req.user);
+  var stripeToken = req.body.token;
+  var servicePlan = req.body.plan;
+
+if(servicePlan) {
+
+  stripe.customers.create({
+    source: stripeToken,
+    plan: servicePlan,
+    email: req.user.email
+  }, function(err, customer) {
+        if (err) {
+        // The card has been declined
+      console.log(err);
+
+      res.json("failed");
+      } else {
+     
+     User.findOne({ username: req.user.username }) 
+    .exec(function (err, user) {
+      user.stripeId = customer.id;
+      user.type = "premium";
+      user.save(function(){
+        console.log("Successfully saved ID and upgraded to Premium!");
+      // console.log(customer);
+      res.json(customer.id);
+      });
+    })
+
+      }
+  });
+
+} else {
+
+  stripe.customers.create({
+    source: stripeToken,
+    description: req.user.email
+  }).then(function(customer) {
+    return stripe.charges.create({
+      amount: 1200, 
+      currency: "usd",
+      customer: customer.id
+    });
+  }).then(function(charge) {
+    console.log(charge);
+      User.findOne({ username: req.user.username }) 
+    .exec(function (err, user) {
+      user.stripeId = charge.id;
+      user.type = "premium";
+      user.save(function(){
+         console.log("Successfully saved ID and upgraded to Premium!");
+    res.json(charge);
+      });
+    })
+
+  });
+
+}
+
+
+
+
+
+
+}
+
+
 exports.getUser = function (req, res) {
   console.log('user ' + req.user.username + ' is calling /api/restricted');
   // console.log(req.headers);
   res.json(req.user);
 }
+

@@ -31,6 +31,9 @@ var UserSchema = new Schema({
   createdAt:{
     type: Object
   },
+  stripeId:{
+     type: String 
+  },
   songs: {
     type: [{ type: Schema.Types.ObjectId, ref: 'Song' }]
   },

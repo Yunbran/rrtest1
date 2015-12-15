@@ -57,6 +57,7 @@ console.log("createUser ran");
           email: email,
           type: type,
           createdAt: createdAt,
+          stripeId: undefined,
           songs: [],
           upvoted: [],
           downvoted:[],
@@ -609,9 +610,14 @@ exports.uploadTempSong = function(req, res) {
 }
 
 
+exports.postStripeEnd = function(request, response) {
+  // Retrieve the request's body and parse it as JSON
+  var event_json = JSON.parse(request.body);
+  console.log(event_json);
+  // Do something with event_json
 
-
-
+  response.send(200);
+}
 
 
 

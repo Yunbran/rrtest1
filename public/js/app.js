@@ -9,7 +9,8 @@ var app = angular.module('radioApp',
   'vAccordion',
   '720kb.socialshare',
   'ngTagsInput',
-  'ngMaterial']);
+  'ngMaterial',
+  'angular-stripe']);
    
 
 app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvider){
@@ -31,6 +32,10 @@ app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvi
         .state('home.about', {
               url: "/about",
               templateUrl: "views/home.about.html"
+          })
+        .state('home.payment', {
+              url: "/payment",
+              templateUrl: "views/home.payment.html"
           })
         .state('profile', {
             url: "/profile",
@@ -74,6 +79,8 @@ app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvi
     .setStorageType('localStorage')
     .setNotify(true, true);
 
-
     });
 
+app.config(function(stripeProvider){
+    stripeProvider.setPublishableKey('pk_test_7cQzshpAnkxtmo0972yRqR4r');
+});
