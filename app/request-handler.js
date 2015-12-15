@@ -23,7 +23,7 @@ var partitionKey = nconf.get("PARTITION_KEY");
 var accountName = nconf.get("STORAGE_NAME");
 var accountKey = nconf.get("STORAGE_KEY");
 var blobSvc = azure.createBlobService(accountName, accountKey), tableName, partitionKey;
-
+var stripe = require("stripe")('sk_test_xFjxzY53cPUz7ZzTXygItGcp');
 
 
 //Signup User creates and stores a user mongoose document
@@ -610,13 +610,14 @@ exports.uploadTempSong = function(req, res) {
 }
 
 
-exports.postStripeEnd = function(request, response) {
+exports.postStripeEnd = function(req, res) {
+  console.log("Stripe was called")
   // Retrieve the request's body and parse it as JSON
-  var event_json = JSON.parse(request.body);
+  var event_json = JSON.parse(req.body);
   console.log(event_json);
   // Do something with event_json
 
-  response.send(200);
+  res.send(200);
 }
 
 
