@@ -612,6 +612,7 @@ exports.uploadTempSong = function(req, res) {
 
 exports.postStripeEnd = function(req, res) {
   console.log("Stripe was called")
+   // console.log(req.body)
   // Retrieve the request's body and parse it as JSON
   var event_json = JSON.parse(req.body);
   console.log(event_json);

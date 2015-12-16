@@ -94,7 +94,7 @@ app.get('/getDocs', function(req, res){
 // Test functions
 // handler.listDatabase();
 // handler.createUser();
-handler.findUser('findest');
+// handler.findUser('findest');
 // handler.listSongs();
 
 app.get('/deleteDatabase', function(req,res){
