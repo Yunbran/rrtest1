@@ -616,6 +616,7 @@ exports.postStripeEnd = function(req, res) {
   // Retrieve the request's body and parse it as JSON
   var event_json = JSON.parse(req.body);
   console.log(event_json);
+  console.log(req.body);
   // Do something with event_json
 
   res.send(200);
