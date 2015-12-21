@@ -12,7 +12,7 @@ outline:none;
 }
 
 html, body {
-    max-width: 100%;
+    /*max-width: 100%;*/
     overflow-x: hidden;
 }
  html{ 
@@ -26,7 +26,7 @@ html, body {
     margin-top:auto;
     overflow-x: hidden;
     overflow-y: auto;
-    width:1920px;
+    /*width:1920px;*/
     height:1080px;
 }
 
@@ -54,7 +54,7 @@ color:black;
 
 .homeBar{
   	order: 0;
-    height: 5%;
+    height: 6%;
     width:100%;
     display:flex;
     flex-direction: column;
@@ -95,8 +95,9 @@ color:black;
     font-weight: 800;
 }
 .headerLogo{
-  height: 90%; 
-  margin-left: 27.5%;
+      height: 50px;
+    width: 50px;
+    margin-top: -0.15%;
    }
 .homeLogo {
 	order:1;
@@ -119,11 +120,14 @@ background-color: grey;
     display: flex;
 }
 .loginInput{
-  margin-left: 16%;
+  margin-left: 1%;
   /*font-size: 20px;*/
   height: 15%;
-  width: 25%;
-  margin-top: 0.75%;
+
+    min-width: 75px;
+    max-width: 200px;
+    width: 40%;
+    margin-top: 11.7px;
   text-align: center;
 
 }
@@ -131,8 +135,10 @@ background-color: grey;
 	  margin-left: 5%;
   /*font-size: 20px;*/
   height: 15%;
-  width: 25%;
-    margin-top: 0.75%;
+     min-width: 75px;
+    max-width: 200px;
+    width: 40%;
+    margin-top: 11.7px;
   text-align: center;
 }
 .signupButton {
@@ -143,7 +149,7 @@ background-color: grey;
 
     border-radius: 0px; 
 	margin-left: 5%;
-	  margin-top: 0.4%;
+        margin-top: 1.25%;
 }
 .signupButton:hover{
  background-color: grey;
@@ -155,7 +161,7 @@ background-color: grey;
 border: 1px solid silver;
    border-radius: 0px; 
 		margin-left: 5%;
-		  margin-top: 0.4%;
+		    margin-top: 1.25%;
 }
 
 .loginButton:hover{
@@ -164,9 +170,11 @@ border: 1px solid silver;
 border-radius: 0px;
 }
 .loginForm {
-    margin-left: 1.66%;
 	display: flex;
-	width: 44%;
+	flex-grow:1;
+   flex-shrink:0;
+
+    margin-right: 2.5%;
 }
 
 .logoutButton {		
@@ -174,16 +182,17 @@ border-radius: 0px;
   	color:black;
 	border: 1px solid silver;
     border-radius: 0px; 
-	  margin-left: 13%;
-	margin-top: 1%;
+    margin-left: 0%; 
   width: 5%;
+    min-width: 100px;
 
-  height: 35px;
+  height: 34px;
   border: 1px solid silver;
   border-radius: 0px;
-
-  margin-top: .15%;
-	color:black;
+    margin-top: 8px;
+      margin-left: 0%;
+      color: black;
+     margin-right: 4%;
 }
 
 .logoutButton:hover{
@@ -192,25 +201,23 @@ border-radius: 0px;
  border-radius: 0px;
 }
 .profileButton{
-  	background-color: #1677bb;
+  	background-color: #2F54A5;
   	color:black;
-
-
-  width: 10%;
-
-  height: 35px;
-  border: 1px solid silver;
-  border-radius: 0px;
-
-  margin-top: .15%;
-  margin-left: 15%;
-	color:white;
+    margin-right: 5%;
+    border-radius: 50%;
+width: 50px;
+    height: 50px;
+    border: 0px;
+    margin-top: -1px;
+    font-size: 30px;
+    margin-left: 0%;
+	  color:white;
 }
 
 .profileButton:hover{
-  	background-color: #1D517E;
-  	  border: 1px solid silver;
-  	border-radius: 0px;
+    background-color: #487FF8;
+    border: 0px;
+  
 }
 .homeMessage{
 	order:2;
@@ -273,13 +280,13 @@ flex-direction:column;
 
 
 .introDiv{
-	background: #0087fa; /* Old browsers */
-background: -moz-linear-gradient(top, #0087fa 1%, #006dc8 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#0087fa), color-stop(100%,#006dc8)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top, #0087fa 1%,#006dc8 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top, #0087fa 1%,#006dc8 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top, #0087fa 1%,#006dc8 100%); /* IE10+ */
-background: linear-gradient(to bottom, #0087fa 1%,#006dc8 100%); /* W3C */
+	background: #2F54A5; /* Old browsers */
+background: -moz-linear-gradient(top, #2F54A5 1%, #0087fa 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#2F54A5), color-stop(100%,#0087fa)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, #2F54A5 1%,#0087fa 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, #2F54A5 1%,#0087fa 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, #2F54A5 1%,#0087fa 100%); /* IE10+ */
+background: linear-gradient(to bottom, #2F54A5 1%,#0087fa 100%); /* W3C */
 
 width:100%;
     height: 40%;
@@ -331,12 +338,10 @@ background: -webkit-linear-gradient(top, #0087fa 1%,#006dc8 100%); /* Chrome10+,
 background: -o-linear-gradient(top, #0087fa 1%,#006dc8 100%); /* Opera 11.10+ */
 background: -ms-linear-gradient(top, #0087fa 1%,#006dc8 100%); /* IE10+ */
 background: linear-gradient(to bottom, #0087fa 1%,#006dc8 100%); /* W3C */
-
 width:100%;
     height: 25%;
 display: flex;
 flex-direction:column;
-
   flex-wrap: nowrap;
      border-top: none;
   border-bottom: solid;
@@ -368,27 +373,24 @@ flex-direction:column;
 }
 .uploadBox{
   order: 3;
- cursor: pointer;
-    width: 36%;
-height: 28%;
-    margin-top: 2.5%;
-    margin-left: 32%;
+    cursor: pointer;
+    height: 50px;
+    width: 180px;
+    border-radius: 0px;
    -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    background-color: : rgba(0, 0, 0, 0);
+    background-color: rgb(1, 43, 115);
+    border: 0px solid white;
 }
 .uploadBox:hover{
   order: 3;
+
+    background-color: rgb(1, 0, 111);
  cursor: pointer;
-    width: 36%;
-height: 28%;
-    margin-top: 2.5%;
-    margin-left: 32%;
-    background-color:#0087fa;
    -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -412,7 +414,7 @@ height: 28%;
     align-items: center;
     border-color: white;
     border-style: solid;
-    border-width: 1px;
+    border-width: 0px;
 }
 .my-drop-zone-filled{
   text-align: center;
@@ -433,7 +435,7 @@ background-color: rgba(#0087fa, 40);
 
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   width: 100%;
   height: 100%;
   /*background-color: black;*/
@@ -464,15 +466,25 @@ background-color: rgba(#0087fa, 40);
 
 }
 .playBoxHeader{
-      margin-top: 2%;
+    width: 90%;
+    margin-top: 25px;
+    min-width: 0px;
+    margin-left: 13%;
 
-    position: absolute;
-    margin-left: -1%;
-    color:white;
+    color: white;
     font-family: Roboto;
-      font-size: 45px;
-  font-weight: 100;
+    font-size: 45px;
+        flex-direction: column;
+    font-weight: 100;
+     display: flex;
+    flex-wrap: wrap;
+         transition: all .5s;
 } 
+
+.playBoxHeaderAdjustment{
+     margin-left: 13%;
+     transition: all .5s;
+}
 .playBoxHeaderAnimation{
 
 }
@@ -480,14 +492,17 @@ background-color: rgba(#0087fa, 40);
   opacity: 1;
       background-color: white;
       margin-left: 0px;
-    width: 900px;
+        width: 72%;
     height: 1px;
     position: absolute;
+
+   min-width: 620px;  
 }
+
 .playHorizontalAnimation{
- transition: all 3s;
+ transition: all 2.3s;
   margin-left: 0px;
-    width: 1240px;
+    width: 82%;
 }
 .tagBoxHeader{
       margin-top: 3%;
@@ -556,34 +571,113 @@ width:10%;
 	background-color: red;
 }
 .historyBox{
-      font-family: Roboto;
-      font-size: 25px;
-  font-weight: 100;
-    padding-top: 15px;
-    margin-left: -25%;
+    font-family: Roboto;
+    font-size: 25px;
+    font-weight: 100;
+    padding-top: 27px;
+    margin-left: 0%;
     width: 100%;
-    height: 70%;
+    height: 80%;
     text-align: center;
-    color: white;
-    border-left: 1px solid;
+    border-left:white 1px solid;
     margin-top: 30%;
-        overflow-y: auto;
+    overflow-y: auto;
+      color:rgba(0, 253, 183, 1);
+    overflow-x: hidden;
+/*display: none;*/
+ }
+ .historyBoxOn{
+  display: none;
+ }
+
+.historyButtonRow{
+    width: 100%;
+    height: 20%;
+    display: flex;
+    justify-content:flex-start;
+    background-color: none;
+    margin-top: -35px;
+  /*border-left: 1px solid white;*/
+}
+ .historyCategoryButton{
+    height: 50px;
+    width: 50px;
+    margin-top: 30px;
+    border:1px solid white;
+    display: flex;
+
+    justify-content: center;
+      transition: all 600ms cubic-bezier(0.175, 0.885, 0.335, 1);
 
  }
+ .historyCategoryButtonActive{
+    background-color: white;
+   color:black;
+   cursor: pointer;
+  transition: none;
+ }
+  .historyCategoryButtonActive > .glyphHistoryButton{
+    background-color: white;
+   color:black;
+   cursor: pointer;
+  transition: none;
+ }
+  .historyCategoryButton:hover{
+  background-color: white;
+   color:black;
+   cursor: pointer;
+  transition: none;
+ }
+ .historyCategoryButton:hover > .glyphHistoryButton{
+  background-color: white;
+   color:black;
+   cursor: pointer;
+  transition: none;
+ }
+.historyCategoryButtonCenter{
+    height: 50px;
+    width: 50px;
+    margin-top: 30px;
+    border:1px solid white;
+    margin-left:  23px;
+    margin-right:  23px;
+        display: flex;
+     transition: all 600ms cubic-bezier(0.175, 0.885, 0.335, 1);
+    justify-content: center;
+}
+ .historyCategoryButtonCenter:hover{
+  background-color: white;
+   color:black;
+   cursor: pointer;
+  transition: none;
+ }
+ .historyCategoryButtonCenter:hover > .glyphHistoryButton{
+  background-color: white;
+   color:black;
+   cursor: pointer;
+  transition: none;
+ }
+.glyphHistoryButton{
+    margin-top: 10px;
+    color:white;
+    font-size: 26px;
+}
 .playVerticalAnimation{
   transition: all 3s;
-    height: 90%;
-    margin-top: 10%;
 
+    height: 95%;
+    margin-top: 6%;
 }
 .historyContainer{
     font-family: Roboto;
       font-size: 20px;
+          overflow-y: scroll;
+    overflow-x: hidden;
   font-weight: 100;
 opacity: .50;
        padding-top: 15px;
-          margin-top: 7%;
-    height: 60%;
+    margin-top: 4%;
+    height: 85%;
     width:100%;
 }
  .historyContainerAnimation{
@@ -592,11 +686,53 @@ opacity: 1;
  }
 .historyNameDiv{
     font-family: Roboto;
-      font-size: 15px;
-  font-weight: 100;
-    margin-left: 5%;
+    font-size: 15px;
+    font-weight: 300;
+    font-size:20px;
+    margin-left: 0%;
+    color:white;
+    transition: all 600ms cubic-bezier(0.175, 0.885, 0.335, 1);
+    background-color: rgba(0, 253, 183, 0.1);
+         opacity: 0.65;
+        border-bottom: rgba(255, 255, 255, 0.52) solid 1px;
+
+}
+.historyNameDiv.ng-leave{
+ display: none;
+
+}
+.historyNameDivUp{
+  background-color: rgba(215, 255, 187, 0.63);
+    opacity: 0.90;
+  color:black;
+
 }
 
+
+.historyNameDivDown{
+background-color: rgba(255, 0, 60, 0.71);
+    opacity: 0.90;
+    color: white;
+}
+.historyNameDivSelected{
+font-weight: 500;
+color:black;
+background-color: rgba(255, 255, 255, 1);
+transition: all 600ms cubic-bezier(0.175, 0.885, 0.335, 1);
+opacity: 1;
+}
+.historyNameDiv{
+
+}
+
+.historyNameDiv:hover{
+opacity: .85;
+background-color: white;
+   color:black;
+  transition: all 600ms cubic-bezier(0.175, 0.885, 0.335, 1);
+}
+.historyNameDiv:nth-child(1) {
+}
 .rightTagBoxDivider{
 
   	height: 51.5%;
@@ -645,30 +781,14 @@ opacity: 1;
 
 }
 
-.stationLabel{
-    margin-left: 10%;
-    margin-top: 5.5%;
-    border: solid;
-  height: 42.109px;
-    width: 100.5px;
-    border-width: 1px;
-    font-size: 20px;
-    color: #000000;
-    font-weight: 400;
-   text-align: center;
-  z-index: 1;
-  background: #FCFCFC;
-  border-color: #1677bb;
-  overflow: hidden;
-    -moz-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  cursor: pointer;
-  position: relative;
+.subStationList{
+    height: 53px;
+    margin-left: 13.5%;
+    width: 100%;
+    flex-wrap: wrap;
+    display: flex;
 }
-.stationLabelLiner{
-  margin-top: 7px;
-}
+
 
 .repeatTags{
     border: solid;
@@ -856,36 +976,42 @@ opacity: 1;
 }
 
 .leftPlayerContainer{
-  order:0;
-  width: 15%;
-  height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  position: relative;
+    order: 0;
+     width: 0%; 
+    /*flex-shrink: 0;*/
+        /*flex-grow: 0;*/
+    /*background-color: chocolate;*/
+    height: 100%;
 
 }
 
 .rightPlayerContainer{
-  order:2;
-  width: 15%;
-  height: 100%;
-
-  display: flex;
-  flex-wrap: wrap;
-  position: relative;
-      z-index: -4;
-  /*background-color: #f1f1f1;*/
-
+    order: 2;
+    /*background-color: chocolate;*/
+     /*width: 30%; */
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: -2;
+    flex-shrink: 0;
+    flex-grow: 3;
+ max-width: 240px
+}
+.containerNoFlex{
+  
 
 }
 .mainPlayerContainer{
-  order: 1;
-  width: 70%;
+    order: 1;
+    flex-shrink: 9;
+    flex-grow: 9;
     height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  /*background-color: #f1f1f1;*/
-
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    position: relative;
+    z-index: -4;
 }
 .tagArrowDiv{
 	  display:flex;
@@ -1104,8 +1230,7 @@ margin-bottom: 10px;
     /* box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); */
     flex-direction: column;
     justify-content: space-around;
-    /* margin: 1.575em 0 6px 0; */
-    margin-top: 5%;
+    margin-top: 7%;
     margin-left: 5%;
 }
 
@@ -1796,6 +1921,49 @@ align-items: center;
     -webkit-transition: color .25s,border-color .5s;
     transition: color .25s,border-color .5s;
 }
+.autocompletedemoCustomTemplate .autocomplete-custom-template li {
+  border-bottom: 1px solid #ccc;
+  height: auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  white-space: normal; }
+.autocompletedemoCustomTemplate .autocomplete-custom-template li:last-child {
+  border-bottom-width: 0; }
+.autocompletedemoCustomTemplate .autocomplete-custom-template .item-title,
+.autocompletedemoCustomTemplate .autocomplete-custom-template .item-metadata {
+  display: block;
+  line-height: 2; }
+.autocompletedemoCustomTemplate .autocomplete-custom-template .item-title md-icon {
+  height: 18px;
+  width: 18px; }
+
+.mainSearchBar{
+    /*background-color: tomato;*/
+}
+.mainSearchBarUnderneath{
+  display:block;
+}
+.mainSearchBarSmall {
+    display:none;
+}
+
+.md-autocomplete {
+    border-radius: 2px;
+    display: block;
+    height: 40px;
+    position: relative;
+    overflow: visible;
+    min-width: 250px !important; 
+  }
+
+.md-whiteframe-z1 {
+     box-shadow: 0 0px 0px 0 rgba(0,0,0,0),0 0px 0px 0 rgba(0,0,0,0),0 0px 0px 0px rgba(0,0,0,0); 
+  }    
+
+
+  #leftBuffer {
+    width:5% ;
+  }
 
 .flexHorizontal{
   display: flex;
@@ -1818,4 +1986,103 @@ align-items: center;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+}
+/*Start the stagger of animation*/
+.stationLabel{
+   
+    margin-left: 0px;
+    border: solid;
+    height: 35px;
+    width: 0px;
+    border-width: 1px;
+    font-size: 20px;
+ 
+    margin-right: 4px;
+    width: 100px;
+    text-align: center;
+    z-index: 1;
+    background: rgb(0,0,0,0);
+    overflow: hidden;
+    font-family: Roboto;
+    font-weight: 400;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+    position: relative;
+    margin-left: -60px;
+    margin-top: 18px;
+
+    color: rgba(0, 253, 183, 0.00);
+    border-color: rgba(0, 253, 183, 0.00);
+
+}
+.stationLabelAnimation{
+  color: rgba(0, 253, 183, 1);
+  border-color: rgba(0, 253, 183, 1);
+  margin-left: 20px;
+  transition: .4s cubic-bezier(0, 0.53, 0.16, 1.4) all;
+  /*-webkit-transition:.4s ease-in-out all;*/
+-webkit-transition: .4s cubic-bezier(0, 0.53, 0.16, 1.4) all;
+}
+.noPointer:{
+     -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.stationLabelLiner{
+  margin-top: 3px;
+}
+
+.stationHiddenLabel{
+  cursor: pointer;
+  margin-left: 0px;
+  border: solid;
+  height: 35px;
+  width: 0px;
+  font-size: 20px;
+  color: #EFF6FB;
+  margin-right: 4px;
+  width:100px;
+  text-align: center;
+  z-index: 1;
+  background: rgb(0,0,0,0);
+  border-color: white;
+  overflow: hidden;
+  font-family: Roboto;
+    font-weight: 300;
+    -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+
+  position: relative;
+  color: white;
+  margin-left:20px;
+
+  border-width: 1px;
+    margin-top: 18px;
+    opacity: 0;
+  cursor: pointer;
+ transition: none;
+  -webkit-transition:none;
+}
+
+.stationHiddenLabel:hover{
+ color:black;
+ background-color: white;
+transition: none;
+  -webkit-transition:none;
+}
+.stationHiddenLabel.ng-leave{
+  display: none;
+}
+
+.animateHiddenTags {
+ opacity: 1;
+ transition: .4s ease-in-out all;
+  -webkit-transition:.4s ease-in-out all;
 }

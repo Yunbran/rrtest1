@@ -1,22 +1,83 @@
-
-     
-<div  class = 'introDiv' ng-class = "{growDown: currentStation}" >
+  
+<div  class = 'introDiv growDown' >
 
 <div style = 'height: 100%;' class = 'fx-fade-normal fx-speed-100 fx-trigger' ng-hide = "currentStation">
-  <div  class = 'introMessage'> The Ultimate Music Democracy</div>
+  </div>
 
-    <carousel introsibs class = "introSubMessage" style = "cursor:default" interval="9000">
-      <slide ng-repeat="item in subMessageArray" active="slide.active">
-        {{item.msg}} 
-      </slide>
-   </carousel>
 
-        <input type="file" nv-file-select="" uploader="uploader" id = "hiddenUploadButton" />
-            <div file-button class="uploadBox" nv-file-drop="" uploader="uploader" filters="lengthFilter, formatFilter,sizeFilter" ng-click = "clickUpload()">
+
+  <div class = 'mainBox fx-fade-right fx-speed-1000' ng-show = 'animationSwitch'>
+   <!-- LEFT CONTAINER START -->
+   <div class = "leftPlayerContainer">
+  
+
+<!--   <div class = "leftTagBox" ng-show = 'currentStation' >
+     <div class = "tagLinerLeft" >  
+    
+    
+    </div>
+
+  </div> -->
+   </div>
+  <!-- LEFT CONTAINER END -->
+
+<!--START OF REGULAR CONTAINER-->
+    <div class = "mainPlayerContainer">
+    
+      <c class = 'playBoxHeader' ng-class = '{playBoxHeaderAnimation:animationSwitch2,
+      playBoxHeaderAdjustment:!mainPlayHeaderSwitch}'> 
+       <div class = 'flexHorizontalStart' style = "width: 78%;">
+      <div style  = 'flex-grow: 3; flex-shrink: 0; display:flex; flex-wrap:nowrap;'>
+         <div style = "    flex-grow: 1;
+    flex-shrink: 1;
+    display:flex;
+    margin-bottom: 15px;
+    margin-left: 10px;
+    cursor: default;
+    color: white;"
+     class = "noPointer"> Station:   
+             <div style ="width: 24px;
+    height: 50px;
+    color: #00FDB7;
+    font-size: 20px;
+    margin-top: 25px;
+    margin-left: 20px;" class = "glyphicon glyphicon-tag"></div>
+
+       <div ng-class = '{stationLabelAnimation:animationSwitchMainLabel}' class = 'stationLabel' style = 'opacity: 1;' >
+          <div  class = 'stationLabelLiner' >
+                {{currentStation}}
+         </div>
+       </div>  
+      
+      <div style ="margin-left:24px;"></div>
+    </div>
+
+
+
+           <div style = "    flex-grow: 2;
+                      flex-shrink: 1;"> 
+                       {{uploadFeedbackMessage }}
+    </div>
+
+
+
+      </div>
+        </div>
+          
+        <div ng-class = '{playHorizontalAnimation:animationSwitch1}' class ="playHorizontal">           <input type="file" nv-file-select="" uploader="uploader" id = "hiddenUploadButton" />
+
+            <div style ="     margin-top: -80px;
+            margin-right: 10px;
+    float: right;" file-button class="uploadBox" nv-file-drop="" uploader="uploader" filters="lengthFilter, formatFilter,sizeFilter" ng-click = "clickUpload()">
                 <div class="my-drop-zone" nv-file-over=""  uploader="uploader" ng-hide = "uploader.queue.length > 0">
-                 <div class = " glyphicon glyphicon-cloud-upload">
-                    <div style = "font-size: 75%;">
-                    {{uploadFeedbackMessage }}
+                 <!-- glyphicon glyphicon-cloud-upload -->
+                 <div class = "">
+                    <div style = "
+                    font-weight: 300;
+                    font-size: 20px;  
+                    color: white;
+                    font-family: Roboto;  ">
+                    Upload Music
                     </div>
                  </div>
                 </div>
@@ -46,46 +107,31 @@
 
                 </div>
             </div>
-
-  </div>
-
+          </div> 
 
 
-  <div class = 'mainBox fx-fade-right fx-speed-1000' ng-show = 'animationSwitch'>
-   <!-- LEFT CONTAINER START -->
-   <div class = "leftPlayerContainer">
-  
-
-  <div class = "leftTagBox" ng-show = 'currentStation' >
-     <div class = "tagLinerLeft" >  
-    
-    
-    </div>
-
-  </div>
-   </div>
-  <!-- LEFT CONTAINER END -->
-
-<!--START OF REGULAR CONTAINER-->
-    <div class = "mainPlayerContainer">
-      <div class = "playBox ">
-       
-      <c class = 'playBoxHeader' ng-class = '{playBoxHeaderAnimation:animationSwitch2}'> 
-       <div class = 'flexHorizontalStart'>
-          <div>
-          Station
-          </div>
-       <div class = 'stationLabel' style = 'opacity: 0.95;' >
-          <div class = 'stationLabelLiner'>
-                {{currentStation}}
-         </div>
-        </div>  
-        </div>
-        <div ng-class = '{playHorizontalAnimation:animationSwitch1}' class ="playHorizontal"> </div>  
+ 
         </c>
-<!--   VOLUME BAR HERE
-    <label>Volume</label>
-    <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='sound.volume'> -->
+
+<div style = "display:flex; flex-direction:column;">
+
+      <div ng-hide = "animationSwitchX"  class = "subStationList"> 
+      </div>
+ 
+       <div ng-show = "animationSwitchX"  class = "subStationList">
+             <div style ="width: 25px;
+    height: 50px;
+    color: white;
+    font-size: 20px;
+    margin-top: 25px;
+    margin-left: 25px;" class = "glyphicon glyphicon-tag"></div>
+       <div ng-class = "{animateHiddenTags:animationSwitchX}" ng-repeat = "item in hiddenTags" class = "stationHiddenLabel" ng-click = "activateStation(item)"> 
+          <div  class = 'stationLabelLiner'>
+                {{ item.tagname}}
+         </div>
+       </div>  
+      </div>
+
 
   <div class = "playDivider">
 
@@ -94,7 +140,8 @@
 <div class =  "playerSongData fx-fade-in fx-speed-1500" ng-show = "currentSong.filepath">
 
      <div ng-hide="currentSong.rated" class = "rateItMessage">
-         <div class = "votingArea">
+   
+    <div class = "votingArea">
       <div ng-hide = "currentSong.rated " ng-click='upvoteSong()' class = "upvoteButton"></div>
       <div ng-hide = "currentSong.rated" ng-click='downvoteSong()' class = "downvoteButton"></div>
     </div>
@@ -108,7 +155,7 @@
          <div class = "votingAreaRated">
 
   <div ng-show = "currentSong.rated" class = "favoriteButton" ng-click='favoriteSong()'></div>
-  <div ng-show = "currentSong.rated" class = "skipButton" ng-click='skipSong()'></div>
+  <div ng-disabled = 'skipDisabled'; ng-show = "currentSong.rated" class = "skipButton" ng-click='skipSong()'></div>
 
     </div>
 
@@ -122,9 +169,24 @@
   <h1>{{currentSong.description}}</h1>
   upvotes: {{currentSong.upvotes}}
   downvotes: {{currentSong.downvotes}}
-        <uib-progress style = "    margin-left: 100px;
-    width: 500px;
-    height: 4px;"><uib-bar ng-repeat="bar in stacked track by $index"  class="progress-striped active" value="bar.value" type="{{bar.type}}"><span ng-hide="bar.value < 5"></span></uib-bar></uib-progress>
+
+    
+
+  <div style = ""
+    round-progress
+    max="100"
+    current="currentSongUpvotePerc "
+    color="black"
+    bgcolor="white"
+    radius="60"
+    stroke="10"
+    semi="false"
+    rounded="false"
+    clockwise="true"
+    responsive="false"
+    duration="800"
+    animation="easeInOutQuart"></div>
+
   </div>
 
   </div>  
@@ -144,8 +206,11 @@
       <md-slider step = "0.001" flex="" ng-model="sound.progress" min="0" max="1" aria-label="blue" id="blue-slider" class="md-primary">
       </md-slider>
     <!--    <input class='form-control' type=range min=0 max =1 step =0.01  ng-model='sound.progress'> -->
+    <!--   VOLUME BAR HERE
+    <label>Volume</label>
+    <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='sound.volume'> -->
   </div>
-</div>
+  </div>
 </div>
 
 
@@ -154,13 +219,29 @@
 
 
 <!-- START OF RIGHT CONTAINER -->
-<div class = "rightPlayerContainer">
+<div class = "rightPlayerContainer" ng-show = 'switchMainHistory'>
 
-        <div class = "historyBox" ng-class = '{playVerticalAnimation:animationSwitch1}' >
-        History
-         <div class = "historyContainer"  ng-class = '{historyContainerAnimation:animationSwitch2}'>  
+   <div class = "historyBox" ng-class = '{historyBoxOn:!switchMainHistory,playVerticalAnimation:animationSwitch1}' >
+           <div class = "historyButtonRow">
+     <div ng-click = "changeHistoryMode('history')" ng-class = "{historyCategoryButtonActive: historyMode == 'history'}" style = "    margin-left: 20px;" class="historyCategoryButton">
+       <div class = "glyphHistoryButton glyphicon glyphicon-time">
+       </div>
+     </div >
+     <div ng-click = "changeHistoryMode('favorite')" ng-class = "{historyCategoryButtonActive: historyMode == 'favorite'}"  class="historyCategoryButtonCenter">
+        <div style = "margin-left: 2px;" class = "glyphHistoryButton glyphicon glyphicon-star">
+        </div>
+      </div >
+     <div ng-click = "changeHistoryMode('upvote')" ng-class = "{historyCategoryButtonActive: historyMode == 'upvote'}"  class="historyCategoryButton">
+       <div style = "margin-left: -3px;" class = "glyphHistoryButton glyphicon glyphicon-arrow-up">
+       </div>
+     </div >
+    </div>
+
+      <div class = "historyContainer"  ng-class = '{historyContainerAnimation:animationSwitch2}'>  
                 
-            <div class = 'historyNameDiv' ng-repeat="song in historyArray" ng-click="activateStation(tag);" >     <div ng-show = "song.rated">
+            <div ng-if = "historyMode == 'history'" class = 'historyNameDiv' ng-class = "{historyNameDivUp: song.rating == 'up',
+            historyNameDivDown: song.rating == 'down',
+            historyNameDivSelected: $index == currentHistoryIndex}" ng-repeat="song in historyArray track by $index" ng-click="activateAndPlaySong(song, $index);" >     <div ng-show = "song.rated">
                   {{song.name}}
                 </div>  
 
@@ -168,10 +249,27 @@
                   ???
                 </div>  
         </div> 
-    
-    </div>
 
+        <div ng-if = "historyMode == 'favorite'" class = 'historyNameDiv' ng-class = "{historyNameDivUp: song.rating == 'up',
+            historyNameDivDown: song.rating == 'down',
+            historyNameDivSelected: $index == currentHistoryIndex}" ng-repeat="song in userProfile.favorite track by $index" ng-click="activateAndPlaySong(song, $index);" >     <div >
+                  {{song.name}}
+                </div>  
+
+        </div> 
+
+        <div ng-if = "historyMode == 'upvote'" class = 'historyNameDiv' ng-class = "{historyNameDivUp: song.rating == 'up',
+            historyNameDivDown: song.rating == 'down',
+            historyNameDivSelected: $index == currentHistoryIndex}" ng-repeat="song in userProfile.upvoted track by $index" ng-click="activateAndPlaySong(song, $index);" >   
+             <div>
+                  {{song.name}}
+                </div>  
+
+        </div> 
+
+    </div>
   </div> 
+
 
 </div>
 

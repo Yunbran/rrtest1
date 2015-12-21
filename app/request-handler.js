@@ -370,7 +370,7 @@ exports.authenticate =  function (req, res) {
 
 
             } else {
-            res.json("Password is Incorrect");
+            res.status(401).json("Password is Incorrect");
             }
 
           });

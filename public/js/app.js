@@ -10,7 +10,10 @@ var app = angular.module('radioApp',
   '720kb.socialshare',
   'ngTagsInput',
   'ngMaterial',
-  'angular-stripe']);
+  'angular-stripe',
+  'ngAria',
+  'ngMessages',
+  'angular-svg-round-progress']);
    
 
 app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvider){

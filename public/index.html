@@ -9,22 +9,25 @@
   <link rel ='stylesheet' href='css/main.css'>
   </head>
 
-  <body>
+  <body style = "overflow-y: hidden">
  
     <div ui-view class = "view " ></div>      
 
-
     <script src='lib/jquery/dist/jquery.min.js'></script> 
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <!-- // <script src='lib/angular/angular.min.js'></script> -->
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
+
     <script src='lib/bootstrap/dist/js/bootstrap.min.js'></script>
     <script src='lib/angular-ui/build/angular-ui.min.js'></script>
     <script src='lib/angular-local-storage/dist/angular-local-storage.min.js'></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-animate.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+  <!-- Angular Material Library -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+
     <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.4.js"></script>
-    <!-- // <script src='lib/angular-bootstrap/ui-bootstrap-tpls.js'></script> -->
     <script src='lib/angular-ui-router/release/angular-ui-router.min.js'></script>
     <script src='lib/angular-audio/app/angular.audio.js'></script>
     <script src='lib/angular-file-upload/angular-file-upload.min.js'></script>
@@ -35,9 +38,11 @@
     <script src='lib/v-accordion/dist/v-accordion.min.js'></script>
     <script src='lib/angularjs-socialshare/dist/angular-socialshare.min.js'></script>
     <script src='lib/ng-tags-input/ng-tags-input.min.js'></script>
-
+    <script src="http://crisbeto.github.io/angular-svg-round-progressbar/roundProgress.min.js"></script>
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
     <script src='lib/angular-stripe/release/angular-stripe.js'></script>
+
+
 
 <!-- running 'gulp' inserts all scripts in ./js/ under here -->
 <!-- AngularFiles:js -->

@@ -1,4 +1,4 @@
-app.controller('PlayerController', function($scope, $http, $modal, $log, $timeout, $stateParams, $state, $window, $timeout, ngAudio, FileUploader, basket, localStorageService, stripe, User) {
+app.controller('PlayerController', function($scope, $http, $modal, $log, $window, $timeout, $stateParams, $state, $window, $timeout, ngAudio, FileUploader, basket, localStorageService, stripe, User) {
 
 //START OF INSTANTIATION--------------------------------------------------
  
@@ -16,9 +16,15 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $timeou
  $scope.tagArray = [];
  $scope.hasUploaded = false;
  $scope.subMessageArray =[{msg: "where the best music always rises to the top"},{msg: "you decide the breakout songs of tomorrow"},{msg: "your music could be the hit of the century!"},{msg: "Upload below!"},{msg: "Choose a Station Tag!"}]
- 
- 
+ $scope.profileLetter = '';
+ $scope.animationSwitchX = false; 
+ $scope.currentHistoryIndex = 0;
+ $scope.historyMode = 'history';
 
+ $scope.skipDisabled = false;
+
+ $scope.animationSwitchMainLabel = false; 
+ $scope.hiddenTags = [];
  $scope.uploadMessage = "";
  $scope.uploadFeedbackMessage = "";
  //currentSong is the song that is loaded by ngAudio
@@ -72,11 +78,14 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $timeou
       console.log($stateParams["songId"]);
       if(response["_id"] === $stateParams["songId"])
       {
-      $scope.activateAndPlaySong(response);
       $scope.currentStation = "all";
+      $scope.activateAndPlaySong(response);
 
       $scope.currentSong.rated = true;
+
+    console.log($scope.currentSong.rated, "rated");
       $scope.isStationPlaying = true;
+
       }
     });
   }  
@@ -89,20 +98,19 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $timeou
 
     // console.log(getLocalStorage("token"));
     // console.log(User.authToken);
-    console.log($scope.userProfile);
+    // console.log($scope.userProfile);
     // console.log($scope.shareURL);
     // uploadURLSwitch();
 
-    console.log($scope.demoTagArrays);
-    //$scope.currentStation = "asd";
-    //$scope.testbool = !$scope.testbool;
+    // console.log($scope.demoTagArrays);
+console.log($scope.message);
+// $scope.screenVar +=5;
 
-
-
-            // basket['uploadedSong'] = $scope.currentSong;
-            // stopSong();
-            // $scope.openUploadModal('lg');
-
+// $scope.screenModifier = $scope.screenVar + "%";
+        // $http.post("/stripeEnd", {adminCode: "snake"})
+        //   .success(function(response) {
+        //     console.log(response);
+        //   });
 
    // $http.get("/deleteDatabase")
    //      .success(function(response) {
@@ -242,7 +250,8 @@ function getUserProfile(){
         .success(function(response) {
           $scope.userProfile = response;
           User.profile = $scope.userProfile;
-          console.log('as')
+          console.log($scope.userProfile)
+          $scope.profileLetter = $scope.userProfile.username.substring(0,1).toUpperCase();
           uploadURLSwitch();
           //console.log($scope.userProfile);
           //populates hash Table with the array;
@@ -288,16 +297,16 @@ function getUser(){
 //     });
 
 //   }
- 
+    $scope.currentSongUpvotePerc = 0;
     $scope.stacked = [];
     $scope.stackLikeBar = function() {
     
     $scope.stacked = [];
     var total = $scope.currentSong.upvotes + $scope.currentSong.downvotes;
-     console.log($scope.currentSong);
-     console.log($scope.currentSong['upvotes']);
-     console.log(($scope.currentSong['upvotes']/total) * 100);
-     console.log(($scope.currentSong['downvotes'].downvotes/total) * 100);
+     // console.log($scope.currentSong);
+     // console.log($scope.currentSong['upvotes']);
+     // console.log(($scope.currentSong['upvotes']/total) * 100);
+     // console.log(($scope.currentSong['downvotes'].downvotes/total) * 100);
 
 
      var currentSongUpvoteNum = $scope.currentSong.upvotes;
@@ -336,8 +345,8 @@ function getUser(){
 
     }
   
-
-         console.log($scope.stacked);
+      $scope.currentSongUpvotePerc = currentSongUpvoteCalc;
+         // console.log(currentSongUpvoteCalc);
   }
 }
 //GETS TAGS FROM SERVER AND LISTS THEM
@@ -381,7 +390,10 @@ function getUser(){
     $scope.demoTagArrays.push(tempLoopArray);
   }
 }
-   
+//move these into a call back later
+  $scope.activateStation($scope.tagArray[0]);
+//repos are for the searchbar
+   $scope.repos = loadAll(); 
   });
 
 }
@@ -416,7 +428,7 @@ function getUser(){
     .success(function(response) {
       $scope.currentStationData = response;
       // console.log($scope.currentStationData);
-      
+        
       if(callback)
       callback();
     });
@@ -502,7 +514,9 @@ function getUser(){
   }
  
 
+
  function stopSong(){
+
      if($scope.sound) {
        $scope.sound.pause();
      }
@@ -511,6 +525,7 @@ function getUser(){
   function activateNextSong()
   {
     //console.log("activateNextSong");
+    $scope.currentHistoryIndex = 0;
     $scope.activateSong($scope.nextSong);
   }
 
@@ -527,6 +542,7 @@ function getUser(){
      $scope.playMessage = ""
     $scope.activateSong($scope.nextSong);
     $scope.playSong($scope.nextSong);
+
   }
 
 
@@ -558,6 +574,10 @@ function getUser(){
  //     $scope.nextSong = ''; 
  }
 
+ $scope.changeHistoryMode = function(type){
+  $scope.historyMode = type;
+ }
+
   function uploadURLSwitch(){
           if($scope.userProfile) {
             $scope.uploader.url = "/api/uploadSong";
@@ -573,29 +593,43 @@ function getUser(){
  }
 $scope.rateCheck = function(){
   if($scope.ratedSongTableObj[$scope.currentSong._id]) {
-  $scope.currentSong.rated = true;
-
-    $scope.stackLikeBar();
+    $scope.currentSong.rated = true;
+    $scope.activateTagAnimation();
+    $scope.animationSwitchX = true;
   } else {
-  $scope.currentSong.rated  = false;
+    $scope.currentSong.rated  = false;
+    $scope.animationSwitchX = false;
   }
+
+    // console.log($scope.currentSong.rated, "rated");
 }
 
-$scope.activateAndPlaySong = function(song){
-    //console.log("activateAndPlaySong");
-    
+ $scope.setHiddenTags = function(){
+     // console.log($scope.currentSong);
+     $scope.hiddenTags = [];
+  for(var i = 0; i < $scope.currentSong.tags.length; i++)
+    {
+      if($scope.currentSong.tags[i].tagname != $scope.currentStation)
+      $scope.hiddenTags.push($scope.currentSong.tags[i]);
+    }
+  }
+
+$scope.activateAndPlaySong = function(song, index){
+    // console.log(index);
+    $scope.currentHistoryIndex = index;
+    // animationSwitchX = false;
+    console.log(song);
+
+
     $scope.activateSong(song);
-
     $scope.playSong();
-
-    $scope.rateCheck();
  };
+
 
 $scope.songEndsInGenerator = function(){
 console.log("songEndsInGenerator");
 $scope.nextSong = pickNextSong($scope.customSongArray,$scope.percentageArray);
-if($scope.nextSong)
-{
+if($scope.nextSong) {
 activateAndPlayNextSong()
 } else {
 
@@ -608,9 +642,7 @@ $scope.uploadAll = function()
 {
   if($scope.user){
     uploader.uploadAll();
-  }
-  else
-  {
+  } else {
    $scope.openSignupModal('lg');
   }
 }
@@ -643,18 +675,51 @@ $scope.uploadAll = function()
 
     //$scope.sound.trigger("test");
     // $scope.currentSong = null;
-    $scope.historyArray.push(song);
-
+    if($scope.currentSong != song) {
+    $scope.historyArray.unshift(song);
+    if (!$scope.stationHistoryHotfix){
+           $scope.currentHistoryIndex = $scope.currentHistoryIndex+1;
+        };
+      if($scope.historyArray.length > 15)
+      {
+        $scope.historyArray.pop(song);
+      }
+    }
+    $scope.stationHistoryHotfix = false;
+    
     $scope.currentSong = song;
-  }
 
+    //functions for the generator
+    $scope.rateCheck();
+    $scope.stackLikeBar();
+    $scope.setHiddenTags();
+
+  }
+ 
+  $scope.activateTagAnimation = function(){
+     console.log("activateTagAnimation timeout Triggered");
+             $timeout(function(){
+        console.log("activateTagAnimation executed");
+          $scope.animationSwitchX =true;
+          
+      }, 200);
+
+  }
   $scope.playSong = function(){
 
     $scope.sound.play();
   };
 
+    //fix this behavior one day without the hotfix
+    $scope.stationHistoryHotfix = false;
+
     $scope.activateStation = function(tag){
+      console.log(tag);
+    if(tag.tagname) {
+      $scope.currentStation = tag.tagname;
+    } else {
       $scope.currentStation = tag.name;
+    }
       //cb means Callback
       var cb = function(){
         runStationAlgorithm();
@@ -663,14 +728,22 @@ $scope.uploadAll = function()
         {
         activateNextSong();
         playNextSong(); 
+        $scope.animationSwitchMainLabel = true;
         } 
       }
 
+
+      $scope.stationHistoryHotfix = true;
+      $scope.animationSwitchMainLabel =false;
       getStation(cb);
 
          $timeout(function(){
         $scope.isStationPlaying = true;
-      }, 400);
+        /*??????????????????????????????????????????????????????????????????????????????????????????????*/
+           if($scope.sound) //REEEEEEEMOOOOOOVE
+       $scope.sound.pause();
+     /*REMOVE TOP*/
+      }, 30);
   }
 
   $scope.skipSong = function(){
@@ -697,8 +770,10 @@ $scope.uploadAll = function()
     $scope.currentSong.upvotes +=1;
     console.log($scope.customSongArray);
     console.log($scope.percentageArray);
+    // $scope.recentlyVotedSongs[$scope.currentSong] = 'up';
+    $scope.currentSong.rating = "up";
     $scope.rateCheck();
-
+    // historyCycle();
    $http.post("/api/upvoteSong", $scope.currentSong)
    .success(function(response) {
      console.log(response);
@@ -724,10 +799,14 @@ $scope.uploadAll = function()
   
     $scope.ratedSongTableObj[$scope.currentSong._id] = $scope.currentSong._id;
     $scope.currentSong.rated = true;
+    // $scope.recentlyVotedSongs[$scope.currentSong] = 'down';
+    $scope.currentSong.rating = "down";
+    // console.log($scope.currentSong.rated, "rated");
     $scope.currentSong.downvotes += 1;
     console.log($scope.customSongArray);
     console.log($scope.percentageArray);
     $scope.rateCheck();
+    // historyCycle();
      $http.post("/api/downvoteSong", $scope.currentSong)
    .success(function(response) {
      console.log(response);
@@ -737,6 +816,8 @@ $scope.uploadAll = function()
 
   }
   
+
+
     $scope.favoriteSong = function(){
      $http.post("/api/favoriteSong", $scope.currentSong)
    .success(function(response) {
@@ -749,7 +830,13 @@ $scope.uploadAll = function()
 
 
  $scope.clickUpload = function(){
-    angular.element('#hiddenUploadButton').trigger('click');
+  console.log("triggered");
+  //    $timeout(function() {
+  //   angular.element($('#hiddenUploadButton')).triggerHandler('click');
+  // }, 100);
+
+    angular.element($('#hiddenUploadButton')).click();
+  // console.log(angular.element($('#hiddenUploadButton')).text());
  }
 
 //TEST STUFF BELOW
@@ -1094,18 +1181,83 @@ $scope.$on('fade-normal:enter', function(){
 
      $timeout(function(){
       $scope.animationSwitch2 = true;
+        $timeout(function(){
+          //doesn't hit anything yet
+      $scope.animationSwitch3 = true;
      },300);
-   
-  },80);
+    },300);
+ 
 
-
+  },10);
 
 
     });
 
 
 
+//Angular autocomplete code
+    $scope.simulateQuery = false;
 
+
+    $scope.querySearch   = querySearch;
+    $scope.selectedItemChange = selectedItemChange;
+    // $scope.searchTextChange   = searchTextChange;
+
+    // ******************************
+    // Internal methods
+    // ******************************
+
+    /**
+     * Search for repos... use $timeout to simulate
+     * remote dataservice call.
+     */
+    function querySearch (query) {
+      var results = query ? $scope.repos.filter( createFilterFor(query) ) : $scope.repos,
+          deferred;
+      if ($scope.simulateQuery) {
+        deferred = $q.defer();
+        $timeout(function () { deferred.resolve( results ); }, Math.random() * 1000, false);
+        return deferred.promise;
+      } else {
+        return results;
+      }
+    }
+
+    function searchTextChange(text) {
+      $log.info('Text changed to ' + text);
+
+    }
+
+    function selectedItemChange(item) {
+      $log.info('Item changed to ' + JSON.stringify(item));
+      if(item){
+      $scope.activateStation(item);      
+      }
+
+    }
+
+    /**
+     * Build `components` list of key/value pairs
+     */
+    function loadAll() {
+      var repos = $scope.tagArray;
+      console.log($scope.tagArray);
+      return repos.map( function (repo) {
+        repo.value = repo.name.toLowerCase();
+        return repo;
+      });
+    }
+
+    /**
+     * Create filter function for a query string
+     */
+    function createFilterFor(query) {
+      var lowercaseQuery = angular.lowercase(query);
+
+      return function filterFn(item) {
+        return (item.value.indexOf(lowercaseQuery) === 0);
+      };
+}
 //CSS JQUERY SECTION
  // function circleDesign(){
  //  console.log("circleDesign executed");
@@ -1120,6 +1272,7 @@ $scope.$on('fade-normal:enter', function(){
  //    circleDesign();
       
  //    },10);
+
 //CSS END SECTION
 
 
@@ -1185,11 +1338,28 @@ app.directive('enforceMaxTags', function() {
    };
 });
 
+app.directive('resizer', ['$window', function ($window) {
+    return {
+        restrict: 'A',
+        link: function (scope, elem, attrs) {  
+            scope.switchMainSearch = $window.innerWidth > 700 ? true : false;
 
-app.directive('audioPlayerOne', function() {
+            scope.switchMainHistory = $window.innerWidth > 1000 ? true : false;
+           
+            scope.mainPlayHeaderSwitch = $window.innerWidth > 1000 ? true : false;
 
- return {
-    template: '<div></div>'
-  }
+            angular.element($window).on('resize', function () {
+          scope.$apply(function(){
+            scope.switchMainSearch = $window.innerWidth > 700 ? true : false;
+        
+            scope.switchMainHistory = $window.innerWidth > 1000 ? true : false;
 
-});
+
+            scope.mainPlayHeaderSwitch = $window.innerWidth > 1000 ? true : false;
+            // console.log( scope.switchMainSearch);
+                })
+            });
+        }
+    }
+}]);
+

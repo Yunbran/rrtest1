@@ -18,7 +18,8 @@
     "ng-tags-input": "~3.0.0",
     "ngFx": "~1.1.0",
     "v-accordion": "~1.2.7",
-    "angular-stripe": "~4.2.8"
+    "angular-stripe": "~4.2.8",
+    "angular-svg-round-progressbar": "~0.3.8"
   },
   "resolutions": {
     "angular": "1.4.7",
