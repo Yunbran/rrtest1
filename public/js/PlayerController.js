@@ -12,14 +12,20 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
  $scope.currentStationData = {};
  $scope.customSongArray = [];
  $scope.percentageArray = [];
+ $scope.firstVisit = true;
+
  $scope.historyArray = [];
  $scope.tagArray = [];
+ 
+
  $scope.hasUploaded = false;
  $scope.subMessageArray =[{msg: "where the best music always rises to the top"},{msg: "you decide the breakout songs of tomorrow"},{msg: "your music could be the hit of the century!"},{msg: "Upload below!"},{msg: "Choose a Station Tag!"}]
+ 
  $scope.profileLetter = '';
  $scope.animationSwitchX = false; 
  $scope.currentHistoryIndex = 0;
  $scope.historyMode = 'history';
+ $scope.stationMode = 'main';
 
  $scope.skipDisabled = false;
 
@@ -32,6 +38,8 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
  $scope.nextSong = '';
  //optimization variables!
  $scope.ratedSongTableObj = {};
+
+
 //formData used for post requests to the server
            $scope.formData = {
            songTag : '',
@@ -101,11 +109,11 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
     // console.log($scope.userProfile);
     // console.log($scope.shareURL);
     // uploadURLSwitch();
-
+    // $scope.resetLikeBar();
     // console.log($scope.demoTagArrays);
-console.log($scope.message);
+    // $scope.sound.setProgress(0.99999999999999999999999);
+    console.log( $scope.firstVisit );
 // $scope.screenVar +=5;
-
 // $scope.screenModifier = $scope.screenVar + "%";
         // $http.post("/stripeEnd", {adminCode: "snake"})
         //   .success(function(response) {
@@ -256,12 +264,19 @@ function getUserProfile(){
           //console.log($scope.userProfile);
           //populates hash Table with the array;
           for(var i = 0;i < $scope.userProfile.upvoted.length; i++){
-            $scope.ratedSongTableObj[$scope.userProfile.upvoted[i]] = $scope.userProfile.upvoted[i];
+            $scope.ratedSongTableObj[$scope.userProfile.upvoted[i]._id] = $scope.userProfile.upvoted[i]._id;
+            console.log($scope.userProfile.upvoted[i]._id);
           }  
 
           for(var i = 0;i < $scope.userProfile.downvoted.length; i++){
-            $scope.ratedSongTableObj[$scope.userProfile.downvoted[i]] = $scope.userProfile.downvoted[i];
+            $scope.ratedSongTableObj[$scope.userProfile.downvoted[i]._id] = $scope.userProfile.downvoted[i]._id;
           } 
+
+          //remove this if you want people to rate their own songs
+          for(var i = 0;i < $scope.userProfile.songs.length; i++){
+            $scope.ratedSongTableObj[$scope.userProfile.songs[i]._id] = $scope.userProfile.songs[i]._id;
+          }
+      // console.log("OKAY ")
       updatePage();
         })
         .error(function(){
@@ -317,38 +332,51 @@ function getUser(){
 
     if((currentSongUpvoteNum + currentSongDownvoteNum) === 0) {
 
-    $scope.stacked.push({
-          value: 100,
-          type: 'info'
-        });
-
+    // $scope.stacked.push({
+    //       value: 100,
+    //       type: 'info'
+    //     });
+      $scope.currentSongUpvotePerc = 100;
     }
     else {
     
-    if(!isNaN(currentSongUpvoteCalc) && currentSongUpvoteCalc !=0)
-    {
+    // if(!isNaN(currentSongUpvoteCalc) && currentSongUpvoteCalc !=0)
+    // {
 
-        $scope.stacked.push({
-          value: currentSongUpvoteCalc,
-          type: 'success'
-        });
+    //     $scope.stacked.push({
+    //       value: currentSongUpvoteCalc,
+    //       type: 'success'
+    //     });
       
-    }
+    // }
 
 
-    if(!isNaN(currentSongDownvoteCalc) && currentSongUpvoteCalc !=0)
-    {
-        $scope.stacked.push({
-          value: currentSongDownvoteCalc,
-          type: 'danger'
-        });
+    // if(!isNaN(currentSongDownvoteCalc) && currentSongUpvoteCalc !=0)
+    // {
+    //     $scope.stacked.push({
+    //       value: currentSongDownvoteCalc,
+    //       type: 'danger'
+    //     });
 
-    }
+    // }
   
-      $scope.currentSongUpvotePerc = currentSongUpvoteCalc;
-         // console.log(currentSongUpvoteCalc);
+      $scope.currentSongUpvotePerc = Math.round(currentSongUpvoteCalc);
+    
+
+     // console.log(currentSongUpvoteCalc);
+
+
   }
 }
+
+
+    $scope.resetLikeBar = function() {
+  
+      $scope.currentSongUpvotePerc = 0;
+
+  
+}
+
 //GETS TAGS FROM SERVER AND LISTS THEM
 
  function getTags(){
@@ -574,10 +602,78 @@ function getUser(){
  //     $scope.nextSong = ''; 
  }
 
+//historyArr,  favoriteArr, upvoteArr
+$scope.historyMemoryArr = [true, false, false];
+$scope.historyIndex = 0;
+$scope.favoriteIndex = undefined;
+$scope.upvoteIndex = undefined;
+
  $scope.changeHistoryMode = function(type){
-  $scope.historyMode = type;
+      
+   if(type != $scope.historyMode){
+
+    var tempHolder = $scope.currentHistoryIndex;
+    
+    if( $scope.historyMode === 'history'){
+      $scope.historyIndex = $scope.currentHistoryIndex;
+      if($scope.currentHistoryIndex > 0){
+        // $scope.historyIndex = undefined;
+        $scope.favoriteIndex = undefined;
+        $scope.upvoteIndex = undefined;
+      }
+    } else if( $scope.historyMode === 'favorite'){
+      $scope.favoriteIndex = $scope.currentHistoryIndex;
+      if($scope.currentHistoryIndex > 0){
+        $scope.historyIndex = undefined;
+        // $scope.favoriteIndex = undefined;
+        $scope.upvoteIndex = undefined;
+      }
+    } else if( $scope.historyMode ==='upvote'){
+     $scope.upvoteIndex = $scope.currentHistoryIndex;
+        if($scope.currentHistoryIndex > 0){
+        $scope.historyIndex = undefined;
+        $scope.favoriteIndex = undefined;
+        // $scope.upvoteIndex = undefined;
+      }
+
+    }
+
+    if( type === 'history'){
+
+
+        $scope.currentHistoryIndex = $scope.historyIndex;
+
+
+    } else if( type === 'favorite'){
+
+            $scope.currentHistoryIndex = $scope.favoriteIndex;
+
+
+    } else if(type ==='upvote'){
+     $scope.currentHistoryIndex = $scope.upvoteIndex;
+
+
+    }
+
+
+
+      $scope.historyMode = type;  
+
+      
+    }
+   
+
+
+
  }
 
+function changeStationMode(type){
+      if(type === 'main'){
+        $scope.isStationPlaying = true;
+
+      }
+    $scope.stationMode = type;
+}
   function uploadURLSwitch(){
           if($scope.userProfile) {
             $scope.uploader.url = "/api/uploadSong";
@@ -592,6 +688,7 @@ function getUser(){
      
  }
 $scope.rateCheck = function(){
+  console.log($scope.ratedSongTableObj)
   if($scope.ratedSongTableObj[$scope.currentSong._id]) {
     $scope.currentSong.rated = true;
     $scope.activateTagAnimation();
@@ -615,8 +712,14 @@ $scope.rateCheck = function(){
   }
 
 $scope.activateAndPlaySong = function(song, index){
-    // console.log(index);
+    console.log(index);
+    if(index){
     $scope.currentHistoryIndex = index;
+    }
+
+    if($scope.historyMode ='history'){
+      changeStationMode('main');
+    }
     // animationSwitchX = false;
     console.log(song);
 
@@ -625,17 +728,70 @@ $scope.activateAndPlaySong = function(song, index){
     $scope.playSong();
  };
 
+$scope.activateAndPlaySongFromDifferentMode = function(song, index){
 
-$scope.songEndsInGenerator = function(){
-console.log("songEndsInGenerator");
-$scope.nextSong = pickNextSong($scope.customSongArray,$scope.percentageArray);
-if($scope.nextSong) {
-activateAndPlayNextSong()
-} else {
+   console.log($scope.historyMode);
+       changeStationMode($scope.historyMode);
+   console.log(index);
+ console.log('$scope.activateAndPlaySongFromDifferentMode ');
+   $scope.isStationPlaying = false;
+ if(index || index === 0) {
+    $scope.currentHistoryIndex = index;
+ }
 
-}
+    $scope.activateSong(song , true);
+    $scope.playSong();
+ };
+
+ $scope.songEndsInGenerator = function(){
+  console.log("songEndsInGenerator");
+  
+  $scope.nextSong = pickNextSong($scope.customSongArray,$scope.percentageArray);
+  if($scope.nextSong) {
+      $scope.activateAndPlaySong($scope.nextSong,0);
+  } else {
+
+  }
   
 }
+
+$scope.songEndsInHistoryMode = function(){
+  // console.log("songEndsInHistoryMode  activated");
+  // console.log($scope.historyMode);
+   // console.log($scope.isStationPlaying  );
+    if($scope.historyMode == 'favorite'){
+    // console.log($scope.currentHistoryIndex);
+    //   console.log($scope.userProfile.favorite);
+    //   console.log($scope.userProfile.favorite.length);
+     $scope.currentHistoryIndex += 1;
+        
+        if($scope.currentHistoryIndex >= $scope.userProfile.favorite.length) {
+            $scope.currentHistoryIndex = 0;
+            $scope.activateAndPlaySongFromDifferentMode($scope.userProfile.favorite[$scope.currentHistoryIndex],$scope.currentHistoryIndex);
+          } else {
+              $scope.activateAndPlaySongFromDifferentMode($scope.userProfile.favorite[$scope.currentHistoryIndex], $scope.currentHistoryIndex);
+       
+          }
+
+
+    } else if($scope.historyMode == 'upvote') {
+      // console.log($scope.currentHistoryIndex);
+      // console.log($scope.userProfile.upvoted);
+      // console.log($scope.userProfile.upvoted.length);
+     $scope.currentHistoryIndex += 1;
+        
+        if($scope.currentHistoryIndex >= $scope.userProfile.upvoted.length) {
+            $scope.currentHistoryIndex = 0;
+            $scope.activateAndPlaySongFromDifferentMode($scope.userProfile.upvoted[$scope.currentHistoryIndex],$scope.currentHistoryIndex);
+          } else {
+              $scope.activateAndPlaySongFromDifferentMode($scope.userProfile.upvoted[$scope.currentHistoryIndex], $scope.currentHistoryIndex);
+       
+          }
+
+    }
+
+ }
+
 //Activates the UPLOADER to upload everything in the queue
 //IF the user is not logged in, show the signup window
 $scope.uploadAll = function()
@@ -648,7 +804,7 @@ $scope.uploadAll = function()
 }
 
 //Scope functions below
-  $scope.activateSong = function(song){
+  $scope.activateSong = function(song, playFromFavoriteOrUpBool){
     if($scope.sound)
     {
     $scope.sound.stop();  
@@ -667,39 +823,69 @@ $scope.uploadAll = function()
         // console.log("triggered");
         $scope.sound.pause();
         $scope.sound.setProgress(0.99999999999999999999999);
-        if($scope.isStationPlaying) {
-        $scope.songEndsInGenerator();          
-        }
-      
+
+           if($scope.isStationPlaying) {
+            console.log("A");
+            $scope.songEndsInGenerator();          
+           } else {
+            if($scope.historyMode  == 'upvote' || 'favorite')
+            {
+              console.log("B");
+             $scope.songEndsInHistoryMode();
+            }
+           }
       });
 
     //$scope.sound.trigger("test");
     // $scope.currentSong = null;
-    if($scope.currentSong != song) {
-    $scope.historyArray.unshift(song);
-    if (!$scope.stationHistoryHotfix){
-           $scope.currentHistoryIndex = $scope.currentHistoryIndex+1;
-        };
-      if($scope.historyArray.length > 15)
-      {
-        $scope.historyArray.pop(song);
-      }
-    }
-    $scope.stationHistoryHotfix = false;
+    //if playing from station this condition is satisfied
+    if(!playFromFavoriteOrUpBool){
+        if($scope.currentSong != song) {
+       $scope.historyArray.unshift(song);
+        if (!$scope.stationHistoryHotfix){
+              $scope.currentHistoryIndex = $scope.currentHistoryIndex+1;
+            };
+          if($scope.historyArray.length > 15)
+          {
+            $scope.historyArray.pop(song);
+          }
+        }
+       $scope.stationHistoryHotfix = false;
     
-    $scope.currentSong = song;
 
+    } 
+
+
+        $scope.rateCheck();
+
+    $scope.currentSong = song;
+    // console.log($scope.ratedSongTableObj);
     //functions for the generator
-    $scope.rateCheck();
-    $scope.stackLikeBar();
+   
     $scope.setHiddenTags();
 
+
+ console.log($scope.stationMode);
+    if($scope.stationMode ='main'){
+      if($scope.currentSong.rated) {
+      console.log('TRIGGERED');
+      $scope.stackLikeBar();
+      } else{
+        $scope.resetLikeBar();
+        
+      }
+    }  else {
+      $scope.stackLikeBar();
+    }
+                
+   
   }
  
   $scope.activateTagAnimation = function(){
-     console.log("activateTagAnimation timeout Triggered");
-             $timeout(function(){
-        console.log("activateTagAnimation executed");
+     // console.log("activateTagAnimation timeout Triggered");
+     
+     $timeout(function(){
+        // console.log("activateTagAnimation executed");
           $scope.animationSwitchX =true;
           
       }, 200);
@@ -709,7 +895,12 @@ $scope.uploadAll = function()
 
     $scope.sound.play();
   };
+  $scope.playSongFromStation =function(){
 
+    $scope.firstVisit = false;
+    
+    $scope.sound.play();
+  }
     //fix this behavior one day without the hotfix
     $scope.stationHistoryHotfix = false;
 
@@ -735,6 +926,9 @@ $scope.uploadAll = function()
 
       $scope.stationHistoryHotfix = true;
       $scope.animationSwitchMainLabel =false;
+      $scope.historyMode = 'history';
+      $scope.currentHistoryIndex  = 0;
+         changeStationMode('main');
       getStation(cb);
 
          $timeout(function(){
@@ -743,7 +937,7 @@ $scope.uploadAll = function()
            if($scope.sound) //REEEEEEEMOOOOOOVE
        $scope.sound.pause();
      /*REMOVE TOP*/
-      }, 30);
+      }, 3);
   }
 
   $scope.skipSong = function(){
@@ -774,14 +968,15 @@ $scope.uploadAll = function()
     $scope.currentSong.rating = "up";
     $scope.rateCheck();
     // historyCycle();
+     $scope.changeHistoryMode('history');
+    $scope.stackLikeBar();
+     $scope.userProfile.upvoted.push($scope.currentSong);
    $http.post("/api/upvoteSong", $scope.currentSong)
    .success(function(response) {
      console.log(response);
 
-
     //updatePage();
   });
-
   }
   $scope.downvoteSong = function(song){
     console.log('downvoteSong() activated.');
@@ -807,10 +1002,12 @@ $scope.uploadAll = function()
     console.log($scope.percentageArray);
     $scope.rateCheck();
     // historyCycle();
+      $scope.changeHistoryMode('history');
+          $scope.stackLikeBar();
+     $scope.userProfile.downvoted.push($scope.currentSong);
      $http.post("/api/downvoteSong", $scope.currentSong)
    .success(function(response) {
      console.log(response);
-  
      //updatePage();
   });
 
@@ -819,6 +1016,8 @@ $scope.uploadAll = function()
 
 
     $scope.favoriteSong = function(){
+
+      $scope.userProfile.favorite.push($scope.currentSong);
      $http.post("/api/favoriteSong", $scope.currentSong)
    .success(function(response) {
      console.log(response);
