@@ -1526,26 +1526,87 @@ $scope.$on('fade-normal:enter', function(){
 //CSS JQUERY SECTION
  function circleDesign(){
   // console.log("circleDesign executed");
-  //     angular.element('#bubbleWrapperDiv').append("<div></div>");
-  //     angular.element('#bubbleWrapperDiv').append("<div></div>");
-  //     angular.element('#bubbleWrapperDiv').append("<div></div>");
-  //     angular.element('#bubbleWrapperDiv').append("<div></div>");
-  //     angular.element('#bubbleWrapperDiv').append("<div></div>");
-  //     console.log(angular.element('#bubbleWrapperDiv'));
+  var colorChoices = ['bubbleDarkBlue','bubbleLightBlue', 'bubbleTeal'];
+  // var sizeChoices = ['bubbleBig','bubbleMiddle','bubbleSmall'];
+  var colorChoiceInt = chance.integer({min: 0, max: colorChoices.length - 1});
+  // var sizeChoiceInt = chance.integer({min: 0, max: sizeChoices.length - 1});
+  var tempClassName = chance.string({length: 10});
+     var xLocation = chance.integer({min: -3, max: 102});
+  var transitionTimer = chance.integer({min: 5, max: 40});
 
   var tempDiv = document.createElement("div");
-  tempDiv.className = 'bubble';
+  tempDiv.className = 'bubble ' + colorChoices[colorChoiceInt] + ' ' + tempClassName;
+
   angular.element(document.getElementsByClassName('bubbleWrapperDiv')).prepend(tempDiv);
-   angular.element(document.getElementsByTagName('body')).prepend( document.createElement("div"));
-   angular.element(document.getElementsByTagName('body')).prepend( document.createElement("div"));
-   angular.element(document.getElementsByTagName('body')).prepend( document.createElement("div"));
-   angular.element(document.getElementsByTagName('body')).prepend( document.createElement("div"));
-  
+     
+  angular.element(document.getElementsByClassName(tempClassName)).css('margin-left',xLocation + '%');
+
+  angular.element(document.getElementsByClassName(tempClassName)).css('transition',  'all '+transitionTimer + 's');
+
+   $timeout(function(){
+    attachRiseClass(tempClassName, xLocation);
+      
+    },10);
+
+  $timeout(function(){
+    // deleteBubble(tempClassName);
+      placeBubbleBack(tempClassName);
+    },((transitionTimer * 1000)));
+
     }
+  
+  function attachRiseClass(tempClass, xLocation){
+    console.log(angular.element(document.getElementsByClassName(tempClass)));
+     var size  = chance.integer({min: 50, max: 200});
+
+      angular.element(document.getElementsByClassName(tempClass)).css('height',size);
+      angular.element(document.getElementsByClassName(tempClass)).css('min-height',size);
+      angular.element(document.getElementsByClassName(tempClass)).css('width',size);
+      angular.element(document.getElementsByClassName(tempClass)).css('min-width',size);
+
+      angular.element(document.getElementsByClassName(tempClass)).toggleClass('bubbleTopAnimation');
+
+  }
+  
+
+  function deleteBubble(tempClass){
+          angular.element(document.getElementsByClassName(tempClass)).remove();
+  }
+ function placeBubbleBack(tempClass){
+     angular.element(document.getElementsByClassName(tempClass)).css('transition',  'none');
+      angular.element(document.getElementsByClassName(tempClass)).css('margin-top','570px');
+     $timeout(function(){
+      goBubbleUp(tempClass);
+      
+    },1000);
+ }
+  function goBubbleUp(tempClass){
+      var transitionTimer = chance.integer({min: 5, max: 40});
+  angular.element(document.getElementsByClassName(tempClass)).css('transition',  'all '+transitionTimer + 's');
+ angular.element(document.getElementsByClassName(tempClass)).css('margin-top','-13%');
+ 
+  $timeout(function(){
+    // deleteBubble(tempClassName);
+      placeBubbleBack(tempClass);
+    },(transitionTimer * 1000));
+ }
+
+  // function recursiveBubbleCreation(){
+
+  //   var timerForNextBubble = chance.integer({min: 500, max: 10000});
+
+  //   circleDesign();
+   
+  //   $timeout(function(){
+  //       recursiveBubbleCreation();
+  //   },timerForNextBubble);
+  
+  // }
 
     $timeout(function(){
-    circleDesign();
-      
+      for(var i = 0; i < 15; i++){
+        circleDesign();
+      }
     },10);
 
 //CSS END SECTION
