@@ -97,19 +97,20 @@ exports.findSong = function(name){
 
 exports.findUser = function(name){
  console.log("findUser ran: " + name);
-//Song.find searches the mongo database for the Song model.
-//It retrieves an array of 'Songs' that match the object query in the first parameter
-//The Songs array is used in the callback function.
-//Songs[0] is used because we know Songnames are unique.
-//There will only ever be one object in the Songs array with a Songname query at index 0.
+//User.find searches the mongo database for the User model.
+//It retrieves an array of 'Users' that match the object query in the first parameter
+//The Users array is used in the callback function.
+//Users[0] is used because we know Usernames are unique.
+//There will only ever be one object in the Users array with a Username query at index 0.
     User.find({'username': name},function (err, users) {
             if (err) return console.error(err);
            
             console.log(users[0]);
           });
-
-
 };
+
+
+
 exports.deleteSongLists = function(){
  User.find({},function (err, users) {
             if (err) return console.error(err);
@@ -249,6 +250,27 @@ exports.getUsers = function(req, res) {
         res.send(err);
       }
       res.json(users);
+   });
+}
+exports.getUserByName = function(req, res){
+  var nameToBeSearched = req.body.name;
+  console.log("getUserByName ran: " + req.body.name);
+
+//User.find searches the mongo database for the User model.
+//It retrieves an array of 'Users' that match the object query in the first parameter
+//The Users array is used in the callback function.
+//Users[0] is used because we know Usernames are unique.
+//There will only ever be one object in the Users array with a Username query at index 0.
+
+      User.findOne({ username: nameToBeSearched })
+              .populate('songs') // populates mongoose user song table with songdata
+              .populate('favorite')
+              .populate('upvoted') 
+              .exec(function (err, user) {
+                if(err) {
+                  res.send(err);
+                }
+                res.json(user);
    });
 }
 

@@ -1,27 +1,35 @@
         <div class="uploadHeader">
-        <div class = "flexHorizontal uploadHeaderRow uploadHeaderRow1">{{currentSong.name}}</div>
+
+        <div class = "flexHorizontalStart uploadHeaderRow uploadHeaderRow1">
+                <div ng-hide = "modalMode == 'edit'" style= "margin-top: -1%;margin-left: 1%" ng-click = "cancel()"><span class = "glyphicon glyphicon-remove"></span></div>
+          <div style = "margin-left: 29%;" ng-show = "modalMode == 'edit'">{{currentSong.name}}</div>
+          <div style = "margin-left: 29%;" ng-show = "modalMode == 'form'"> Sign up or Sign in to upload your music! </div>
+          <div style = "margin-left: 29%;" ng-show = "modalMode == 'upload'"> Upload a Song into RadioRise! </div>
+
+        </div>
             <!-- <h3 class="modal-title">{{userProfile.username}}</h3> -->
-          <div class = "flexHorizontal uploadHeaderRow uploadHeaderRow2">
-            <div class = "uploadHeaderRadioButtons">
+      <div class = "playerForModal flexHorizontal uploadHeaderRow uploadHeaderRow2"ng-class = "{playerForModalAnim: currentSong.filepath}">
+        <div style = "width: 90%;" class = "" ng-show = "currentSong.filepath">
+         <div class = "uploadHeaderRadioButtons">
                  <div ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "playButton "></div>
                  <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
           </div>
               <div class = " uploadProgressBar ">
                        <md-slider step = "0.001" flex="" ng-model="sound.progress" min="0" max="1" aria-label="blue" id="blue-slider" class="md-primary">
-      </md-slider>
+                 </md-slider>
               </div>
-            </div>
+          </div>
+        </div>
 
 <div class="mainUploadModalDiv" ng-class = '{mainUploadModalDivAnimation: animationSwitch}'>
-        
         <div class = "uploadPaneContent">
 
 
   <!-- START OF LOGGEDIN CHECK -->
 
-        <div class = "uploadSongPanePlayer" ng-hide = "editMode">
+        <div class = "uploadSongPanePlayer" ng-show = "modalMode == 'form'">
 
-   <div class =  "uploadSongPaneFormArea" ng-show = "currentSong.filepath">
+   <div class =  "uploadSongPaneFormArea" ng-show = "!User.profile">
 
 
    <tabset>
@@ -32,7 +40,8 @@
       <div style ="width: 50%;
     font-size: 16px;
     margin-left: 25%;
-        margin-top: 3.75%;" layout="" layout-sm="column">
+        margin-top: 3.75%;
+        flex-direction: column;" layout="" layout-sm="column">
         <md-input-container flex="">
           <label>Username</label>
           <input ng-model="userData.username">
@@ -45,21 +54,25 @@
         
 
             <p id = "signupMessage">{{message}}</p>
-           <p><input style="" class="btn btn-primary"  type="submit" id="submit" value="Login" /> 
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+           <p style = "margin-left:40%;"><input style="" class="btn btn-primary"  type="submit" id="submit" value="Login" /> 
             </p>
 
 
     </form>
-    </tab>
+            <button class="btn btn-warning" style = "
+            float:right;
+    margin-right: 365px;
+    margin-top: -44px;" ng-click="cancel()">Cancel</button>
+   </tab>
     <tab heading="Sign Up">
     <form ng-submit="signup()">
 
 
   <div style ="width: 50%;
-    font-size: 16px;
-    margin-left: 25%;
-        margin-top: 3.75%;" layout="" layout-sm="column">
+        font-size: 16px;
+        margin-left: 25%;
+        margin-top: 3.75%;
+        flex-direction: column;" layout="" layout-sm="column">
         <md-input-container flex="">
           <label>Username</label>
           <input ng-model="userData.username">
@@ -80,25 +93,96 @@
 
 
             <p id = "signupMessage">{{message}}</p>
-
-           <p><input style="" class="btn btn-primary"  type="submit" id="submit" value="Sign Up" />
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+           <p style = "margin-left:40%;"><input style="" class="btn btn-primary"  type="submit" id="submit" value="Sign Up" />
            </p>
 
     </form>
+            <button class="btn btn-warning" style = "
+            float:right;
+    margin-right: 390px;
+    margin-top: -44px;" ng-click="cancel()">Cancel</button>
     </tab>
   </tabset>
   </div>
   </div>
+
+  <!-- START OF UPLOAD AREA -->
+        <div class = "uploadSongPanePlayer" ng-show = "modalMode == 'upload'">
+       
+<div class = "uploadRulesDiv flexVertical">
+  <div style = "font-size: 20px;">
+    <div>
+     Don't upload Copyrighted Music
+    </div>
+    <div>
+       You are agreeing to the rest of the terms of service by uploading.
+    </div>
+  </div>
+</div>
+  
+  <input type="file" nv-file-select="" uploader="uploader" id = "hiddenUploadButton" />
+    <div style ="" 
+    file-button class="modalUploadBox" nv-file-drop="" uploader="uploader" filters="lengthFilter, formatFilter,sizeFilter" ng-click = "clickHiddenUpload()">
+                <div class="my-drop-zone" nv-file-over=""  uploader="uploader" ng-hide = "uploader.queue.length > 0">
+                 <!-- glyphicon glyphicon-cloud-upload -->
+                 <div class = "">
+                    <div style = "
+                    font-weight: 300;
+                    font-size: 20px;  
+                    color: white;
+                    font-family: Roboto;  ">
+                    Drag and Drop to Upload
+                      <div style = "font-size: 30px;">
+                      {{uploadMessage}}
+                      </div>
+                    </div>
+                 </div>
+                </div>
+                <div class ="my-drop-zone-filled" ng-repeat="item in uploader.queue">
+                    <div class = "uploadNameDiv"><strong>{{ item.file.name }}</strong> 
+                    <td ng-show="uploader.isHTML5" nowrap> - {{ item.file.size/1024/1024|number:2 }} MB</td></div>
+                              <div class = "uploadButtons"> 
+                               <!--      <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                        <span class="glyphicon glyphicon-upload"></span> Upload
+                                    </button> -->
+                                <!--     <button type="button" class="btn btn-warning btn-xs" ng-click="openSongModal()" ng-disabled="item.isUploading">
+                                         <span class="glyphicon  glyphicon-edit"></span> Edit
+                                    </button> -->
+<!--                                     <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove();">
+                                      
+                                        <span class="glyphicon glyphicon-trash"></span> Remove
+                                    </button> -->
+                                       {{uploadMessage}}
+                             
+                              </div>
+
+
+<!--       <div class = "modalUploadProgressBar " style="margin-bottom: 0;">
+       <div class="progress-bar " role="progressbar" ng-style="{ 'width': item.progress + '%' }" >   
+     </div>
+         </div> -->
+                               
+
+                </div>
+
+            </div>
+  
+
+
+          </div>
+
 <!-- START OF EDIT CONTENT -->
-            <div class = "uploadSongPanePlayer" ng-show = "editMode">
+            <div class = "uploadSongPanePlayer" ng-show = "modalMode == 'edit'">
+
             <div class =  "uploadSongPanePlayerSongData" ng-show = "currentSong.filepath">
           <form>
   <div style ="width: 50%;
+    flex-direction: column;
     font-size: 16px;
     margin-left: 25%;
-        margin-top:-20%;
-        height:200px;" layout="" layout-sm="column">
+    margin-top: -16%;
+    height: 400px;" layout="" layout-sm="column">
+    Type a Station Tag that doesn't exist in order to create a brand new station!
                 <tags-input ng-model="currentSong.tags" display-property="name" 
                       placeholder="Station Tags" 
                       replace-spaces-with-dashes="false"
@@ -113,7 +197,9 @@
                      source="loadTags($query)"
                      template="autocomplete-template"></auto-complete>
           </tags-input>
-        <md-input-container flex="">
+        <md-input-container style = "    
+        margin-bottom: -35%;
+        margin-top: 5%;" flex="">
           <label>Song Name</label>
           <input ng-model="editChangesObj.name">
         </md-input-container>
@@ -122,12 +208,21 @@
         <textarea  ng-model="editChangesObj.description" columns="1" md-maxlength="140"></textarea>
 
       </md-input-container>
+
   </div>
        
 
-        <button style = "margin-top: 100px;" class="btn btn-warning" ng-click="sendEdits(currentSong)">Confirm</button>
+        <button style = "margin-top: -212px;
+    margin-left: 680px;" class="btn btn-warning " ng-click="sendEdits(currentSong)">
+     <!-- <span class="glyphicon glyphicon-ok"></span> -->
+     Confirm</button>
 
          </form>
+        <button style = "    margin-top: -552px;
+    margin-left: 20px;
+    height: 36px;
+    width: 175px;
+" class="btn btn-primary " ng-click="resetAndUploadAgain()"> <span class="glyphicon glyphicon-cloud-upload"></span> Upload Another Song</button>
 
             <!-- Tags: -->
 <!--            <button class="btn btn-primary-xs" ng-click="addTag(song)">Add Tag</button>
@@ -148,13 +243,20 @@
         </div>
                        <div class = " uploadHeaderRow uploadHeaderRow3">
                   
-                    Share link: <b>{{shareURL}}</b>
+                    <!-- Share link: <b>{{shareURL}}</b> -->
                     
                     <!-- <input class = "uploadShareURL" type="text" ng-model="shareURL" onClick="this.select();" readonly /> -->
                   </div> 
 
                   <div class = "uploadHeaderRow uploadHeaderRow4">
-                    <div
+
+    <div class = "modalUploadProgressBar " style="margin-bottom: 0; background-color:'grey'" ng-show = "modalMode == 'upload'">
+       <div class="progress-bar " role="progressbar" ng-style="{ 'width': uploader.queue[0].progress + '%' }" >   
+     </div>
+
+   </div>
+
+   <!--                  <div
                     socialshare 
                     socialshare-provider="twitter"
                     socialshare-text= ""
@@ -171,19 +273,22 @@
                     socialshare-provider="google+"
                     socialshare-text= ""
                     socialshare-url="http://risingtest.azurewebsites.net/#/s/{{currentSong._id}}"
-                    class = 'googleShareButton'> </div>
-
+                    class = 'googleShareButton'> </div> -->
+                    <div>  {{editSectionMessage}}</div>
                  </div>
 
         </div>
 
 
         <div class="modal-footer songFormFooter">
-          <div class = "flexHorizontal" ng-show = "editMode">
-          Choose some station tags to have your song rated!
+          <div class = "flexHorizontal" ng-show = "modalMode == 'edit'">
+            Choose some station tags to have your song rated!
           </div>
-          <div class = "flexHorizontal" ng-hide = "editMode">
-          Sign up to enjoy rating music and uploading songs!
+          <div class = "flexHorizontal" ng-show = "modalMode == 'upload'">
+            Upload your music.
+          </div>
+          <div class = "flexHorizontal" ng-show = "modalMode == 'form'">
+            Sign up or Sign in to upload your music!
           </div>
         </div>
 
@@ -193,7 +298,8 @@
         </div>
         <div class="right-panel">
           <span style = "font-weight:900">{{data.name}}</span>
-          <span>Created By: findest</span>
+          <span>Created By: {{data.creator}}</span>
+          <span>Number of Songs: {{data.songs.length}} </span>
         </div>
       </div>
     </script>

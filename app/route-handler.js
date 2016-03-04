@@ -110,6 +110,11 @@ exports.getProfile = function(req, res) {
      // console.log(songs[0]);
 
       var relevantTag = retrieveRelevantTagFromSong(songs[0] , req.user.station);
+
+     if(relevantTag === undefined){
+      var relevantTag = retrieveRelevantTagFromSong(songs[0] , 'all');
+      
+      }
       console.log(relevantTag);
       relevantTag['upvotes'] = relevantTag['upvotes'] + 1;
       songs[0].upvotes = songs[0].upvotes + 1;
@@ -170,10 +175,14 @@ exports.downvoteSong = function(req, res) {
         res.send("Song has already been voted by User");
       }
       else{
-     // console.log(req.user.station);
+     console.log(req.user.station);
      // console.log(songs[0]);
 
       var relevantTag = retrieveRelevantTagFromSong(songs[0] , req.user.station);
+      if(relevantTag === undefined){
+      var relevantTag = retrieveRelevantTagFromSong(songs[0] , 'all');
+      }
+
       relevantTag['downvotes'] = relevantTag['downvotes'] + 1;
       songs[0].downvotes = songs[0].downvotes + 1;
       console.log("relevantTag: " + relevantTag);
@@ -506,9 +515,9 @@ else {
                                 console.log(newSong.tags[i]['tagname']);
 
                           var passIntoAsync = newSong.tags[i]['tagname']; 
-                         // console.log( passIntoAsync );
+                         console.log( passIntoAsync );
                     
-                       function asyncTagOperations(tagNameAsync, newSong){
+                       function asyncTagOperations(tagNameAsync, newSong, creatorID, creator){
                              
                             Tag.find({'name': tagNameAsync},function (err, tags) {
                           if (err) return console.error(err);
@@ -523,11 +532,17 @@ else {
                             
                             var tagname =  tagNameAsync;
                             var songRankArr = [];
-
+                            
+                            var createdTagAt = new Date();
+                             console.log(creatorID);
+                             console.log(creator);
                             var newTag = new Tag({
                                     name: tagname,
+                                    creatorID: creatorID,
+                                    creator: creator,
                                     views: 0,
                                     group: "genre",
+                                    createdAt: createdTagAt,
                                     songs: tempSongArr,
                                     songRankings: songRankArr
                                   });
@@ -715,14 +730,14 @@ exports.editSong = function(req, res) {
                res.send(err); 
             } else {
                     
-             addTagsToSong(newSong, tagsToBeAdded);
+             addTagsToSong(newSong, tagsToBeAdded, songs[0].creatorID, songs[0].creator);
              removeSongFromTags(newSong, tagsToBeRemoved);
               res.json(newSong);
        
           }
         });
 
-        
+          
       
      }
 
@@ -738,7 +753,7 @@ exports.editSong = function(req, res) {
 
 
 //ASYNC OPERATIONS
-function addTagsToSong(newSong, tagsToBeAdded){
+function addTagsToSong(newSong, tagsToBeAdded, creatorID, creator){
   console.log('addTagsToSong has activated');
                        function TagOperations(tagName, newSong){
                              
@@ -755,11 +770,17 @@ function addTagsToSong(newSong, tagsToBeAdded){
                             
                             var tagname =  tagName;
                             var songRankArr = [];
-
+                            
+                            var createdTagAt = new Date();
+                             console.log(creatorID);
+                             console.log(creator);
                             var newTag = new Tag({
                                     name: tagname,
+                                    creatorID: creatorID,
+                                    creator: creator,
                                     views: 0,
                                     group: "genre",
+                                    createdAt: createdTagAt,
                                     songs: tempSongArr,
                                     songRankings: songRankArr
                                   });

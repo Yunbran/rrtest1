@@ -1,4 +1,4 @@
-app.controller('PlayerController', function($scope, $http, $modal, $log, $window, $timeout, $stateParams, $state, $window, $timeout, ngAudio, FileUploader, basket, localStorageService, stripe, User) {
+app.controller('PlayerController', function($scope, $http, $modal, $log, $window, $timeout, $stateParams, $state, $window, $timeout, ngAudio, basket, localStorageService, stripe, User) {
 
 //START OF INSTANTIATION--------------------------------------------------
  
@@ -16,7 +16,7 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
 
  $scope.historyArray = [];
  $scope.tagArray = [];
- 
+ $scope.allUsersArray = [];
 
  $scope.hasUploaded = false;
  $scope.subMessageArray =[{msg: "where the best music always rises to the top"},{msg: "you decide the breakout songs of tomorrow"},{msg: "your music could be the hit of the century!"},{msg: "Upload below!"},{msg: "Choose a Station Tag!"}]
@@ -26,6 +26,12 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
  $scope.currentHistoryIndex = 0;
  $scope.historyMode = 'history';
  $scope.stationMode = 'main';
+ $scope.imageSourceArray = [];
+ $scope.imageSourceArray.push('./media/pic/1_2.png');
+ $scope.imageSourceArray.push('./media/pic/2_2.png');
+ $scope.imageSourceArray.push('./media/pic/3animation.png');
+ $scope.upvoteAnimationFrame = false;
+ $scope.playerUpvoteInfoImageDisplay = true;
 
  $scope.skipDisabled = false;
 
@@ -64,17 +70,41 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
    User.storedData = getLocalStorage("data");
  }
 
-//logic Train STARTS HERE
+//logic Train STARTS HERE put some code here into init
  
 //if the window has an authToken go ahead and get the Profile  
   if(User.authToken && User.authToken !== 'undefined') {
     getUser();
   } 
   else {
-      updatePage();
-      
+    initStation(); 
   }
+   
+// go back to userProfile later to put in initStation
+   function initStation(){
+
+  //for SearchBar
+    var afterUpdateCallBack = function()
+    { 
+       var afterGettingUsersArrayCallBack = function(){
+        $scope.repos = loadAll(); 
+       }
+     
+      $scope.activateStation({name:'all'});
+      getAllUsers(afterGettingUsersArrayCallBack);
+    }
+
+    getTags(afterUpdateCallBack);   
+
+   }
+
+   function initialize() {
+
+
+   }
+
   
+//THIS SNIPPET EXISTS FOR SHARING SONGS 
   if($stateParams["songId"]){
     var tempPostObj = {};
 
@@ -104,17 +134,12 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
  //Test function. DEV Function only
  $scope.check = function () {
 
-    // console.log(getLocalStorage("token"));
-    // console.log(User.authToken);
-    // console.log($scope.userProfile);
-    // console.log($scope.shareURL);
-    // uploadURLSwitch();
-    // $scope.resetLikeBar();
-    // console.log($scope.demoTagArrays);
-    // $scope.sound.setProgress(0.99999999999999999999999);
-    console.log( $scope.firstVisit );
-// $scope.screenVar +=5;
-// $scope.screenModifier = $scope.screenVar + "%";
+    console.log($scope.ratedSongTableObj); 
+    // console.log( $scope.firstVisit );
+    // console.log($scope.animationSwitch);
+
+
+
         // $http.post("/stripeEnd", {adminCode: "snake"})
         //   .success(function(response) {
         //     console.log(response);
@@ -148,7 +173,7 @@ $scope.payment = {
   }
 }
   $scope.charge = function () {
-$scope.payment.plan = "premium";
+  $scope.payment.plan = "premium";
     console.log("Asdasd", $scope.payment.card);
 
     var chargeResponse = stripe.card.createToken($scope.payment.card)
@@ -238,10 +263,12 @@ function callbackDecorator(func, addedFunc) {
  });
 
 //Updates $scope.displaySongs and $scope.displayTags by requesting to the server
-function updatePage(){
-      getStation();
+function updatePage(callback){
+      // getStation();
       getTags();
-
+  if(callback){
+    callback();
+  }
 };
 
 function setLocalStorage(key, val) {
@@ -260,24 +287,32 @@ function getUserProfile(){
           User.profile = $scope.userProfile;
           console.log($scope.userProfile)
           $scope.profileLetter = $scope.userProfile.username.substring(0,1).toUpperCase();
-          uploadURLSwitch();
-          //console.log($scope.userProfile);
+
+          console.log($scope.userProfile);
           //populates hash Table with the array;
           for(var i = 0;i < $scope.userProfile.upvoted.length; i++){
             $scope.ratedSongTableObj[$scope.userProfile.upvoted[i]._id] = $scope.userProfile.upvoted[i]._id;
-            console.log($scope.userProfile.upvoted[i]._id);
+            // console.log($scope.userProfile.upvoted[i]._id);
           }  
 
           for(var i = 0;i < $scope.userProfile.downvoted.length; i++){
-            $scope.ratedSongTableObj[$scope.userProfile.downvoted[i]._id] = $scope.userProfile.downvoted[i]._id;
+            $scope.ratedSongTableObj[$scope.userProfile.downvoted[i]] = $scope.userProfile.downvoted[i];
+               // console.log($scope.userProfile.downvoted[i]);
           } 
 
           //remove this if you want people to rate their own songs
-          for(var i = 0;i < $scope.userProfile.songs.length; i++){
-            $scope.ratedSongTableObj[$scope.userProfile.songs[i]._id] = $scope.userProfile.songs[i]._id;
+          // for(var i = 0;i < $scope.userProfile.songs.length; i++){
+          //   $scope.ratedSongTableObj[$scope.userProfile.songs[i]._id] = $scope.userProfile.songs[i]._id;
+          // }
+          console.log("OKAY ");
+          console.log($scope.ratedSongTableObj);
+          if($scope.currentStation)
+          {
+            getTags();
+          } else {
+            initStation();
           }
-      // console.log("OKAY ")
-      updatePage();
+
         })
         .error(function(){
 
@@ -289,16 +324,31 @@ function getUser(){
     .success(function (data, status, headers, config) {
       $scope.user = data;
      // console.log($scope.user);
-
+     User.label = data;
      // $scope.currentStation = $scope.user.station;
         getUserProfile();
     })
     .error(function (data, status, headers, config) {
-      updatePage();
+      initStation();
     }); 
 
 }
 
+function getSpecificUser(specificUserString, callback){
+
+    $http.post("/getUserByName", specificUserString)
+    .success(function (data, status, headers, config) {
+      
+      if(callback) {
+      callback(data);  
+      }
+    
+    })
+    .error(function (data, status, headers, config) {
+      console.log("ERROR IN USER RETRIEVAL");
+    }); 
+
+}
 //GETS SONGS FROM SERVER AND LISTS THEM --safe to delete
 // function getSongs(){
 
@@ -379,7 +429,7 @@ function getUser(){
 
 //GETS TAGS FROM SERVER AND LISTS THEM
 
- function getTags(){
+ function getTags(callback){
 
   $http.get("/getTags")
   .success(function(response) {
@@ -418,10 +468,31 @@ function getUser(){
     $scope.demoTagArrays.push(tempLoopArray);
   }
 }
+
+
 //move these into a call back later
-  $scope.activateStation($scope.tagArray[0]);
-//repos are for the searchbar
-   $scope.repos = loadAll(); 
+
+     if(callback){
+      callback();
+     }
+
+  });
+
+}
+
+//GETS USERS FROM DATABASE AND STORES THEM IN LOCAL VAR $scope.allUsersArray
+ function getAllUsers(callback){
+
+  $http.get("/getUsers")
+  .success(function(response) {
+    $scope.allUsersArray = response;
+    console.log(response);
+//move these into a call back later
+
+     if(callback){
+      callback();
+     }
+
   });
 
 }
@@ -472,24 +543,59 @@ function getUser(){
   //Then excises the songs already rated in profile from the playlist.
   //Lastly, it picks the nextSong to play.
 
-   function runStationAlgorithm(){
+   function runStationAlgorithm(hasRatedEverySong){
     console.log("runStationAlgorithm");
-    $scope.percentageArray = calculatePercentage();
+    $scope.percentageArray = calculatePercentage(hasRatedEverySong);
     $scope.nextSong = pickNextSong($scope.customSongArray, $scope.percentageArray);
 
+  //if the $scope.nextSong is undefined for whatever reason(likely all songs have been rated)
+  //run the stationAlgorithm with every song rated 
+    if($scope.nextSong === undefined){
+
+     runStationAlgorithm(true);
+    }
   }
 
 
-   function calculatePercentage(){
+   function calculatePercentage(hasRatedEverySong){
     // console.log("calculatePercentage Ran");
     var songArray = $scope.currentStationData.songs;
     var percentageArray = [];
     $scope.customSongArray = [];
 
-    //console.log(songArray);
+    // console.log(songArray);
+    // console.log($scope.currentStation);
+    console.log(hasRatedEverySong)
     for(var i = 0; i < songArray.length;i++){
       //relevantTagData retrieves the right tag from the tag array inside the Song Object
+   if(hasRatedEverySong != true){
       if(!$scope.ratedSongTableObj[songArray[i]._id]){
+        if($scope.currentStation === "all")
+        {
+           var weightNumber = ((songArray[i]['upvotes'] + 3) - songArray[i]['downvotes']);
+         
+          if(weightNumber < 1){
+            weightNumber = 0;
+          }
+
+          percentageArray.push(weightNumber);
+          $scope.customSongArray.push(songArray[i]);
+        
+        } else {
+      var relevantTagData = retrieveRelevantTagFromSong(songArray[i],$scope.currentStation);
+     
+      var weightNumber = ((relevantTagData['upvotes'] + 3) - relevantTagData['downvotes']);
+      // console.log(weightNumber);
+      if(weightNumber < 1){
+        weightNumber = 0;
+      }
+      percentageArray.push(weightNumber);
+    
+      $scope.customSongArray.push(songArray[i]);
+        }
+      
+      } 
+   } else {
 
         if($scope.currentStation === "all")
         {
@@ -506,7 +612,7 @@ function getUser(){
       var relevantTagData = retrieveRelevantTagFromSong(songArray[i],$scope.currentStation);
      
       var weightNumber = ((relevantTagData['upvotes'] + 3) - relevantTagData['downvotes']);
-      //console.log(weightNumber);
+      // console.log(weightNumber);
       if(weightNumber < 1){
         weightNumber = 0;
       }
@@ -515,7 +621,8 @@ function getUser(){
       $scope.customSongArray.push(songArray[i]);
         }
       
-      } 
+      
+      }
       
 
     }
@@ -525,14 +632,14 @@ function getUser(){
 
   function pickNextSong(songArr, percentageArr)
   {
-    //console.log("pickNextSong");
+    // console.log("pickNextSong");
     try{
     var nextSong = chance.weighted(songArr, percentageArr);
     console.log(nextSong);
     return nextSong;
     }
     catch(err){
-       //console.log(err);
+       // console.log(err);
        $scope.playMessage = "You have rated every song in this station!"
        if($scope.sound)
        $scope.sound.pause();
@@ -586,6 +693,9 @@ function getUser(){
 
   }
 
+ $scope.refreshPage = function(){
+          window.location.reload();
+ }
  $scope.resetStation = function(){
 
         window.location.reload();
@@ -662,10 +772,26 @@ $scope.upvoteIndex = undefined;
       
     }
    
+ }
+  $scope.changeHistoryIndex = function(num){
+      
+    if($scope.historyMode === 'history'){
 
+        $scope.historyIndex = num;
+
+    } else if($scope.historyMode === 'favorite'){
+
+        $scope.favoriteIndex = num;
+
+      } else if($scope.historyMode ==='upvote'){
+
+        $scope.upvoteIndex = num;
+
+    }
 
 
  }
+
 
 function changeStationMode(type){
       if(type === 'main'){
@@ -674,13 +800,7 @@ function changeStationMode(type){
       }
     $scope.stationMode = type;
 }
-  function uploadURLSwitch(){
-          if($scope.userProfile) {
-            $scope.uploader.url = "/api/uploadSong";
-            } else {
-            $scope.uploader.url = "/uploadTempSong";
-            }
-  }
+
  function retrieveRelevantTagFromSong(song, targetTagName)
  {
   
@@ -688,6 +808,8 @@ function changeStationMode(type){
      
  }
 $scope.rateCheck = function(){
+  console.log("rateCheck")
+  console.log($scope.currentSong);
   console.log($scope.ratedSongTableObj)
   if($scope.ratedSongTableObj[$scope.currentSong._id]) {
     $scope.currentSong.rated = true;
@@ -730,10 +852,11 @@ $scope.activateAndPlaySong = function(song, index){
 
 $scope.activateAndPlaySongFromDifferentMode = function(song, index){
 
-   console.log($scope.historyMode);
-       changeStationMode($scope.historyMode);
-   console.log(index);
+ console.log($scope.historyMode);
+ changeStationMode($scope.historyMode);
+ console.log(index);
  console.log('$scope.activateAndPlaySongFromDifferentMode ');
+
    $scope.isStationPlaying = false;
  if(index || index === 0) {
     $scope.currentHistoryIndex = index;
@@ -794,14 +917,14 @@ $scope.songEndsInHistoryMode = function(){
 
 //Activates the UPLOADER to upload everything in the queue
 //IF the user is not logged in, show the signup window
-$scope.uploadAll = function()
-{
-  if($scope.user){
-    uploader.uploadAll();
-  } else {
-   $scope.openSignupModal('lg');
-  }
-}
+// $scope.uploadAll = function()
+// {
+//   if($scope.user){
+//     uploader.uploadAll();
+//   } else {
+//    $scope.openSignupModal('lg');
+//   }
+// }
 
 //Scope functions below
   $scope.activateSong = function(song, playFromFavoriteOrUpBool){
@@ -856,9 +979,9 @@ $scope.uploadAll = function()
     } 
 
 
-        $scope.rateCheck();
 
     $scope.currentSong = song;
+        $scope.rateCheck();
     // console.log($scope.ratedSongTableObj);
     //functions for the generator
    
@@ -896,15 +1019,19 @@ $scope.uploadAll = function()
     $scope.sound.play();
   };
   $scope.playSongFromStation =function(){
-
+      
     $scope.firstVisit = false;
-    
+
     $scope.sound.play();
   }
     //fix this behavior one day without the hotfix
     $scope.stationHistoryHotfix = false;
 
-    $scope.activateStation = function(tag){
+    $scope.activateStation = function(tag, visitBool){
+      
+      //hotfix for firstvisitFlag
+      if(visitBool){ $scope.firstVisit = false;}
+
       console.log(tag);
     if(tag.tagname) {
       $scope.currentStation = tag.tagname;
@@ -921,23 +1048,25 @@ $scope.uploadAll = function()
         playNextSong(); 
         $scope.animationSwitchMainLabel = true;
         } 
+    
       }
 
 
       $scope.stationHistoryHotfix = true;
-      $scope.animationSwitchMainLabel =false;
+      $scope.animationSwitchMainLabel = false;
       $scope.historyMode = 'history';
       $scope.currentHistoryIndex  = 0;
-         changeStationMode('main');
+      changeStationMode('main');
+      
       getStation(cb);
 
          $timeout(function(){
         $scope.isStationPlaying = true;
         /*??????????????????????????????????????????????????????????????????????????????????????????????*/
-           if($scope.sound) //REEEEEEEMOOOOOOVE
+       if($scope.sound) //REEEEEEEMOOOOOOVE
        $scope.sound.pause();
      /*REMOVE TOP*/
-      }, 3);
+      }, 1);
   }
 
   $scope.skipSong = function(){
@@ -1029,147 +1158,16 @@ $scope.uploadAll = function()
 
 
  $scope.clickUpload = function(){
-  console.log("triggered");
+  $scope.openUploadModal();
+
   //    $timeout(function() {
   //   angular.element($('#hiddenUploadButton')).triggerHandler('click');
   // }, 100);
 
-    angular.element($('#hiddenUploadButton')).click();
+  // angular.element($('#hiddenUploadButton')).click();
   // console.log(angular.element($('#hiddenUploadButton')).text());
  }
 
-//TEST STUFF BELOW
-        var uploader = $scope.uploader = new FileUploader({
-            url: '/uploadTempSong',
-            queueLimit: 1   
-        });
-     
-      uploadURLSwitch();
-      $scope.songMessage = "";
-      
-      uploader.filters.push({
-          name: 'formatFilter',
-          fn: function(item) {
-            if(item.type === "audio/mp3"){
-              return true;
-            }
-            else
-            {
-              $scope.uploadFeedbackMessage = "Mp3 files only!";
-              return false;
-            }
-          }
-      });
-
-
-      uploader.filters.push({     name: 'sizeFilter',     fn: function(item) {
-      if(item.size <= 10000000 && item.size > 0){   return true; } else {
-      $scope.uploadFeedbackMessage  = "Maximum of 10 MB per file!";   return
-      false; }     } });
-
-//lengthFilter not working
-      uploader.filters.push({
-          name: 'lengthFilter',
-          fn: function(item) {
-            if( this.queue.length < this.queueLimit){
-              return true;
-            }
-            else
-            {
-              $scope.uploadFeedbackMessage  = "Maximum of 1 file!";
-              return false;
-            }
-          }
-      });
-
-
-        //HELPER FUNCTIONS
-
-        //returns date from mongo id
-        var dateFromObjectId = function (objectId) {
-          return new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
-        };
-
-        // CALLBACKS
-
-        uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
-            console.info('onWhenAddingFileFailed', item, filter, options);
-            $scope.uploadMessage = "An unexpected error has occurred. Please try again later.";
-        };
-        uploader.onAfterAddingFile = function(fileItem) {
-            console.info('onAfterAddingFile', fileItem);
-        };
-        uploader.onAfterAddingAll = function(addedFileItems) {
-            console.info('onAfterAddingAll', addedFileItems);
-           uploader.uploadAll();
-        };
-        uploader.onBeforeUploadItem = function(item) {
-            console.info('onBeforeUploadItem', item);
-              
-            
-            console.log(item.headers['tagArray']);
-           // console.log(item.headers);  
-           var tempTagArray = [];
-
-            for(var tagKey in item.headers['tagArray']){
-                tempTagArray.push(item.headers['tagArray'][tagKey].tag);
-            }
-
-
-            item.headers['tagArray'] = JSON.stringify(tempTagArray);
-            item.headers['filepath'] = item._file.name;
-            item.headers['authorization'] = 'Bearer ' + User.authToken;
-            console.log(item.headers);
-        };
-        uploader.onProgressItem = function(fileItem, progress) {
-            console.info('onProgressItem', fileItem, progress);
-        };
-        uploader.onProgressAll = function(progress) {
-            console.info('onProgressAll', progress);
-        };
-        uploader.onSuccessItem = function(fileItem, response, status, headers) {
-            console.info('onSuccessItem', fileItem, response, status, headers);
-            // fileItem.tempURL = "http://risingtest.azurewebistes.com/#/s/553572a83c77568410615037" + response._id;
-            //resetPlayer();
-
-            // $scope.hasUploaded = true;
-            // $scope.currentSong = response["songObj"];
-            // $scope.currentStation = "upload";
-            // $scope.activateAndPlaySong($scope.currentSong);
-            // $scope.uploadMessage = "Success!";
-            // $scope.isStationPlaying = false;
-            //$timeout(function(){
-            // }, 400);
-            
-            // DEV URL = http://localhost:8000/#/s/
-            // REAL URL = http://radiorise.com/#/s/
-            
-             getUserProfile();
-             basket['uploadedSong'] = response["songObj"];
-             console.log(response["unhashedClaimCode"]);
-
-            User.storedData['claimCodeMap'][basket['uploadedSong']._id] = response["unhashedClaimCode"];
-
-            $scope.openUploadModal('lg');
-            $scope.shareURL =  "http://localhost:8000/#/s/" + $scope.currentSong["_id"];
-        };
-        uploader.onErrorItem = function(fileItem, response, status, headers) {
-            console.info('onErrorItem', fileItem, response, status, headers);
-            $scope.uploadMessage = response;
-            // console.log( $scope.hasUploaded);
-        };
-        uploader.onCancelItem = function(fileItem, response, status, headers) {
-            console.info('onCancelItem', fileItem, response, status, headers);
-        };
-        uploader.onCompleteItem = function(fileItem, response, status, headers) {
-            console.info('onCompleteItem', fileItem, response, status, headers);
-        };
-        uploader.onCompleteAll = function() {
-            console.info('onCompleteAll');
-            updatePage();
-        };
-
-      //console.info('uploader', uploader);
 
      //End of callbacks for uploader
 
@@ -1178,7 +1176,7 @@ $scope.uploadAll = function()
 
     var modalInstance = $modal.open({
       templateUrl: './views/modal/signup.html',
-      controller: 'ModalController',
+      controller: 'SignupController',
       size: size,
       resolve: {
         userProfile:function(){
@@ -1186,42 +1184,41 @@ $scope.uploadAll = function()
         },
         items: function () {
           return $scope.items;
-        },
-        uploader: function () {
-          return $scope.uploader;
         }
       }
     });
 
      modalInstance.result.then(function (modalUserData) {
+      // console.log(modalUserData);
+      if(modalUserData){
       $scope.userData = modalUserData;
-      console.log(modalUserData);
-      $scope.login();
+      $scope.login();  
+      }
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
     });
   };
     
-    $scope.openLoginModal = function (size) {
+  //   $scope.openLoginModal = function (size) {
 
-    var modalInstance = $modal.open({
-      templateUrl: './views/modal/login.html',
-      controller: 'ModalController',
-      size: size,
-      resolve: {
-        items: function () {
-          return $scope.items;
-        }
-      }
-    });
+  //   var modalInstance = $modal.open({
+  //     templateUrl: './views/modal/login.html',
+  //     controller: 'ModalController',
+  //     size: size,
+  //     resolve: {
+  //       items: function () {
+  //         return $scope.items;
+  //       }
+  //     }
+  //   });
 
-    modalInstance.result.then(function (modalUserData) {
-      $scope.userData = modalUserData;
-      $scope.login();
-    }, function () {
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-  };
+  //   modalInstance.result.then(function (modalUserData) {
+  //     $scope.userData = modalUserData;
+  //     $scope.login();
+  //   }, function () {
+  //     $log.info('Modal dismissed at: ' + new Date());
+  //   });
+  // };
 
   $scope.openUploadModal = function (size) {
 
@@ -1231,6 +1228,7 @@ $scope.uploadAll = function()
       size: size,
       backdrop : 'static',
       keyboard: false,
+      windowClass: 'uploadModal',
       resolve: {
         userProfile:function(){
           return $scope.userProfile;
@@ -1254,43 +1252,58 @@ $scope.uploadAll = function()
     });
   };
 
-$scope.openProfileModal = function (size) {
+// $scope.openProfileModal = function (size) {
 
-        if($scope.sound)
-       $scope.sound.pause();
+//         if($scope.sound)
+//        $scope.sound.pause();
 
-    var modalInstance = $modal.open({
-      templateUrl: './views/modal/profile.html',
-      controller: 'ModalController',
-      size: size,
-      resolve: {
-        userProfile:function(){
-          return $scope.userProfile;
-        },
-        uploader: function () {
-          return $scope.uploader;
-        }
-      }
-    });
+//     var modalInstance = $modal.open({
+//       templateUrl: './views/modal/profile.html',
+//       controller: 'ModalController',
+//       size: size,
+//       resolve: {
+//         userProfile:function(){
+//           return $scope.userProfile;
+//         },
+//         uploader: function () {
+//           return $scope.uploader;
+//         }
+//       }
+//     });
 
-     modalInstance.result.then(function (modalData) {
-        //weird glitch where the first func does not work but the second function does
-    }, function (modalData) {
-      // console.log(modalData);
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-  };
+//      modalInstance.result.then(function (modalData) {
+//         //weird glitch where the first func does not work but the second function does
+//     }, function (modalData) {
+//       // console.log(modalData);
+//       $log.info('Modal dismissed at: ' + new Date());
+//     });
+//   };
 
 //end of Modal Functions
 
-  $scope.goToProfile = function () {
+  $scope.goToProfile = function (specificProfile) {
     
-    basket["userProfile"] = $scope.userProfile;
-    console.log(basket["userProfile"] );
+    // basket["specificProfile"] = undefined;
+
+    if(specificProfile){
+
+    // basket["userProfile"] = $scope.userProfile;
+    // basket["specificProfile"] = specificProfile;
     console.log(basket);
     stopSong();
-    $state.go('profile');
-              }
+    $state.go('sharedProfile',{profileName: specificProfile});
+
+    } else {
+    // basket["userProfile"] = $scope.userProfile;
+    console.log(basket);
+    stopSong();
+    $state.go('sharedProfile',{profileName: User.profile.username});
+      
+    }   
+
+   }
+
+
 //Authentication TEST
 // $http.get("/api/restricted")
 //   .success(function (data, status, headers, config) {
@@ -1335,6 +1348,7 @@ $scope.openProfileModal = function (size) {
         // Erase the token if the user fails to log in
         delete User.authToken;
         delete User.storedData;
+        delete User.profile;
         setLocalStorage('token', undefined);
         console.log("Logged out!");
         $scope.user = undefined;
@@ -1345,10 +1359,10 @@ $scope.openProfileModal = function (size) {
 
  $scope.logout = function () {
         delete User.authToken;
+        delete User.profile;
         setLocalStorage('token', undefined);
         $scope.user = undefined;
-        uploader.clearQueue();
-        uploadURLSwitch();
+        $scope.userProfile = undefined;
         window.location.reload();
         console.log("Logged out!");
   };
@@ -1372,11 +1386,11 @@ $scope.openProfileModal = function (size) {
 //Animation function
 
 
-$scope.$on('fade-normal:enter', function(){
-      $scope.animationSwitch = true;
       $scope.$emit('currentStationStart');
 
-     $timeout(function(){$scope.animationSwitch1 = true;
+     $timeout(function(){
+      $scope.animationSwitch = true;
+      $scope.animationSwitch1 = true;
 
      $timeout(function(){
       $scope.animationSwitch2 = true;
@@ -1387,14 +1401,49 @@ $scope.$on('fade-normal:enter', function(){
     },300);
  
 
-  },10);
+  },100);
+
+      
+
+
+function switchAllImages(){
+    $timeout(function(){
+      // $scope.imageLightIndex = $scope.imageLightIndex+1;
+      // if($scope.imageLightIndex > 2){
+      //   $scope.imageLightIndex = 0;
+      // }
+      // console.log( $scope.imageLightIndex);
+      //  if($scope.imageSourceArray[0] == './media/pic/1_1.png'){
+      //       $scope.imageSourceArray[0] = './media/pic/1_2.png';
+      
+      // } else if($scope.imageSourceArray[0] == './media/pic/1_2.png'){
+      //               $scope.imageSourceArray[0] = './media/pic/1_1.png';
+      // }
+      //  if($scope.imageSourceArray[1] == './media/pic/2_1.png'){
+      //       $scope.imageSourceArray[1] = './media/pic/2_2.png';
+      // } else if($scope.imageSourceArray[1] == './media/pic/2_2.png'){
+      //               $scope.imageSourceArray[1] = './media/pic/2_1.png';
+      // }
+
+      if($scope.upvoteAnimationFrame == false){
+        $scope.upvoteAnimationFrame = true;
+      } else if($scope.upvoteAnimationFrame == true){
+        $scope.upvoteAnimationFrame = false;
+      }
+      switchAllImages();
+      },1000);
+}
+ switchAllImages();
+
+$scope.$on('fade-normal:enter', function(){
+  // console.log("ASdasd");
 
 
     });
 
 
 
-//Angular autocomplete code
+//Angular autocomplete code. Watch out for the scalability of having userRepo along with Tag Repo
     $scope.simulateQuery = false;
 
 
@@ -1429,9 +1478,19 @@ $scope.$on('fade-normal:enter', function(){
 
     function selectedItemChange(item) {
       $log.info('Item changed to ' + JSON.stringify(item));
-      if(item){
-      $scope.activateStation(item);      
+      if(item) {
+
+      if(item.searchType === 'station'){
+        $scope.activateStation(item);   
+           
+      } else if(item.searchType === 'user'){
+        
+        $scope.goToProfile(item.name);
+      } else if(item === undefined){
+        loadAll(); 
       }
+        
+   }
 
     }
 
@@ -1439,10 +1498,17 @@ $scope.$on('fade-normal:enter', function(){
      * Build `components` list of key/value pairs
      */
     function loadAll() {
-      var repos = $scope.tagArray;
-      console.log($scope.tagArray);
+      var repos = $scope.tagArray.concat($scope.allUsersArray);
+      console.log(repos);
       return repos.map( function (repo) {
-        repo.value = repo.name.toLowerCase();
+        if(repo.group){
+          repo.value = repo.name.toLowerCase();
+          repo.searchType = 'station';
+        } else if(repo.password){
+          repo.name = repo.username.toLowerCase();
+          repo.value = repo.name;
+          repo.searchType = 'user';
+        }
         return repo;
       });
     }
@@ -1458,19 +1524,29 @@ $scope.$on('fade-normal:enter', function(){
       };
 }
 //CSS JQUERY SECTION
- // function circleDesign(){
- //  console.log("circleDesign executed");
- //      angular.element('#bubbleDiv').prepend("<div></div>");
- //      angular.element('#bubbleDiv').prepend("<div></div>");
- //      angular.element('#bubbleDiv').prepend("<div></div>");
- //      angular.element('#bubbleDiv').prepend("<div></div>");
- //      angular.element('#bubbleDiv').prepend("<div></div>");
- //    }
+ function circleDesign(){
+  // console.log("circleDesign executed");
+  //     angular.element('#bubbleWrapperDiv').append("<div></div>");
+  //     angular.element('#bubbleWrapperDiv').append("<div></div>");
+  //     angular.element('#bubbleWrapperDiv').append("<div></div>");
+  //     angular.element('#bubbleWrapperDiv').append("<div></div>");
+  //     angular.element('#bubbleWrapperDiv').append("<div></div>");
+  //     console.log(angular.element('#bubbleWrapperDiv'));
 
- //    $timeout(function(){
- //    circleDesign();
+  var tempDiv = document.createElement("div");
+  tempDiv.className = 'bubble';
+  angular.element(document.getElementsByClassName('bubbleWrapperDiv')).prepend(tempDiv);
+   angular.element(document.getElementsByTagName('body')).prepend( document.createElement("div"));
+   angular.element(document.getElementsByTagName('body')).prepend( document.createElement("div"));
+   angular.element(document.getElementsByTagName('body')).prepend( document.createElement("div"));
+   angular.element(document.getElementsByTagName('body')).prepend( document.createElement("div"));
+  
+    }
+
+    $timeout(function(){
+    circleDesign();
       
- //    },10);
+    },10);
 
 //CSS END SECTION
 
@@ -1498,6 +1574,9 @@ app.directive('introsibs', function() {
         }
     }
 });
+
+
+
 
 app.directive('lengthenline', function() {
     return {
@@ -1537,24 +1616,28 @@ app.directive('enforceMaxTags', function() {
    };
 });
 
+
 app.directive('resizer', ['$window', function ($window) {
     return {
         restrict: 'A',
         link: function (scope, elem, attrs) {  
             scope.switchMainSearch = $window.innerWidth > 700 ? true : false;
 
-            scope.switchMainHistory = $window.innerWidth > 1000 ? true : false;
+            scope.playerUpvoteInfoImageDisplay = $window.innerWidth > 1150 ? true : false;
+            //used to be 1000
+            scope.switchMainHistory = $window.innerWidth > 1023? true : false;
            
-            scope.mainPlayHeaderSwitch = $window.innerWidth > 1000 ? true : false;
+            scope.mainPlayHeaderSwitch = $window.innerWidth > 1023 ? true : false;
 
             angular.element($window).on('resize', function () {
           scope.$apply(function(){
             scope.switchMainSearch = $window.innerWidth > 700 ? true : false;
         
-            scope.switchMainHistory = $window.innerWidth > 1000 ? true : false;
+           scope.playerUpvoteInfoImageDisplay = $window.innerWidth > 1150 ? true : false;
 
+            scope.switchMainHistory = $window.innerWidth > 1023 ? true : false;
 
-            scope.mainPlayHeaderSwitch = $window.innerWidth > 1000 ? true : false;
+            scope.mainPlayHeaderSwitch = $window.innerWidth > 1023 ? true : false;
             // console.log( scope.switchMainSearch);
                 })
             });

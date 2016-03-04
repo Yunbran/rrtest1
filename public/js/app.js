@@ -45,6 +45,13 @@ app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvi
             templateUrl: "views/profile.html",
             controller: 'ProfileController'
         })
+        //sharedProfile access
+        .state('sharedProfile', {
+              url: "/profile/{profileName}",
+              templateUrl: "views/profile.html",
+              controller: 'ProfileController'
+         })
+    
       //sharedSong access
         .state('sharedSong', {
               url: "/s/{songId}",
@@ -81,6 +88,8 @@ app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvi
     .setPrefix('radioApp')
     .setStorageType('localStorage')
     .setNotify(true, true);
+
+ 
 
     });
 

@@ -62,8 +62,8 @@ module.exports = function(app) {
     .get(handler.getUser);
 
   //needs to be documented below
-   router.route('/claimSong')
-    .post(handler.claimSong);
+   // router.route('/claimSong')
+   //  .post(handler.claimSong);
 
    router.route('/chargePremium')
     .post(handler.chargePremium);

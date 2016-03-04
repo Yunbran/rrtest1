@@ -15,7 +15,8 @@
   <div style ="width: 50%;
     font-size: 16px;
     margin-left: 25%;
-        margin-top: 3.75%;" layout="" layout-sm="column">
+        margin-top: 3.75%;
+            flex-direction: column;" layout="" layout-sm="column">
         <md-input-container flex="">
           <label>Username</label>
           <input ng-model="userData.username">
@@ -38,10 +39,13 @@
             <p id = "signupMessage">{{message}}</p>
 
            <p style = "margin-left:40%;"><input style="" class="btn btn-primary"  type="submit" id="submit" value="Sign Up" />
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
            </p>
 
     </form>
+            <button class="btn btn-warning" style = "
+            float:right;
+    margin-right: 390px;
+    margin-top: -44px;" ng-click="cancel()">Cancel</button>
     </tab>
 
     <tab heading="Log in">
@@ -51,7 +55,8 @@
       <div style ="width: 50%;
     font-size: 16px;
     margin-left: 25%;
-        margin-top: 3.75%;" layout="" layout-sm="column">
+        margin-top: 3.75%;
+            flex-direction: column;" layout="" layout-sm="column">
         <md-input-container flex="">
           <label>Username</label>
           <input ng-model="userData.username">
@@ -65,11 +70,14 @@
 
             <p id = "signupMessage">{{message}}</p>
            <p style = "margin-left:40%;"><input style="" class="btn btn-primary"  type="submit" id="submit" value="Login" /> 
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
             </p>
 
 
     </form>
+            <button class="btn btn-warning" style = "
+            float:right;
+    margin-right: 365px;
+    margin-top: -44px;" ng-click="cancel()">Cancel</button>
     </tab>
 
   </tabset>
@@ -89,6 +97,6 @@
 
         <div class="modal-footer songFormFooter">
           <div class = "flexHorizontal">
-             Sign in or sign up to save this recording to an account!
+             Sign in or sign up to enjoy all of RadioRise's Features!
           </div>
         </div>

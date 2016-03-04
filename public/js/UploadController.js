@@ -1,4 +1,4 @@
-app.controller('UploadController', function ($scope, $http, $modalInstance, $window, $timeout, $log,User, localStorageService, userProfile, ngAudio, uploader, basket) {
+app.controller('UploadController', function ($scope, $http, $modalInstance, $window, $timeout, $log,User, localStorageService, userProfile, ngAudio, FileUploader, basket) {
   
 
   $scope.userData =  {username: '', password: ''};
@@ -6,18 +6,37 @@ app.controller('UploadController', function ($scope, $http, $modalInstance, $win
   $scope.tagArray = [];
   $scope.tagsSearchArr = basket['currentTags'];
   $scope.shareURL = '';
-  $scope.editMode = false;  
+  $scope.modalMode = 'form';  
   $scope.editChangesObj = {name: '',
 description: ''};
   
  console.log(User.authToken);
+ console.log(User.profile);
 
- getUser();
+ // getUser();
 
  $timeout(function(){
     $scope.animationSwitch = true;
-    $scope.activateAndPlaySong($scope.currentSong);
+    // $scope.activateAndPlaySong($scope.currentSong);
   },100);
+
+function checkMode(){
+  if(User.profile){
+    $scope.modalMode = 'upload';
+  }
+}
+
+checkMode();
+
+$scope.resetAndUploadAgain = function(){
+    $scope.modalMode = 'upload';
+    $scope.uploadMessage = "";
+    $scope.uploader.queue = [];
+    stopSong();
+    $scope.currentSong = undefined;
+ $scope.editChangesObj = {name: '',
+    description: ''};
+}
 
 function getProfile(){
   // Profile Page Variable
@@ -34,6 +53,7 @@ function getProfile(){
           $scope.editChangesObj.name = $scope.currentSong.name;
           console.log($scope.userProfile);
           User['profile'] = $scope.userProfile;
+          $scope.modalMode = 'upload';
           console.log(User);
         })
         .error(function(){
@@ -90,23 +110,23 @@ function getUser(){
 
   };
 
-    $scope.modalUploadAll = function () {
+    // $scope.modalUploadAll = function () {
 
-    $modalInstance.dismiss({
-      uploader: $scope.uploader,
-       uploadBool: true
-     });
-    }
+    // $modalInstance.dismiss({
+    //   uploader: $scope.uploader,
+    //    uploadBool: true
+    //  });
+    // }
 
 //MODAL FUNCTION FOR EVERY MODAL
-  $scope.cancel = function () {
+  $scope.cancel = function (cancelType) {
    console.log(userProfile);
   
     if($scope.sound){
       $scope.sound.stop();  
     }
 
-    $modalInstance.dismiss('cancel');
+    $modalInstance.dismiss(cancelType);
 
   };
 
@@ -130,6 +150,7 @@ $scope.activateAndPlaySong = function(song){
     $scope.currentSong = song;
     $scope.activateSong(song);
     $scope.playSong();
+
  };
 
   $scope.activateSong = function(song){
@@ -191,7 +212,12 @@ $scope.sendEdits = function (song) {
           song.description = $scope.editChangesObj.description;
           song.name = $scope.editChangesObj.name;
           console.log(response);
-        });
+          $scope.cancel();
+        }).error(function(response){
+        console.log(response.errors);
+        
+          $scope.editSectionMessage = response;
+      });
 
   };
  $scope.login = function () {
@@ -220,7 +246,7 @@ $scope.sendEdits = function (song) {
         }
 
       //  var bull = getLocalStorage(storageString);
-      claimSong($scope.currentSong);
+      // claimSong($scope.currentSong);
       })
       .error(function (data, status, headers, config) {
         // Erase the token if the user fails to log in
@@ -282,6 +308,17 @@ $scope.signup = function () {
 
   };
 
+$scope.clickCheck = function(){
+  // $scope.uploader.queue.push({progress: 10})
+  // console.log($scope.uploader.queue);
+}
+
+$scope.clickHiddenUpload = function(){ 
+  // console.log("ASD");
+   $timeout(function() {
+    angular.element($('#hiddenUploadButton')).click();
+  }, 10);
+}
 //helper function to attach a callback onto a function.
 //returns a function that will apply the added function after the initial function triggers.
 function callbackDecorator(func, addedFunc) {
@@ -316,8 +353,157 @@ function getLocalStorage(key) {
    return localStorageService.get(key);
   }
 
- $scope.activateAndPlaySong(basket['uploadedSong']);
- $scope.sound.pause();
+ // $scope.activateAndPlaySong(basket['uploadedSong']);
+ // $scope.sound.pause();
+
+
+//TEST STUFF BELOW
+        var uploader = $scope.uploader = new FileUploader({
+            url: '/api/uploadSong',
+            queueLimit: 1   
+        });
+     
+      $scope.songMessage = "";
+      
+      uploader.filters.push({
+          name: 'formatFilter',
+          fn: function(item) {
+            if(item.type === "audio/mp3"){
+              return true;
+            }
+            else
+            {
+              $scope.uploadFeedbackMessage = "Mp3 files only!";
+              return false;
+            }
+          }
+      });
+
+      var sizeLimitInteger = 10000000;
+      uploader.filters.push({     name: 'sizeFilter',     fn: function(item) {
+      if(item.size <= sizeLimitInteger && item.size > 0){   return true; } else {
+      $scope.uploadFeedbackMessage  = "Maximum of 10 MB per file!";   return
+      false; }     } });
+
+//lengthFilter not working
+      uploader.filters.push({
+          name: 'lengthFilter',
+          fn: function(item) {
+            if( this.queue.length < this.queueLimit){
+              return true;
+            }
+            else
+            {
+              $scope.uploadFeedbackMessage  = "Maximum of 1 file!";
+              return false;
+            }
+          }
+      });
+
+
+        //HELPER FUNCTIONS
+
+        //returns date from mongo id
+        var dateFromObjectId = function (objectId) {
+          return new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
+        };
+
+        // CALLBACKS
+
+        uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+            console.info('onWhenAddingFileFailed', item, filter, options);
+            if(item.size > sizeLimitInteger){
+              $scope.uploadMessage = "Maximum of 10 MB per file!";
+            }
+            else{
+              $scope.uploadMessage = "An Unexpected Error has occured";
+            }
+            $scope.uploader.queue = [];
+        };
+        uploader.onAfterAddingFile = function(fileItem) {
+            console.info('onAfterAddingFile', fileItem);
+        };
+        uploader.onAfterAddingAll = function(addedFileItems) {
+            console.info('onAfterAddingAll', addedFileItems);
+           uploader.uploadAll();
+        };
+        uploader.onBeforeUploadItem = function(item) {
+            console.info('onBeforeUploadItem', item);
+              
+            
+            console.log(item.headers['tagArray']);
+           // console.log(item.headers);  
+           var tempTagArray = [];
+
+            for(var tagKey in item.headers['tagArray']){
+                tempTagArray.push(item.headers['tagArray'][tagKey].tag);
+            }
+
+
+            item.headers['tagArray'] = JSON.stringify(tempTagArray);
+            item.headers['filepath'] = item._file.name;
+            item.headers['authorization'] = 'Bearer ' + User.authToken;
+            console.log(item.headers);
+        };
+        uploader.onProgressItem = function(fileItem, progress) {
+            console.info('onProgressItem', fileItem, progress);
+        };
+        uploader.onProgressAll = function(progress) {
+            console.info('onProgressAll', progress);
+        };
+        uploader.onSuccessItem = function(fileItem, response, status, headers) {
+            console.info('onSuccessItem', fileItem, response, status, headers);
+            // fileItem.tempURL = "http://risingtest.azurewebistes.com/#/s/553572a83c77568410615037" + response._id;
+            //resetPlayer();
+
+            // $scope.hasUploaded = true;
+            // $scope.currentSong = response["songObj"];
+            // $scope.currentStation = "upload";
+            // $scope.activateAndPlaySong($scope.currentSong);
+            // $scope.uploadMessage = "Success!";
+            // $scope.isStationPlaying = false;
+            //$timeout(function(){
+            // }, 400);
+            
+            // DEV URL = http://localhost:8000/#/s/
+            // REAL URL = http://radiorise.com/#/s/
+            
+             // getUserProfile();
+             basket['uploadedSong'] = response["songObj"];
+             // console.log(response["unhashedClaimCode"]);
+
+            //Code Snippet below exists for claiming an anonymous song.
+            // User.storedData['claimCodeMap'][basket['uploadedSong']._id] = response["unhashedClaimCode"];
+            $scope.modalMode = 'edit';
+            // $scope.openUploadModal('lg');
+          $scope.activateAndPlaySong(response["songObj"]);
+            $scope.shareURL =  "http://localhost:8000/#/s/" + $scope.currentSong["_id"];
+           $scope.editChangesObj.name = $scope.currentSong["name"];
+           console.log($scope.currentSong["tags"]);
+           delete $scope.currentSong["tags"][0];
+        };
+        uploader.onErrorItem = function(fileItem, response, status, headers) {
+            console.info('onErrorItem', fileItem, response, status, headers);
+            $scope.uploadMessage = response + " Please try again.";
+            $scope.uploader.queue = [];
+            // console.log( $scope.hasUploaded);
+        };
+        uploader.onCancelItem = function(fileItem, response, status, headers) {
+            console.info('onCancelItem', fileItem, response, status, headers);
+        };
+        uploader.onCompleteItem = function(fileItem, response, status, headers) {
+            console.info('onCompleteItem', fileItem, response, status, headers);
+        };
+        uploader.onCompleteAll = function() {
+            console.info('onCompleteAll');
+            // updatePage();
+        };
+
+      //console.info('uploader', uploader);
+
+
+
+
 
 
 });

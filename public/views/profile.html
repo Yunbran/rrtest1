@@ -1,11 +1,68 @@
 
 <div class="homeBar" >
 
-    <div ng-show = "!user" class = "userArea" >
+    <div ng-show = "!user" class = "userArea">
+<div style = "  flex-grow:1; flex-shrink:0;"></div>
+     <img src ='./media/pic/icon.png' ng-click = "goToHome()" class = ' headerLogo'/>
+<div           ng-class="{ 'mainSearchBarSmall': !switchMainSearch,
+                      'type':'mainSearch' }" style = "  flex-grow:1; flex-shrink:0;     border-right: 1px solid rgba(128,128,128,0.1);     
+                      height: 66px;
+    margin-top: -10px;"></div>
+    <!-- <button type="button" class="btn btn-info btn-xs loginButton" ng-click="openLoginModal()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+        <span class="glyphicon glyphicon-log-in"></span> Login
+    </button> -->
+    <span            ng-class="{ 'mainSearchBarSmall': !switchMainSearch,
+                      'type':'mainSearch' }"
+                      class = 'glyphicon glyphicon-search' style = '    margin-top: 14px;
+    margin-left: 1%;'></span>
+     <md-autocomplete 
+          resizer 
+          ng-class="{ 'mainSearchBarSmall': !switchMainSearch,
+                      'type':'mainSearch' }"
+          ng-disabled="false"
+          md-no-cache="noCache"
+          md-selected-item="selectedItem"
+          md-search-text-change="searchTextChange(searchText)"
+          md-search-text="searchText"
+          md-selected-item-change="selectedItemChange(item)"
+          md-items="item in querySearch(searchText)"
+          md-item-text="item.name"
+          md-min-length="0"
+          placeholder="Search for Station Tags and Profiles..."
+          md-menu-class="autocomplete-custom-template" 
+          style = "flex-grow:5; flex-shrink:3; margin-top: .25%; background-color:white;"
+          class = "mainSearchBar">
+        <md-item-template>
+        <div ng-show = "item.searchType === 'station'">
+          <span class="item-title">
+            <md-icon class = 'glyphicon glyphicon-music'></md-icon>
+            <strong> {{item.name}} </strong>
+          </span>
+          <span class="item-metadata">
+            <span class="item-metastat">
+               songs: {{item.songs.length}}
+            </span>
+          </span>
+        </div>
 
-     <img src ='./media/pic/icon.png'  class = ' headerLogo'/>
+          <div ng-show = "item.searchType === 'user'">
+           <span class="item-title">
+             <md-icon class = 'glyphicon glyphicon-user'></md-icon>
+             <strong> {{item.name}} </strong>
+           </span>
+<!--            <span class="item-metadata">
+              <span class="item-metastat">
+                 songs: {{item.songs.length}}
+             </span>
+            </span> -->
+         </div>
+        </md-item-template>
+      </md-autocomplete>
+
+        <div style = "flex-grow:4; flex-shrink:0;">     </div>
 
         <form class = "loginForm" ng-submit="login()">
+
                <input type="text" ng-model="userData.username" placeholder = "Username" class = "loginInput">
                <input type="password" ng-model="userData.password" placeholder = "Password" class = "passwordInput">
                <input class="btn btn-primary loginButton"  type="submit" id="submit" value="Login" />
@@ -13,24 +70,84 @@
                <span class="glyphicon glyphicon-pencil"></span> Signup
                </button>
         </form>
-        <p>{{message}}</p>
+   
 
+
+    </div>
+
+    <div ng-show = "user" class = "userArea">
+<div style = "  flex-grow:1; flex-shrink:0;"></div>
+     <img src ='./media/pic/icon.png' ng-click = "goToHome()" class = ' headerLogo'/>
+<div           ng-class="{ 'mainSearchBarSmall': !switchMainSearch,
+                      'type':'mainSearch' }" style = "  flex-grow:1; flex-shrink:0;     border-right: 1px solid rgba(128,128,128,0.1);     height: 200%;
+    margin-top: -1%;"></div>
     <!-- <button type="button" class="btn btn-info btn-xs loginButton" ng-click="openLoginModal()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
         <span class="glyphicon glyphicon-log-in"></span> Login
     </button> -->
-    </div>
+    <span            ng-class="{ 'mainSearchBarSmall': !switchMainSearch,
+                      'type':'mainSearch' }"
+                      class = 'glyphicon glyphicon-search' style = '    margin-top: 14px;
+    margin-left: 1%;'></span>
+     <md-autocomplete 
+          resizer 
+          ng-class="{ 'mainSearchBarSmall': !switchMainSearch,
+                      'type':'mainSearch' }"
+          ng-disabled="false"
+          md-no-cache="noCache"
+          md-selected-item="selectedItem"
+          md-search-text-change="searchTextChange(searchText)"
+          md-search-text="searchText"
+          md-selected-item-change="selectedItemChange(item)"
+          md-items="item in querySearch(searchText)"
+          md-item-text="item.name"
+          md-min-length="0"
+          placeholder="Search for Station Tags and Profiles..."
+          md-menu-class="autocomplete-custom-template" 
+          style = "flex-grow:5; flex-shrink:3; margin-top: .25%; background-color:white;"
+          class = "mainSearchBar">
+        <md-item-template>
+        <div ng-show = "item.searchType === 'station'">
+          <span class="item-title">
+            <md-icon class = 'glyphicon glyphicon-music'></md-icon>
+            <strong> {{item.name}} </strong>
+          </span>
+          <span class="item-metadata">
+            <span class="item-metastat">
+               songs: {{item.songs.length}}
+            </span>
+          </span>
+        </div>
 
-    <div ng-show = "user" class = "userArea" >
-         <img src ='./media/pic/icon.png' class = ' headerLogo'/>
+          <div ng-show = "item.searchType === 'user'">
+           <span class="item-title">
+             <md-icon class = 'glyphicon glyphicon-user'></md-icon>
+             <strong> {{item.name}} </strong>
+           </span>
+<!--            <span class="item-metadata">
+              <span class="item-metastat">
+                 songs: {{item.songs.length}}
+             </span>
+            </span> -->
+         </div>
+        </md-item-template>
+      </md-autocomplete>
 
-    <button class="btn btn-primary profileButton" ng-click = "goToHome()">Home</button>
+
+
+        <div style = "flex-grow:8; flex-shrink:0;">     </div>
+
+
+
+
+
     <button type="button" class="btn btn-primary  logoutButton" ng-click="logout()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
         <span class="glyphicon glyphicon-log-out"></span> Logout
         
     </button>
-    <!-- BRANDON DISPLAY USER DATA HERE 
-     Display user information here.
-    -->
+
+   <button class="btn btn-primary profileButton">{{profileLetter }}</button>
+
+
 
     </div>
 
@@ -42,8 +159,8 @@
 
 <div class = 'profileWrapper'>
 <div class = 'introProfileDiv'>
-  <div class = 'introProfileName'> {{userProfile.username}}</div>
- <div class = 'introProfileSubMessage'> Welcome to {{userProfile.username}}'s profile page!</div>
+  <div class = 'introProfileName'> {{displayProfile.username}}</div>
+ <div class = 'introProfileSubMessage'> Welcome to {{displayProfile.username}}'s profile page!</div>
 
  </div>
 <tabset>
@@ -54,7 +171,7 @@
 
             <v-accordion style = "width:100%" class="vAccordion--default">
 
-              <v-pane class = "songPane" ng-repeat="song in userProfile.songs">
+              <v-pane class = "songPane" ng-repeat="song in displayProfile.songs">
                 <v-pane-header class = "songPaneHeader"  ng-click = "activateOrPauseSong(song)">
                   {{ song.name }}
                 </v-pane-header>
@@ -135,7 +252,9 @@
     margin-top: 17%;" ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
                 
             </div>
-  <div style ="    width: 35%;
+  <div style ="
+      flex-direction: column;
+     width: 35%;
     font-size: 16px;
     margin-left: 18%;
     margin-top: -1%;" layout="" layout-sm="column">
@@ -197,7 +316,7 @@
 
             <v-accordion style = "width:100%" class="vAccordion--default">
 
-              <v-pane class = "songPane" ng-repeat="song in userProfile.favorite">
+              <v-pane class = "songPane" ng-repeat="song in displayProfile.favorite">
                 <v-pane-header class = "songPaneHeader"  ng-click = "activateOrPauseSong(song)">
                   {{ song.name }}
                 </v-pane-header>
@@ -278,7 +397,7 @@
 
             <v-accordion style = "width:100%" class="vAccordion--default">
 
-              <v-pane class = "songPane" ng-repeat="song in userProfile.upvoted">
+              <v-pane class = "songPane" ng-repeat="song in displayProfile.upvoted">
                 <v-pane-header class = "songPaneHeader"  ng-click = "activateOrPauseSong(song)">
                   {{ song.name }}
                 </v-pane-header>

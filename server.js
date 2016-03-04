@@ -44,14 +44,16 @@ app.post('/authenticate', handler.authenticate);
 app.post('/createUser', handler.createUser);
 app.get('/getTags', handler.getTags);
 app.get('/getUsers', handler.getUsers);
+app.post('/getUserByName', handler.getUserByName);
 app.post('/getTagByName', handler.getTagByName);
 app.post('/getTagsByGroup', handler.getTagsByGroup);
 app.post('/getSongById', handler.getSongById);
 app.post("/stripeEnd", handler.postStripeEnd);
 
+// app.post('/uploadTempSong', handler.uploadTempSong);
 
 //need to be documented below
-app.post('/uploadTempSong', handler.uploadTempSong);
+/*Nothing here atm*/
 //dont forget to document these
 
 // We are protecting all /api routes with JWT
