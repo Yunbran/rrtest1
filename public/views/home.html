@@ -198,10 +198,626 @@
          </div>
         </md-item-template>
       </md-autocomplete>
+<div class = "bubbleWrapperDiv">
+
+</div>
+
+<div  class = 'introDiv growDown' >
+
+<!-- <div style = 'height: 100%;' class = 'fx-fade-normal fx-speed-100 fx-trigger' ng-hide = "currentStation">
+  </div>
+ -->
+
+<div class = 'mainBox fx-fade-right fx-speed-1000' ng-show = 'animationSwitch'>
+   <!-- LEFT CONTAINER START -->
+   <div class = "leftPlayerContainer">
+  
+
+<!--   <div class = "leftTagBox" ng-show = 'currentStation' >
+     <div class = "tagLinerLeft" >  
+    
+    
+    </div>
+
+  </div> -->
+   </div>
+  <!-- LEFT CONTAINER END -->
+
+<!--START OF REGULAR CONTAINER-->
+    <div class = "mainPlayerContainer">
+    
+      <c class = 'playBoxHeader' ng-class = '{playBoxHeaderAnimation:animationSwitch2,
+      playBoxHeaderAdjustment:!mainPlayHeaderSwitch}'> 
+       <div class = 'flexHorizontalStart' style = "width: 78%;">
+      <div style  = 'flex-grow: 3; flex-shrink: 0; display:flex; flex-wrap:nowrap;'>
+         <div style = "    flex-grow: 1;
+    flex-shrink: 1;
+    display:flex;
+    margin-bottom: 15px;
+    margin-left: 10px;
+    cursor: default;
+    color: white;"
+     class = "noPointer"> Station:  
+
+  <div ng-if = "stationMode == 'upvote'"  style ="width: 24px;
+    height: 50px;
+    color: #67FF65;
+    font-size: 20px;
+    margin-top: 25px;
+    margin-left: 20px;" class = "glyphicon glyphicon-arrow-up"></div> 
+
+  <div ng-if = "stationMode == 'favorite'" style ="width: 24px;
+    height: 50px;
+    color: #E6F018;
+    font-size: 20px;
+    margin-top: 25px;
+    margin-left: 20px;" class = "glyphicon glyphicon-star"></div>
+
+
+  <div ng-if = "stationMode == 'main'"  style ="width: 24px;
+    height: 50px;
+    color: #00FDB7;
+    font-size: 20px;
+    margin-top: 25px;
+    margin-left: 20px;" class = "glyphicon glyphicon-tag"></div>
+
+       <div ng-if = "stationMode == 'main'" ng-class = '{stationLabelAnimation:animationSwitchMainLabel}' class = 'stationLabel' style = 'opacity: 1;' >
+          <div  class = 'stationLabelLiner' >
+                {{currentStation}}
+         </div>
+       </div>  
+
+       <div ng-if = "stationMode == 'favorite'"   style ="border-color:#E6F018;
+       color: #E6F018;" ng-class = '{stationLabelAnimation:animationSwitchMainLabel}' class = 'stationLabel' style = 'opacity: 1;' >
+          <div  class = 'stationLabelLiner' >
+                favorites
+         </div>
+       </div>  
+
+       <div ng-if = "stationMode == 'upvote'"   style ="border-color:#67FF65;
+       color: #67FF65;" ng-class = '{stationLabelAnimation:animationSwitchMainLabel}' class = 'stationLabel' style = 'opacity: 1;' >
+          <div  class = 'stationLabelLiner' >
+               upvoted
+         </div>
+       </div>  
+
+
+      
+      <div style ="margin-left:24px;"></div>
+    </div>
+
+
+
+           <div style = "    flex-grow: 2;
+                      flex-shrink: 1;"> 
+                       {{uploadFeedbackMessage }}
+    </div>
+
+
+
+      </div>
+        </div>
+          
+        <div ng-class = '{playHorizontalAnimation:animationSwitch1,
+      playHorizontalAnimationX:!mainPlayHeaderSwitch}' class ="playHorizontal"> 
+
+
+    <div ng-show ="!firstVisit" style ="
+    margin-top: -80px;
+    margin-right: 10px;
+    float: right;" class="uploadBox"  ng-click = "clickUpload()">
+                <div class="my-drop-zone">
+                 <!-- glyphicon glyphicon-cloud-upload -->
+                 <div class = "">
+                    <div style = "
+                    font-weight: 300;
+                    font-size: 20px;  
+                    color: white;
+                    font-family: Roboto;  ">
+                    Upload Music
+                    </div>
+                 </div>
+                </div>
+
+            </div>
+          </div> 
+
+
+ 
+        </c>
+<div>
+
+
+<div class =  "playerSongData fx-fade-in fx-speed-1500" ng-show = "firstVisit">
+
+  <div class = "rateItMessage">
+    <div style = 'min-width: 70px;    flex-grow: 50;
+    flex-shrink: 0;'></div>
+
+ 
+
+    <div style = ' flex-grow:40; display:flex;    justify-content: center; max-width: 900px; min-width:650px'>
+    
+    <div class = "firstVisitMainLabel ">
+    <div style = "width:100%;   text-align: left; font-size:35px;  margin-top:30px;   margin-bottom: 20px;   
+    font-family: Roboto;
+    font-weight: 200;"> RadioRise is a free and unbiased internet radio where the best artists always rise to the top.
+    </div>
+   <div style =  "    margin-top: -10px; width:120%; display:flex; text-align:center;  justify-content: flex-start;  font-size:22px; 
+    font-family: Roboto;
+    font-weight: 200;">
+      <div style = "width:25%; margin-left: -10%;">
+             <div style = "margin-top: 60px;
+             margin-left:50px;" class = 'playButtonWrapper'>
+            <img src = './media/pic/circleSelect.png' class = "circleSelect" ng-show = 'sound' ng-class = "{circleSelectSpin: sound.paused == true}">
+              <div  ng-click='playSongFromStation()' class = "playButton "></div>
+              
+            </img>  
+          </div>
+       <div style = "margin-left:62px; width:150%; margin-top:45px;">
+       Press play to discover trending music!
+       </div>
+      </div>
+
+    <div style =  " width:25%;">
+      <img style = "margin-left:3%"class = "smallerImageMainPageFirst" src = "{{imageSourceArray[1]}}"></img>
+
+       </div>
+
+      
+       <div style =  "display:flex; text-align:center;  justify-content: space-around;">
+             <div style =  "margin-left: 50px; width:1px; margin-right: 25px;">
+        <div style = "width:1px; height:260px; background-color:white;">
+        </div>
+      </div>
+
+       </div> 
+
+      <div style =  "width:25%;">
+      <img style = "margin-left:-5%"class = "smallerImageMainPage" src = "{{imageSourceArray[0]}}"></img>
+             <div style = "margin-left:40px; width:150%; margin-top:-4px;">
+       Upload a song to any station tag! Or create your own!
+       </div>
+      </div>
+
+         <div style =  "width:25%;">
+    <div style ="
+    margin-top: 80px;
+    margin-right: 10px;
+    margin-left: -10px;
+    width: 130px;
+    float: right;" class="uploadBox"  ng-click = "clickUpload()">
+                <div class="my-drop-zone">
+                 <!-- glyphicon glyphicon-cloud-upload -->
+                 <div class = "">
+                    <div style = "
+                    font-weight: 300;
+                    font-size: 20px;  
+                    color: white;
+                    font-family: Roboto;  ">
+                    Upload
+                    <div class = "glyphicon glyphicon-music" style = "margin-left:0%"></div>
+                    </div>
+                 </div>
+                </div>
+
+            </div>
+      </div>
+    
+
+  <!--   <div  style =  "width:25%;">
+          <img style = "margin-left:-5%"class = "smallerImageMainPage" ng-src = "{{imageSourceArray[2]}}"></img>
+       Decide the next big hits!
+    </div> -->
+
+
+    </div>
+    </div>
+
+   </div> 
+
+        <div style = '  min-width: 50px;
+    flex-grow: 40;
+    flex-shrink: 0;'>
+<!--        <img src = './media/pic/loading.png' style= "margin-left:15px" class = "loadingFirstLabel" ng-show = 'sound'></img>   -->
+
+
+
+        </div>
+
+  </div> 
+
+  </div>
+
+</div>
+
+<div  class = "stationLabelSection" style =   "" ng-show = "!firstVisit">
+
+   <div ng-hide = "currentSong.rated"  class = "subStationList"> 
+      </div>
+ 
+       <div ng-show = "currentSong.rated"  class = "subStationList" >
+             <div style ="width: 25px;
+    height: 50px;
+    color: white;
+    font-size: 20px;
+    margin-top: 25px;
+    margin-left: 25px;" class = "glyphicon glyphicon-tag" ng-hide ="currentSong.tags.length === 1; "></div>
+       <div ng-class = "{animateHiddenTags:animationSwitchX}" ng-repeat = "item in hiddenTags" class = "stationHiddenLabel" ng-click = "activateStation(item)"> 
+          <div  class = 'stationLabelLiner'>
+                {{ item.tagname}}
+         </div>
+       </div>  
+      </div>
+
+
+  <div class = "playDivider">
+
+<div class =  "playerSongData fx-fade-in fx-speed-1500">
+
+<div class = "rateItMessage">
+    
+    <div style = ' min-width: 70px;    flex-grow: 50;
+    flex-shrink: 0;'></div>
+
+    <div ng-hide="currentSong.rated" style = ' flex-grow:40; display:flex; max-width: 900px; min-width:650px'>
+    <div class = "votingArea">
+      <div ng-hide = "currentSong.rated " ng-click='upvoteSong()' class = "upvoteButton"></div>
+      <div ng-hide = "currentSong.rated" ng-click='downvoteSong()' class = "downvoteButton"></div>
+    </div>
+
+     <div class = "questionMarks">???
+      <div class = "questionNotice">All music is anonymous until rated to ensure the fairest ratings!</div>
+     </div> 
+     <div>
+        <div>
+           <div style=" margin-left:10%;" ng-show ="playerUpvoteInfoImageDisplay" ng-class = "{animationForUpvotePng: !upvoteAnimationFrame,
+           animationForUpvotePngSecondFrame: upvoteAnimationFrame}"></div>
+        </div>
+          <div style = "    font-size: 22px;
+    font-family: Roboto;
+    font-weight: 200;
+    color: white;" ng-show ="playerUpvoteInfoImageDisplay">
+            Upvoted music will get more airtime
+          </div>
+     </div>
+   </div> 
+
+    <div ng-show="currentSong.rated"  style =  '
+    max-width: 900px; min-width:650px; flex-grow:40; display:flex;'>
+         <div class = "votingAreaRated">
+
+
+
+     <div>      
+
+        <!-- {{currentSongUpvotePerc}}% -->
+
+          <div style = "  margin-top: 15px;"
+            round-progress
+            max="100"
+            current="currentSongUpvotePerc "
+            color="#89E04B"
+            bgcolor="#FF003C"
+            radius="70"
+            stroke="3"
+            semi="false"
+            rounded="false"
+            clockwise="true"
+            responsive="false"
+            duration="800"
+            animation="easeInOutQuart"></div>
+       <div style = "position:relative;
+       margin-left: -3px;
+           margin-top: -110px;" class = " glyphRatingIcon">
+        <div class = "glyphicon glyphicon-arrow-up" style = "color: #89E04B;"> </div>
+         {{currentSong.upvotes}}
+       </div>
+        
+        <div class = " glyphRatingIconRed">
+          <div class = "glyphicon glyphicon-arrow-down" style = "color: #FF003C;"> </div> 
+         {{currentSong.downvotes}}
+        </div>
+       </div>
+
+            </div>
+
+         <div style = "justify-content: flex-start; flex-wrap:wrap;" class = "songInformation flexVertical">
+                <div style = "width:100px; height: 285px;">
+         <div ng-show = "!currentSong.favorited" class = "favoriteButton" ng-click='favoriteSong()'>  </div>
+         <div ng-show = "currentSong.favorited" class = "favoritedButton" ng-click='unfavoriteSong()'>  </div>
+              </div>
+
+
+         <div style = "      margin-top: 60px;
+    height: 90px;
+    width: 380px;
+    font-size: 30px;
+    overflow-wrap: break-word;">
+          {{currentSong.name}}
+         </div> 
+         <div ng-click = "goToProfile(currentSong.creator)" style = "font-size:20px; color: rgba(0, 253, 183, 1);">
+          {{currentSong.creator}}
+         </div>
+          <div style = "font-size:15px;  
+           overflow-wrap: break-word;
+    width: 355px;color: white; margin-top:10px;"> 
+            <div style = "font-size:15px;">Uploaded on {{currentSong.createdAt |date:'dd, MMMM yyyy'}}</div>
+          <div style = " font-size:12px; margin-top:5px;" ng-show = "currentSong.description">{{currentSong.description}}</div>
+          <div style = "font-size:12px; margin-top:5px;" ng-hide = "currentSong.description"> No description available</div>
+          </div>
+
+
+
+          
+          </div>
+
+  </div>  
+    <div style = 'min-width: 50px;
+    flex-grow: 40;
+    flex-shrink: 0;'></div>
+
+</div>  
+  
+
+ 
+  
+   
+
+ </div>
+ 
+ <div class = "progessDivider">    
+ <div style = 'min-width: 50px;flex-grow: 350;
+    flex-shrink: 0;'></div>
+ 
+
+    <div class = "radioButtons">
+<!--           <div ng-show="sound.paused"  class = 'playButtonWrapper'>
+            <img src = './media/pic/circleSelect.png' class = "circleSelect" ng-class = "{circleSelectSpin: sound.paused == true}" ng-show = 'sound'>
+              
+            </img>  
+                    
+          </div> -->
+              <div  ng-show="sound.paused"
+              style = "margin-left:0px;"
+               ng-click='playSongFromStation()' class = "playButton "></div>
+     <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton "></div>
 
 
 
 
-<div ui-view class = "view"></div>      
+
+    <div ng-disabled = 'skipDisabled'; class = "skipButton" ng-click='skipSong()'></div>
+
+    </div>
+  <div class = " progressBar">
+
+   <!--    <md-slider step = "0.001" flex="" ng-model="sound.progress" min="0" max="1" aria-label="blue" id="blue-slider" class="md-primary">
+      </md-slider>
+ -->            <md-slider  step = "0.001" flex="" ng-model="sound.progress" min="0" max="1" aria-label="red" id="red-slider" class=" ">
+             </md-slider>
+    <!--    <input class='form-control' type=range min=0 max =1 step =0.01  ng-model='sound.progress'> -->
+    <!--   VOLUME BAR HERE
+    <label>Volume</label>
+    <input class='form-control' type=range min=0 max=1 step=0.01 ng-model='sound.volume'> -->
+
+  </div>
+  <div ng-class = '{ extraMinWidthForBuffer:!mainPlayHeaderSwitch}' class = "rightBufferForProgress" style = "flex-grow:220;">         
+
+ <!--   <div style = "margin-left:4%;" ng-show="!sound.paused"  class = 'playButtonWrapper'>
+            <img src = './media/pic/circleSelect.png' class = "circleSelect circleSelectSpin " ng-show = 'sound'>
+              <div style = "    
+              margin-top: 25px;
+              margin-left: -54px;
+
+                    font-weight: 200;
+                    font-size: 14px;  
+                    color: white;
+                    font-family: Roboto; ">
+                {{sound.currentTime| number:0}}/{{sound.duration | number:0}}
+              </div>
+              
+            </img>  
+                    
+          </div> -->
+
+          </div>
 
 
+  </div>
+</div>
+
+
+
+
+</div>
+
+
+</div>
+<!-- END OF REGULAR CONTAINER -->
+
+
+<!-- START OF RIGHT CONTAINER -->
+<div class = "rightPlayerContainer" ng-show = 'switchMainHistory'>
+
+   <div class = "historyBox" ng-class = '{historyBoxOn:!switchMainHistory,playVerticalAnimation:animationSwitch1}' >
+           <div class = "historyButtonRow">
+     <div ng-click = "changeHistoryMode('history')" ng-class = "{historyCategoryButtonActive: historyMode == 'history'}" style = "    margin-left: 20px;" class="historyCategoryButton">
+       <div class = "glyphHistoryButton glyphicon glyphicon-time">
+       </div>
+     </div >
+     <div ng-click = "changeHistoryMode('favorite')" ng-class = "{historyCategoryButtonActive: historyMode == 'favorite'}"  class="historyCategoryButtonCenter">
+        <div style = "margin-left: 2px;" class = "glyphHistoryButton glyphicon glyphicon-star">
+        </div>
+      </div >
+     <div ng-click = "changeHistoryMode('upvote')" ng-class = "{historyCategoryButtonActive: historyMode == 'upvote'}"  class="historyCategoryButton">
+       <div style = "margin-left: -3px;" class = "glyphHistoryButton glyphicon glyphicon-arrow-up">
+       </div>
+     </div >
+    </div>
+
+      <div class = "historyContainer"  ng-class = '{historyContainerAnimation:animationSwitch2}'> 
+
+      <div ng-if = "historyMode == 'favorite'">
+       <div ng-show= '!user'>
+          Log in to favorite songs!
+        </div>
+      </div>
+      
+      <div ng-if = "historyMode == 'upvote'">
+       <div ng-show= '!user'>
+          Log in to play upvoted songs!
+        </div>
+      </div>
+
+            <div ng-if = "historyMode == 'history'" class = 'historyNameDiv' ng-class = "{historyNameDivUp: song.rating == 'up',
+            historyNameDivDown: song.rating == 'down',
+            historyNameDivSelected: $index == currentHistoryIndex}" ng-repeat="song in historyArray track by $index" ng-click="activateAndPlaySong(song, $index);" >     <div ng-show = "song.rated">
+                  {{song.name}}
+                </div>  
+
+                <div ng-show = "!song.rated">
+                  ???
+                </div>  
+        </div> 
+
+
+
+
+
+
+
+
+        <div ng-if = "historyMode == 'favorite'" class = 'historyNameDiv' ng-class = "{historyNameDivUp: song.rating == 'up',
+            historyNameDivDown: song.rating == 'down',
+            historyNameDivSelected: $index == currentHistoryIndex}" ng-repeat="song in userProfile.favorite track by $index" ng-click="activateAndPlaySongFromDifferentMode(song, $index);" >     
+
+                <div >
+                  {{song.name}}
+                </div>  
+
+        </div> 
+
+           
+
+                <div ng-if = "historyMode == 'upvote'" class = 'historyNameDiv' ng-class = "{historyNameDivUp: song.rating == 'up',
+            historyNameDivDown: song.rating == 'down',
+            historyNameDivSelected: $index == currentHistoryIndex}" ng-repeat="song in userProfile.upvoted track by $index" ng-click="activateAndPlaySongFromDifferentMode(song, $index);" >   
+
+                <div>
+                  {{song.name}}
+                </div>  
+
+        </div> 
+
+        </div>
+
+    </div>
+  </div> 
+
+
+</div>
+
+<!-- END OF RIGHT CONTAINER -->
+
+
+  </div>
+
+</div>
+  
+ 
+
+<div class = 'homeList' >
+
+    <!-- {{currentStation}}  -->
+
+
+
+
+  <div class = 'mainBox' >
+   <!-- LEFT CONTAINER START -->
+   <div class = "leftContainer">
+  
+
+
+   </div>
+  <!-- LEFT CONTAINER END -->
+
+<!--START OF REGULAR CONTAINER-->
+    <div class = "mainContainer">
+
+
+  <div class = "mainTagBox" >
+      <div class = 'tagBoxHeader'> Station <c style = "color: #1677bb">Tags</c></div>
+     <div class = "tagBox" >   
+    
+    <carousel  class = "tagCarousel" style = "cursor:default" interval="0">
+      <slide ng-repeat="demoArray in demoTagArrays" active="slide.active">
+         <div class = "tagLiner" > 
+        <!-- repeatTags Start Div -->
+            <div class = 'repeatTags' ng-repeat="tag in demoArray"  ng-click="activateStation(tag,true);" >    
+             <div class = 'rotateButton'>
+              <div class = "tagDivider"> 
+               Total Songs: {{tag.songs.length}}
+               <p style = "font-size:14px; color:black;">{{tag.creator}}</p>
+              </div>
+             </div>
+              <div class = "tagDisplayButton"> 
+                <div class = "tagDivider"> 
+                {{tag.name}}
+                </div>
+              </div>
+
+        </div> 
+        <!-- repeatTag End Div -->  
+        </div>
+
+      </slide>
+   </carousel>
+  
+  </div>
+
+
+  </div>
+</div>
+<!-- END OF REGULAR CONTAINER -->
+
+
+<!-- START OF RIGHT CONTAINER -->
+<div class = "rightContainer">
+
+
+</div>
+
+<!-- END OF RIGHT CONTAINER -->
+
+
+  </div>
+
+</div>
+
+
+<!-- <input type="file" nv-file-select="" uploader="uploader" multiple  /> -->
+
+<!-- FEEL FREE TO DELETE BELOW -->
+<!-- <p ng-class="{'fx-fade-down': deleted, bold: important, 'has-error': error}">Map Syntax Example</p>
+<label>
+   <input type="checkbox" ng-model="deleted">
+   deleted (apply "strike" class)
+</label><br>
+<label>
+   <input type="checkbox" ng-model="important">
+   important (apply "bold" class)
+</label><br>
+<label>
+   <input type="checkbox" ng-model="error">
+   error (apply "has-error" class)
+</label> -->
+  
+<div go-away class = "footer">
+    <div style="
+    margin-left: 1%;" class = "footerButton"><a class = "footerLink" ui-sref="home.list">Home</a></div>
+    <div class = "footerButton"><a class = "footerLink" ui-sref="home.about">About</a></div>
+    <!-- <button class = "check" ng-click="goToPayment()">Payment Page!</button> -->
+    <button class = "check" ng-click="check()">Check!</button>
+</div>

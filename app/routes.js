@@ -52,6 +52,9 @@ module.exports = function(app) {
    router.route('/favoriteSong')
     .post(handler.favoriteSong);
 
+   router.route('/unfavoriteSong')
+    .post(handler.unfavoriteSong);
+
    router.route('/uploadSong')
     .post(handler.uploadSong);
    
@@ -62,6 +65,8 @@ module.exports = function(app) {
     .get(handler.getUser);
 
   //needs to be documented below
+
+   // anonymous uploading route
    // router.route('/claimSong')
    //  .post(handler.claimSong);
 

@@ -1,4 +1,4 @@
-app.controller('ProfileController', function ($scope, $modal, $stateParams,$state, $http, $window, $log, $timeout, basket, User, localStorageService, ngAudio) {
+app.controller('ProfileController', function ($scope, $modal, $stateParams, $interval,$state, $http, $window, $log, $timeout, basket, User, localStorageService, ngAudio) {
   
 
   $scope.userData = {};
@@ -14,6 +14,8 @@ app.controller('ProfileController', function ($scope, $modal, $stateParams,$stat
 $scope.animationSwitch = true;
 $scope.isSongSelecting = false;
 
+$scope.displayStations = [];
+
  $scope.displayProfile = {};
  User.authToken = getLocalStorage("token");
  console.log(User.authToken );
@@ -21,22 +23,20 @@ $scope.isSongSelecting = false;
  initProfilePage();
 
  function initProfilePage(){
-
+  
    if(User.authToken && User.authToken !== 'undefined'){
     getUser();
-
     }
+
     // console.log($stateParams);
     console.log($stateParams["profileName"]);
     
     var profilePageCallBack = function(data){
-
       $scope.displayProfile = data;
-      //1)getTags runs then 2)gets all users then 3)loadAll();
-      getTags(getAllUsers);
-
+    getStationsByUser($scope.displayProfile.username);
     }
 
+      getTags(getAllUsers);
     getSpecificUser({name: $stateParams["profileName"]}, profilePageCallBack);
     // if(basket["specificProfile"]){
     //   $scope.displayProfile = basket["specificProfile"];
@@ -106,6 +106,14 @@ function getSpecificUser(specificUserString, callback){
     }); 
 
 }
+function getStationsByUser(nameToBeSearched){
+    $http.post("/getTagsCreatedByUser", {name: nameToBeSearched})
+          .success(function(response) {
+            // console.log(response);
+            $scope.displayStations = response;
+          });
+
+}
 
 function getUserProfile(){
        
@@ -138,16 +146,16 @@ function getUser(){
   $scope.currentSong = {};
  
 
-
+    $scope.currentSongUpvotePerc = 0;
     $scope.stacked = [];
     $scope.stackLikeBar = function() {
     
     $scope.stacked = [];
     var total = $scope.currentSong.upvotes + $scope.currentSong.downvotes;
-     console.log($scope.currentSong);
-     console.log($scope.currentSong['upvotes']);
-     console.log(($scope.currentSong['upvotes']/total) * 100);
-     console.log(($scope.currentSong['downvotes'].downvotes/total) * 100);
+     // console.log($scope.currentSong);
+     // console.log($scope.currentSong['upvotes']);
+     // console.log(($scope.currentSong['upvotes']/total) * 100);
+     // console.log(($scope.currentSong['downvotes'].downvotes/total) * 100);
 
 
      var currentSongUpvoteNum = $scope.currentSong.upvotes;
@@ -158,40 +166,50 @@ function getUser(){
 
     if((currentSongUpvoteNum + currentSongDownvoteNum) === 0) {
 
-    $scope.stacked.push({
-          value: 100,
-          type: 'info'
-        });
-
+    // $scope.stacked.push({
+    //       value: 100,
+    //       type: 'info'
+    //     });
+      $scope.currentSongUpvotePerc = 100;
     }
     else {
     
-    if(!isNaN(currentSongUpvoteCalc) && currentSongUpvoteCalc !=0)
-    {
+    // if(!isNaN(currentSongUpvoteCalc) && currentSongUpvoteCalc !=0)
+    // {
 
-        $scope.stacked.push({
-          value: currentSongUpvoteCalc,
-          type: 'success'
-        });
+    //     $scope.stacked.push({
+    //       value: currentSongUpvoteCalc,
+    //       type: 'success'
+    //     });
       
-    }
+    // }
 
 
-    if(!isNaN(currentSongDownvoteCalc) && currentSongUpvoteCalc !=0)
-    {
-        $scope.stacked.push({
-          value: currentSongDownvoteCalc,
-          type: 'danger'
-        });
+    // if(!isNaN(currentSongDownvoteCalc) && currentSongUpvoteCalc !=0)
+    // {
+    //     $scope.stacked.push({
+    //       value: currentSongDownvoteCalc,
+    //       type: 'danger'
+    //     });
 
-    }
-
+    // }
   
+      $scope.currentSongUpvotePerc = Math.round(currentSongUpvoteCalc);
+    
 
-         console.log($scope.stacked);
+     // console.log(currentSongUpvoteCalc);
+
+
   }
 }
 
+
+    $scope.resetLikeBar = function() {
+  
+      $scope.currentSongUpvotePerc = 0;
+
+  
+}
     $scope.modalUploadAll = function () {
 
     $modalInstance.dismiss({
@@ -228,6 +246,7 @@ $scope.activateOrPauseSong = function(song){
     }
     else{
       $scope.activateAndPlaySong(song);
+      $scope.resetLikeBar();
       $timeout(function(){$scope.stackLikeBar();},100);
       $scope.setEditModeFalse();
       $scope.setMoreModeFalse();
@@ -236,6 +255,7 @@ $scope.activateOrPauseSong = function(song){
   
   } else {
       $scope.activateAndPlaySong(song); 
+            $scope.resetLikeBar();
       $timeout(function(){$scope.stackLikeBar();},100); 
       $scope.setEditModeFalse();
       $scope.setMoreModeFalse();
@@ -312,7 +332,7 @@ $scope.setEditModeTrue = function(song){
   $http.get("/getUsers")
   .success(function(response) {
     $scope.allUsersArray = response;
-    console.log(response);
+    // console.log(response);
 //move these into a call back later
       $scope.repos = loadAll(); 
      if(callback){
@@ -398,9 +418,13 @@ function callbackDecorator(func, addedFunc) {
 
 } 
 
- function stopSong(){
+ function stopSong(callback){
      if($scope.sound) {
        $scope.sound.pause();
+     }
+
+     if(callback){
+      callback();
      }
   }
 
@@ -412,14 +436,62 @@ function getLocalStorage(key) {
    return localStorageService.get(key);
   }
 
-  $scope.goToHome = function () {
-    console.log("triggered");
-    basket["userProfile"] = $scope.userProfile;
-    console.log(basket["userProfile"] );
-    console.log(basket);
-    stopSong();
-    $state.go('home.list');
+  $scope.goToHome = function (specificGenre) {
+    console.log(specificGenre)
+  if(specificGenre){
+    // basket["userProfile"] = $scope.userProfile;
+    // basket["specificProfile"] = specificProfile;
+    // console.log(basket);
+    var cb = function(){
+          $timeout(function() {
+           $state.go('sharedStation',  {stationName: specificGenre});
+          }, 51);
+            
+   }
+    stopSong(cb);
+    // console.log(typeof specificProfile);
+        
+    } else {
+          var cb = function(){
+              $timeout(function() {
+                $state.go('home',{stationName: 'all'});
+              }, 51);
+            
+          }
+
+    stopSong(cb);
+
+    }    
               }
+ 
+ $scope.goToProfile = function (specificProfile) {
+    
+    // basket["specificProfile"] = undefined;
+
+    if(specificProfile){
+
+    // basket["userProfile"] = $scope.userProfile;
+    // basket["specificProfile"] = specificProfile;
+    // console.log(basket);
+    stopSong();
+    // console.log(typeof specificProfile);
+    basket["searchResults"] = $scope.repos;
+        $timeout(function() {
+    $state.go('sharedProfile',  {profileName: specificProfile});
+        }, 15);
+        
+    } else {
+
+    stopSong();
+        // console.log(User.profile.username);
+        $timeout(function() {
+              $state.go('sharedProfile',{profileName: User.profile.username});
+        }, 15);
+
+    }   
+
+   }
+
 
   $scope.login = function () {
     $http
@@ -473,13 +545,105 @@ function getLocalStorage(key) {
   };
 
 
+ function circleDesign(){
+  // console.log("circleDesign executed");
+  var colorChoices = ['bubbleDarkBlue','bubbleLightBlue', 'bubbleTeal'];
+  // var sizeChoices = ['bubbleBig','bubbleMiddle','bubbleSmall'];
+  var colorChoiceInt = chance.integer({min: 0, max: colorChoices.length - 1});
+  // var sizeChoiceInt = chance.integer({min: 0, max: sizeChoices.length - 1});
+  var tempClassName = chance.string({length: 10});
+  var xLocation = chance.integer({min: -3, max: 102});
+  var transitionTimer = chance.integer({min: 5, max: 40});
+
+  var tempDiv = document.createElement("div");
+  tempDiv.className = 'profileBubble ' + colorChoices[colorChoiceInt] + ' ' + tempClassName;
+
+  angular.element(document.getElementsByClassName('bubbleProfileWrapperDiv')).prepend(tempDiv);
+     
+  angular.element(document.getElementsByClassName(tempClassName)).css('margin-left',xLocation + '%');
+
+  angular.element(document.getElementsByClassName(tempClassName)).css('transition',  'all '+transitionTimer + 's');
+
+   $timeout(function(){
+    attachRiseClass(tempClassName, xLocation);
+      
+    },10);
+
+  $timeout(function(){
+    // deleteBubble(tempClassName);
+      placeBubbleBack(tempClassName); 
+    },((transitionTimer * 1000)));
+
+    }
+  
+  function attachRiseClass(tempClass, xLocation){
+    // console.log(angular.element(document.getElementsByClassName(tempClass)));
+     var size  = chance.integer({min: 50, max: 200});
+
+      angular.element(document.getElementsByClassName(tempClass)).css('height',size);
+      angular.element(document.getElementsByClassName(tempClass)).css('min-height',size);
+      angular.element(document.getElementsByClassName(tempClass)).css('width',size);
+      angular.element(document.getElementsByClassName(tempClass)).css('min-width',size);
+
+      angular.element(document.getElementsByClassName(tempClass)).toggleClass('bubbleTopAnimation');
+
+  }
+  
+
+  function deleteBubble(tempClass){
+          angular.element(document.getElementsByClassName(tempClass)).remove();
+  }
+ function placeBubbleBack(tempClass){
+     angular.element(document.getElementsByClassName(tempClass)).css('transition',  'none');
+      angular.element(document.getElementsByClassName(tempClass)).css('margin-top','268px');
+     $timeout(function(){
+      goBubbleUp(tempClass);
+      
+    },1000);
+ }
+  function goBubbleUp(tempClass){
+      var transitionTimer = chance.integer({min: 5, max: 40});
+  angular.element(document.getElementsByClassName(tempClass)).css('transition',  'all '+transitionTimer + 's');
+ angular.element(document.getElementsByClassName(tempClass)).css('margin-top','-13%');
+ 
+  $timeout(function(){
+    // deleteBubble(tempClassName);
+      placeBubbleBack(tempClass);
+    },(transitionTimer * 1000));
+ }
+
+  // function recursiveBubbleCreation(){
+
+  //   var timerForNextBubble = chance.integer({min: 500, max: 10000});
+
+  //   circleDesign();
+   
+  //   $timeout(function(){
+  //       recursiveBubbleCreation();
+  //   },timerForNextBubble);
+  
+  // }
+
+    $timeout(function(){
+      for(var i = 0; i < 15; i++){
+        circleDesign();
+      }
+    },10);
+
+  $timeout(function(){
+      for(var i = 0; i < 5; i++){
+        circleDesign();
+      }
+    },10000);
+
+
 //Angular autocomplete code. Watch out for the scalability of having userRepo along with Tag Repo
     $scope.simulateQuery = false;
 
 
     $scope.querySearch   = querySearch;
     $scope.selectedItemChange = selectedItemChange;
-    // $scope.searchTextChange   = searchTextChange;
+    $scope.searchTextChange   = searchTextChange;
 
     // ******************************
     // Internal methods
@@ -502,8 +666,8 @@ function getLocalStorage(key) {
     }
 
     function searchTextChange(text) {
-      $log.info('Text changed to ' + text);
-
+      // $log.info('Text changed to ' + text);
+      // console.log($scope.repos);
     }
 
     function selectedItemChange(item) {
@@ -511,7 +675,7 @@ function getLocalStorage(key) {
       if(item) {
 
       if(item.searchType === 'station'){
-        $scope.activateStation(item);      
+        $scope.goToHome(item.name);      
       } else if(item.searchType === 'user'){
         
         $scope.goToProfile(item.name);
@@ -519,16 +683,21 @@ function getLocalStorage(key) {
        $scope.repos = loadAll(); 
       }
         
-   }
+   } 
+        
 
     }
+
 
     /**
      * Build `components` list of key/value pairs
      */
     function loadAll() {
-      var repos = $scope.tagArray.concat($scope.allUsersArray);
-      console.log(repos);
+
+         var repos = $scope.tagArray.concat($scope.allUsersArray);
+
+
+
       return repos.map( function (repo) {
         if(repo.group){
           repo.value = repo.name.toLowerCase();

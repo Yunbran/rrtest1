@@ -274,6 +274,19 @@ exports.getUserByName = function(req, res){
    });
 }
 
+exports.getTagsCreatedByUser = function(req , res){
+   var nameToBeSearched = req.body.name;
+  console.log(nameToBeSearched);
+Tag.find({ creator: nameToBeSearched })
+              .exec(function (err, tag) {
+                if (err) {
+                   res.send(err);
+                  }
+              
+                res.json(tag);
+
+              });
+}
 exports.getStation = function(req, res) {
 
   var tagName = req.body.name;
@@ -386,7 +399,7 @@ exports.authenticate =  function (req, res) {
               };
 
               // We are sending the profile inside the token
-              var token = jwt.sign(profile, secret, { expiresInMinutes: 60*5 });
+              var token = jwt.sign(profile, secret, { expiresInDays: 7 });
 
               res.json({ token: token });
 

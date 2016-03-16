@@ -19,23 +19,15 @@ var app = angular.module('radioApp',
 app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvider){
 
       // For any unmatched url, send to /home/list
-      $urlRouterProvider.otherwise("/home/list")
+      $urlRouterProvider.otherwise("/")
       
       //Normal access
       $stateProvider
         .state('home', {
-            url: "/home",
+            url: "/",
             templateUrl: "views/home.html",
             controller: 'PlayerController'
         })
-        .state('home.list', {
-              url: "/list",
-              templateUrl: "views/home.list.html"
-          })        
-        .state('home.about', {
-              url: "/about",
-              templateUrl: "views/home.about.html"
-          })
         .state('home.payment', {
               url: "/payment",
               templateUrl: "views/home.payment.html"
@@ -53,29 +45,18 @@ app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvi
          })
     
       //sharedSong access
-        .state('sharedSong', {
-              url: "/s/{songId}",
-              templateUrl: "index.html",
-              controller: function($state , $stateParams){
-
-                $state.go('sharedSong.home.list', $stateParams)
-              }
+      //sharedStation access
+        .state('sharedStation', {
+              url: "/station/{stationName}",
+              templateUrl: "views/home.list.html",
+              controller: 'PlayerController'
          })
-        .state('sharedSong.home', {
-            url: "/home",
-            templateUrl: "views/home.html",
-            controller: 'PlayerController'
-          })
-        .state('sharedSong.home.list', {
-              url: "/list",
-              templateUrl: "views/home.list.html"
-          })
           //placeholder for other views
-          .state('route2', {
+        .state('route2', {
             url: "/route2",
             templateUrl: "views/route2.html"
         })
-          .state('route2.list', {
+        .state('route2.list', {
               url: "/list",
               templateUrl: "views/route2.list.html",
               controller: function($scope){

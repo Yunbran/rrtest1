@@ -44,6 +44,7 @@ app.post('/authenticate', handler.authenticate);
 app.post('/createUser', handler.createUser);
 app.get('/getTags', handler.getTags);
 app.get('/getUsers', handler.getUsers);
+app.post('/getTagsCreatedByUser', handler.getTagsCreatedByUser);
 app.post('/getUserByName', handler.getUserByName);
 app.post('/getTagByName', handler.getTagByName);
 app.post('/getTagsByGroup', handler.getTagsByGroup);

@@ -1,4 +1,4 @@
-app.controller('PlayerController', function($scope, $http, $modal, $log, $window, $timeout, $stateParams, $state, $window, $timeout, ngAudio, basket, localStorageService, stripe, User) {
+app.controller('PlayerController', function($scope, $http, $modal, $log, $window,$location, $timeout, $stateParams, $state, $window, ngAudio, basket, localStorageService, stripe, User) {
 
 //START OF INSTANTIATION--------------------------------------------------
  
@@ -12,7 +12,6 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
  $scope.currentStationData = {};
  $scope.customSongArray = [];
  $scope.percentageArray = [];
- $scope.firstVisit = true;
 
  $scope.historyArray = [];
  $scope.tagArray = [];
@@ -44,7 +43,7 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
  $scope.nextSong = '';
  //optimization variables!
  $scope.ratedSongTableObj = {};
-
+ $scope.favoritedSongTableObj = {};
 
 //formData used for post requests to the server
            $scope.formData = {
@@ -56,6 +55,15 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
           }
           
           };
+
+
+ if($stateParams['stationName']) {
+ $scope.firstVisit = false;
+  } else {
+ $scope.firstVisit = true;
+ }
+
+
  // console.log( getLocalStorage("token"));
  // console.log( getLocalStorage("data"));
 
@@ -73,24 +81,49 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
 //logic Train STARTS HERE put some code here into init
  
 //if the window has an authToken go ahead and get the Profile  
+ $timeout(function() {
+
   if(User.authToken && User.authToken !== 'undefined') {
+
     getUser();
+
+    // var storedCredentials = getLocalStorage('loginCredentials');
+    // console.log(storedCredentials)
+    // if(storedCredentials){
+      // $scope.login(storedCredentials);
+    // }
+
   } 
   else {
     initStation(); 
   }
+
+ }, 10);
+
    
 // go back to userProfile later to put in initStation
    function initStation(){
+    
 
   //for SearchBar
     var afterUpdateCallBack = function()
     { 
        var afterGettingUsersArrayCallBack = function(){
         $scope.repos = loadAll(); 
+      
        }
      
+        //THIS EXISTS FOR SHARED STATIONs
+        if($stateParams["stationName"]){
+          console.log($stateParams["stationName"]);
+           $scope.activateStation({name: $stateParams["stationName"]}, true);
+
+       }else{
+
       $scope.activateStation({name:'all'});
+       }
+       
+
       getAllUsers(afterGettingUsersArrayCallBack);
     }
 
@@ -126,7 +159,10 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
 
       }
     });
-  }  
+  } 
+
+
+
 //logic Train ENDS HERE
 
 //END OF INSTANTIATION-------------------------------------------------
@@ -136,8 +172,6 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
 
     console.log($scope.ratedSongTableObj); 
     // console.log( $scope.firstVisit );
-    // console.log($scope.animationSwitch);
-
 
 
         // $http.post("/stripeEnd", {adminCode: "snake"})
@@ -304,6 +338,13 @@ function getUserProfile(){
           // for(var i = 0;i < $scope.userProfile.songs.length; i++){
           //   $scope.ratedSongTableObj[$scope.userProfile.songs[i]._id] = $scope.userProfile.songs[i]._id;
           // }
+
+          //Populate favorite hash table
+          for(var i = 0;i < $scope.userProfile.favorite.length; i++){
+            $scope.favoritedSongTableObj[$scope.userProfile.favorite[i]._id] = $scope.userProfile.favorite[i]._id;
+               // console.log($scope.userProfile.downvoted[i]);
+          } 
+
           console.log("OKAY ");
           console.log($scope.ratedSongTableObj);
           if($scope.currentStation)
@@ -324,12 +365,15 @@ function getUser(){
     .success(function (data, status, headers, config) {
       $scope.user = data;
      // console.log($scope.user);
-     User.label = data;
+         User.label = data;
      // $scope.currentStation = $scope.user.station;
         getUserProfile();
     })
     .error(function (data, status, headers, config) {
+ 
       initStation();
+     
+   
     }); 
 
 }
@@ -650,10 +694,15 @@ function getSpecificUser(specificUserString, callback){
  
 
 
- function stopSong(){
+ function stopSong(callback){
 
      if($scope.sound) {
+      if($scope.sound.pause){
        $scope.sound.pause();
+      }
+     }
+     if(callback){
+      callback();
      }
   }
 
@@ -694,7 +743,8 @@ function getSpecificUser(specificUserString, callback){
   }
 
  $scope.refreshPage = function(){
-          window.location.reload();
+
+    $scope.goToHome();
  }
  $scope.resetStation = function(){
 
@@ -815,6 +865,13 @@ $scope.rateCheck = function(){
     $scope.currentSong.rated = true;
     $scope.activateTagAnimation();
     $scope.animationSwitchX = true;
+
+     if($scope.favoritedSongTableObj[$scope.currentSong._id]) {
+        $scope.currentSong.favorited = true;
+      } else {
+        $scope.currentSong.favorited = false;
+      }
+
   } else {
     $scope.currentSong.rated  = false;
     $scope.animationSwitchX = false;
@@ -835,6 +892,10 @@ $scope.rateCheck = function(){
 
 $scope.activateAndPlaySong = function(song, index){
     console.log(index);
+    if($scope.firstVisit){
+      $scope.firstVisit = false;
+    }
+
     if(index){
     $scope.currentHistoryIndex = index;
     }
@@ -851,6 +912,10 @@ $scope.activateAndPlaySong = function(song, index){
  };
 
 $scope.activateAndPlaySongFromDifferentMode = function(song, index){
+    
+    if($scope.firstVisit){
+      $scope.firstVisit = false;
+    }
 
  console.log($scope.historyMode);
  changeStationMode($scope.historyMode);
@@ -863,6 +928,7 @@ $scope.activateAndPlaySongFromDifferentMode = function(song, index){
  }
 
     $scope.activateSong(song , true);
+    $scope.historyArray.unshift(song);
     $scope.playSong();
  };
 
@@ -948,12 +1014,10 @@ $scope.songEndsInHistoryMode = function(){
         $scope.sound.setProgress(0.99999999999999999999999);
 
            if($scope.isStationPlaying) {
-            console.log("A");
             $scope.songEndsInGenerator();          
            } else {
             if($scope.historyMode  == 'upvote' || 'favorite')
             {
-              console.log("B");
              $scope.songEndsInHistoryMode();
             }
            }
@@ -963,16 +1027,17 @@ $scope.songEndsInHistoryMode = function(){
     // $scope.currentSong = null;
     //if playing from station this condition is satisfied
     if(!playFromFavoriteOrUpBool){
-        if($scope.currentSong != song) {
-       $scope.historyArray.unshift(song);
-        if (!$scope.stationHistoryHotfix){
-              $scope.currentHistoryIndex = $scope.currentHistoryIndex+1;
-            };
+        // if($scope.currentSong != song) {
+        // }
+        $scope.historyArray.unshift(song);
+        $scope.currentHistoryIndex = 0;
+        // if (!$scope.stationHistoryHotfix){
+        //       $scope.currentHistoryIndex = $scope.currentHistoryIndex+1;
+        //     };
           if($scope.historyArray.length > 15)
           {
             $scope.historyArray.pop(song);
           }
-        }
        $scope.stationHistoryHotfix = false;
     
 
@@ -988,7 +1053,7 @@ $scope.songEndsInHistoryMode = function(){
     $scope.setHiddenTags();
 
 
- console.log($scope.stationMode);
+      console.log($scope.stationMode);
     if($scope.stationMode ='main'){
       if($scope.currentSong.rated) {
       console.log('TRIGGERED');
@@ -1015,7 +1080,6 @@ $scope.songEndsInHistoryMode = function(){
 
   }
   $scope.playSong = function(){
-
     $scope.sound.play();
   };
   $scope.playSongFromStation =function(){
@@ -1031,7 +1095,6 @@ $scope.songEndsInHistoryMode = function(){
       
       //hotfix for firstvisitFlag
       if(visitBool){ $scope.firstVisit = false;}
-
       console.log(tag);
     if(tag.tagname) {
       $scope.currentStation = tag.tagname;
@@ -1042,11 +1105,18 @@ $scope.songEndsInHistoryMode = function(){
       var cb = function(){
         runStationAlgorithm();
        
+        $scope.isStationPlaying = true;
         if($scope.nextSong)
         {
+        stopSong();
         activateNextSong();
         playNextSong(); 
         $scope.animationSwitchMainLabel = true;
+
+           if( $scope.firstVisit) {
+           $scope.sound.stop();  
+           }
+        
         } 
     
       }
@@ -1057,20 +1127,27 @@ $scope.songEndsInHistoryMode = function(){
       $scope.historyMode = 'history';
       $scope.currentHistoryIndex  = 0;
       changeStationMode('main');
-      
+
+      if(!$scope.firstVisit) 
+      {
+ 
+       // $stateParams['stationName'] = $scope.currentStation;
+       $state.go("sharedStation",{stationName:$scope.currentStation}, {location: true, notify: false, reload: false});
+      }
+
       getStation(cb);
 
-         $timeout(function(){
-        $scope.isStationPlaying = true;
-        /*??????????????????????????????????????????????????????????????????????????????????????????????*/
-       if($scope.sound) //REEEEEEEMOOOOOOVE
-       $scope.sound.pause();
-     /*REMOVE TOP*/
-      }, 1);
+
+
+
   }
 
   $scope.skipSong = function(){
-    $scope.songEndsInGenerator();
+            $scope.sound.setProgress(0.99999999999999999999999);
+            if($scope.sound.paused){
+              $scope.sound.play();
+            }
+    // $scope.songEndsInGenerator();
   };
 
   $scope.upvoteSong = function(song){
@@ -1146,16 +1223,32 @@ $scope.songEndsInHistoryMode = function(){
 
     $scope.favoriteSong = function(){
 
-      $scope.userProfile.favorite.push($scope.currentSong);
+      // $scope.userProfile.favorite.push($scope.currentSong);
      $http.post("/api/favoriteSong", $scope.currentSong)
    .success(function(response) {
      console.log(response);
      //updatePage();
+     $scope.currentSong.favorited = true;
+     $scope.favoritedSongTableObj[$scope.currentSong._id] = $scope.currentSong._id;
+     $scope.userProfile.favorite.push($scope.currentSong);
   });
 
   };
  
+    $scope.unfavoriteSong = function(){
 
+     $http.post("/api/unfavoriteSong", $scope.currentSong)
+   .success(function(response) {
+     console.log(response);
+     $scope.currentSong.favorited = false;
+     $scope.favoritedSongTableObj[$scope.currentSong._id] = $scope.currentSong._id;
+     $scope.userProfile.favorite = _.filter($scope.userProfile.favorite,function(item) {
+        return item != $scope.currentSong;
+     });
+
+  });
+
+  };
 
  $scope.clickUpload = function(){
   $scope.openUploadModal();
@@ -1280,6 +1373,17 @@ $scope.songEndsInHistoryMode = function(){
 //   };
 
 //end of Modal Functions
+$scope.goToHome = function () {
+
+       stopSong();
+        // console.log(User.profile.username);
+        $timeout(function() {
+            $state.go('home');
+           window.location.reload();
+        }, 30);
+
+     
+  }
 
   $scope.goToProfile = function (specificProfile) {
     
@@ -1287,18 +1391,31 @@ $scope.songEndsInHistoryMode = function(){
 
     if(specificProfile){
 
-    // basket["userProfile"] = $scope.userProfile;
-    // basket["specificProfile"] = specificProfile;
-    console.log(basket);
-    stopSong();
-    $state.go('sharedProfile',{profileName: specificProfile});
+     var cb = function(){
+        $timeout(function() {
+           $state.go('sharedProfile',  {profileName: specificProfile});
 
+          }, 51);
+      }
+
+
+
+
+ 
+    stopSong(cb);
+    
+    
     } else {
-    // basket["userProfile"] = $scope.userProfile;
-    console.log(basket);
-    stopSong();
-    $state.go('sharedProfile',{profileName: User.profile.username});
+
+     var cb = function(){
+        $timeout(function() {
+              $state.go('sharedProfile',{profileName: User.profile.username});
+        }, 51);
       
+     }
+    stopSong(cb);
+
+
     }   
 
    }
@@ -1316,9 +1433,12 @@ $scope.songEndsInHistoryMode = function(){
   $scope.message = '';
 
 
-  $scope.login = function () {
+  $scope.login = function (credentialsObject) {
+
+    var userDataToAuthenticate = credentialsObject || $scope.userData;
+    console.log(userDataToAuthenticate);
     $http
-      .post('/authenticate', $scope.userData)
+      .post('/authenticate', userDataToAuthenticate)
       .success(function (data, status, headers, config) {
         $window.sessionStorage.token = data.token;
 
@@ -1329,20 +1449,20 @@ $scope.songEndsInHistoryMode = function(){
 
         getUser();
 
-        var storageString = 'data.' + $scope.userData.username;
+        // var newObjectToBeStored = {username: userDataToAuthenticate.username,
+        //                              password: userDataToAuthenticate.password
+        //                              };
+        // setLocalStorage('loginCredentials', newObjectToBeStored);
+
+        var storageString =  'data.profile.' + userDataToAuthenticate.username;
 
         var storageCheck =  getLocalStorage(storageString);
 
         console.log(storageCheck);
         if(storageCheck === null){
-          var newObjectToBeStored = {username: $scope.userData.username,
-                                     password: $scope.userData.password
-                                     };
           setLocalStorage(storageString, newObjectToBeStored);
         }
 
-      //  var bull = getLocalStorage(storageString);
-      
       })
       .error(function (data, status, headers, config) {
         // Erase the token if the user fails to log in
@@ -1350,6 +1470,7 @@ $scope.songEndsInHistoryMode = function(){
         delete User.storedData;
         delete User.profile;
         setLocalStorage('token', undefined);
+        // setLocalStorage('loginCredentials', undefined);
         console.log("Logged out!");
         $scope.user = undefined;
         // Handle login errors here
@@ -1357,10 +1478,13 @@ $scope.songEndsInHistoryMode = function(){
       });
   };
 
+
+
  $scope.logout = function () {
         delete User.authToken;
         delete User.profile;
         setLocalStorage('token', undefined);
+        // setLocalStorage('loginCredentials', undefined);
         $scope.user = undefined;
         $scope.userProfile = undefined;
         window.location.reload();
@@ -1403,7 +1527,7 @@ $scope.songEndsInHistoryMode = function(){
 
   },100);
 
-      
+             // quickFixForAnimation();
 
 
 function switchAllImages(){
@@ -1477,8 +1601,8 @@ $scope.$on('fade-normal:enter', function(){
     }
 
     function selectedItemChange(item) {
-      $log.info('Item changed to ' + JSON.stringify(item));
       if(item) {
+      $log.info('Item changed to ' + JSON.stringify(item));
 
       if(item.searchType === 'station'){
         $scope.activateStation(item);   
@@ -1486,10 +1610,14 @@ $scope.$on('fade-normal:enter', function(){
       } else if(item.searchType === 'user'){
         
         $scope.goToProfile(item.name);
+
       } else if(item === undefined){
-        loadAll(); 
+        $scope.repos = loadAll(); 
       }
         
+   } else if(item === null ||undefined || "undefined"){
+    console.log('null or undefined');
+    $scope.repos = loadAll(); 
    }
 
     }
@@ -1524,6 +1652,15 @@ $scope.$on('fade-normal:enter', function(){
       };
 }
 //CSS JQUERY SECTION
+function quickFixForAnimation(){
+  if($scope.animationSwitch == false){
+     $scope.animationSwitch = true;
+      $scope.animationSwitch1 = true;
+    
+  }
+}
+
+//circleDesignt starting area
  function circleDesign(){
   // console.log("circleDesign executed");
   var colorChoices = ['bubbleDarkBlue','bubbleLightBlue', 'bubbleTeal'];
@@ -1531,15 +1668,16 @@ $scope.$on('fade-normal:enter', function(){
   var colorChoiceInt = chance.integer({min: 0, max: colorChoices.length - 1});
   // var sizeChoiceInt = chance.integer({min: 0, max: sizeChoices.length - 1});
   var tempClassName = chance.string({length: 10});
-     var xLocation = chance.integer({min: -3, max: 102});
+  var xLocation = chance.integer({min: -3, max: 102});
+  var yLocation = chance.integer({min: 0, max: 570});
   var transitionTimer = chance.integer({min: 5, max: 40});
-
   var tempDiv = document.createElement("div");
   tempDiv.className = 'bubble ' + colorChoices[colorChoiceInt] + ' ' + tempClassName;
 
   angular.element(document.getElementsByClassName('bubbleWrapperDiv')).prepend(tempDiv);
      
   angular.element(document.getElementsByClassName(tempClassName)).css('margin-left',xLocation + '%');
+  angular.element(document.getElementsByClassName(tempClassName)).css('margin-top','570px');
 
   angular.element(document.getElementsByClassName(tempClassName)).css('transition',  'all '+transitionTimer + 's');
 
@@ -1556,15 +1694,16 @@ $scope.$on('fade-normal:enter', function(){
     }
   
   function attachRiseClass(tempClass, xLocation){
-    console.log(angular.element(document.getElementsByClassName(tempClass)));
+    // console.log(angular.element(document.getElementsByClassName(tempClass)));
      var size  = chance.integer({min: 50, max: 200});
 
       angular.element(document.getElementsByClassName(tempClass)).css('height',size);
       angular.element(document.getElementsByClassName(tempClass)).css('min-height',size);
       angular.element(document.getElementsByClassName(tempClass)).css('width',size);
       angular.element(document.getElementsByClassName(tempClass)).css('min-width',size);
+      angular.element(document.getElementsByClassName(tempClass)).css('margin-top', '-15%');
 
-      angular.element(document.getElementsByClassName(tempClass)).toggleClass('bubbleTopAnimation');
+      // angular.element(document.getElementsByClassName(tempClass)).toggleClass('bubbleTopAnimation');
 
   }
   
@@ -1574,14 +1713,14 @@ $scope.$on('fade-normal:enter', function(){
   }
  function placeBubbleBack(tempClass){
      angular.element(document.getElementsByClassName(tempClass)).css('transition',  'none');
-      angular.element(document.getElementsByClassName(tempClass)).css('margin-top','570px');
+      angular.element(document.getElementsByClassName(tempClass)).css('margin-top','540px');
      $timeout(function(){
       goBubbleUp(tempClass);
       
-    },1000);
+    },100);
  }
   function goBubbleUp(tempClass){
-      var transitionTimer = chance.integer({min: 5, max: 40});
+   var transitionTimer = chance.integer({min: 5, max: 40});
   angular.element(document.getElementsByClassName(tempClass)).css('transition',  'all '+transitionTimer + 's');
  angular.element(document.getElementsByClassName(tempClass)).css('margin-top','-13%');
  
@@ -1609,6 +1748,14 @@ $scope.$on('fade-normal:enter', function(){
       }
     },10);
 
+   $timeout(function(){
+      for(var i = 0; i < 5; i++){
+        circleDesign();
+      }
+    },20000);
+    $timeout(function() {
+      $scope.animationSwitch =  true;
+      }, 500);
 //CSS END SECTION
 
 

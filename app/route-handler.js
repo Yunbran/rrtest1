@@ -81,11 +81,11 @@ exports.getProfile = function(req, res) {
 
 
  exports.upvoteSong = function(req, res) {
-      console.log("upvoteSong activated");
+      // console.log("upvoteSong activated");
       var name = req.body.name;
       var userObj = req.user;
       // console.log(req.body);
-      // console.log(req.user);
+      console.log(req.user + "has upvoted song: " + name);
 
    Song.find({name : name}, function (err, songs) {
       if(err) {
@@ -99,7 +99,7 @@ exports.getProfile = function(req, res) {
      {
 
       var hasAlreadyRated = _.contains(songs[0].ratedList, req.user.id)
-      console.log(hasAlreadyRated);
+      // console.log(hasAlreadyRated);
       if(hasAlreadyRated)
       {
         //console.log("activated");
@@ -151,9 +151,12 @@ exports.getProfile = function(req, res) {
 
 
 exports.downvoteSong = function(req, res) {
-    console.log("downvoteSong activated");
-      var name = req.body.name;
+    // console.log("downvoteSong activated");
+    console.log(req.user + "has upvoted song: " + name);
+    
+    var name = req.body.name;
       //console.log(req.body);
+
    Song.find({name : name},function (err, songs) {
       if(err) {
         res.send(err);
@@ -215,12 +218,12 @@ exports.downvoteSong = function(req, res) {
 }
 
  exports.favoriteSong = function(req, res) {
-      console.log("favoriteSong activated");
+      // console.log("favoriteSong activated");
       var name = req.body.name;
       var userObj = req.user;
       var song = req.body;
                     
-              console.log('song favorited');
+      console.log(name + ' favorited song: ' + song);
              
               User.findOne({ username: req.user.username }) 
               .exec(function (err, user) {
@@ -232,11 +235,36 @@ exports.downvoteSong = function(req, res) {
 
     
 }
+
+ exports.unfavoriteSong = function(req, res) {
+      // console.log("unfavoriteSong activated");
+      var name = req.body.name;
+      var userObj = req.user;
+      var song = req.body;
+                    
+      console.log(name + ' unfavorited song: ' + song);
+             
+              User.findOne({ username: req.user.username }) 
+              .exec(function (err, user) {
+                
+                  user.favorite = _.filter( user.favorite,function(item) {
+                        return item != song._id;
+                   });
+
+                user.save(function(){
+                  res.json("Successfully unfavorited song!");
+                });
+              })
+
+    
+}
  exports.claimSong = function(req, res){
-        console.log("claimSong activated");
+        // console.log("claimSong activated");
       var songToBeClaimed = req.body.songToBeClaimed;
       var unhashedClaimCode = req.body.unhashedClaimCode;
       var userObj = req.user;
+
+      console.log(userObj.name + ' claimed song: ' + songToBeClaimed);
 
    Song.find({_id : req.body.songToBeClaimed._id}, function (err, songs) {
       if(err) {
@@ -628,11 +656,9 @@ exports.editSong = function(req, res) {
      // START OF EDITING OPERATIONS
      if(userObj.id != songs[0].creatorID) {
       res.send("Permission to edit song denied. (ID does not match)");
-     }
-
-     if(songs[0].creator === 'anonymous') {
+     } else if(songs[0].creator === 'anonymous') {
       res.send("Permission to edit song denied. (anonymous songs cant be edited)");
-     }
+     } else{
                         // name: songname,
                         // creatorID: creatorID,
                         // creator: creator,
@@ -738,6 +764,8 @@ exports.editSong = function(req, res) {
         });
 
           
+      
+     }
       
      }
 

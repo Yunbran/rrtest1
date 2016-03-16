@@ -1,4 +1,203 @@
 
+<div class="homeBar">
+
+
+
+    <div ng-show = "!user" class = "userArea">
+<div style = "  flex-grow:1; flex-shrink:0;"></div>
+     <img src ='./media/pic/icon.png' ng-click = "refreshPage()" class = ' headerLogo'/>
+<div           ng-class="{ 'mainSearchBarSmall': !switchMainSearch,
+                      'type':'mainSearch' }" style = "  flex-grow:1; flex-shrink:0;     border-right: 1px solid rgba(128,128,128,0.1);     
+                      height: 66px;
+    margin-top: -10px;"></div>
+    <!-- <button type="button" class="btn btn-info btn-xs loginButton" ng-click="openLoginModal()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+        <span class="glyphicon glyphicon-log-in"></span> Login
+    </button> -->
+    <span            ng-class="{ 'mainSearchBarSmall': !switchMainSearch,
+                      'type':'mainSearch' }"
+                      class = 'glyphicon glyphicon-search' style = '    margin-top: 14px;
+    margin-left: 1%;'></span>
+     <md-autocomplete 
+          resizer 
+          ng-class="{ 'mainSearchBarSmall': !switchMainSearch,
+                      'type':'mainSearch' }"
+          ng-disabled="false"
+          md-no-cache="noCache"
+          md-selected-item="selectedItem"
+          md-search-text-change="searchTextChange(searchText)"
+          md-search-text="searchText"
+          md-selected-item-change="selectedItemChange(item)"
+          md-items="item in querySearch(searchText)"
+          md-item-text="item.name"
+          md-min-length="0"
+          placeholder="Search for Station Tags and Profiles..."
+          md-menu-class="autocomplete-custom-template" 
+          style = "flex-grow:5; flex-shrink:3; margin-top: .25%; background-color:white;"
+          class = "mainSearchBar">
+        <md-item-template>
+        <div ng-show = "item.searchType === 'station'">
+          <span class="item-title">
+            <md-icon class = 'glyphicon glyphicon-music'></md-icon>
+            <strong> {{item.name}} </strong>
+          </span>
+          <span class="item-metadata">
+            <span class="item-metastat">
+               songs: {{item.songs.length}}
+            </span>
+          </span>
+        </div>
+
+          <div ng-show = "item.searchType === 'user'">
+           <span class="item-title">
+             <md-icon class = 'glyphicon glyphicon-user'></md-icon>
+             <strong> {{item.name}} </strong>
+           </span>
+<!--            <span class="item-metadata">
+              <span class="item-metastat">
+                 songs: {{item.songs.length}}
+             </span>
+            </span> -->
+         </div>
+        </md-item-template>
+      </md-autocomplete>
+
+        <div style = "flex-grow:4; flex-shrink:0;">     </div>
+
+        <form class = "loginForm" ng-submit="login()">
+
+               <input type="text" ng-model="userData.username" placeholder = "Username" class = "loginInput">
+               <input type="password" ng-model="userData.password" placeholder = "Password" class = "passwordInput">
+               <input class="btn btn-primary loginButton"  type="submit" id="submit" value="Login" />
+               <button type="button" class="btn btn-primary signupButton" ng-click="openSignupModal('lg')" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+               <span class="glyphicon glyphicon-pencil"></span> Signup
+               </button>
+        </form>
+   
+
+
+    </div>
+
+    <div ng-show = "user" class = "userArea">
+<div style = "  flex-grow:1; flex-shrink:0;"></div>
+     <img src ='./media/pic/icon.png' ng-click = "refreshPage()"  class = ' headerLogo'/>
+<div           ng-class="{ 'mainSearchBarSmall': !switchMainSearch,
+                      'type':'mainSearch' }" style = "  flex-grow:1; flex-shrink:0;     border-right: 1px solid rgba(128,128,128,0.1);     height: 200%;
+    margin-top: -1%;"></div>
+    <!-- <button type="button" class="btn btn-info btn-xs loginButton" ng-click="openLoginModal()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+        <span class="glyphicon glyphicon-log-in"></span> Login
+    </button> -->
+    <span            ng-class="{ 'mainSearchBarSmall': !switchMainSearch,
+                      'type':'mainSearch' }"
+                      class = 'glyphicon glyphicon-search' style = '    margin-top: 14px;
+    margin-left: 1%;'></span>
+     <md-autocomplete 
+          resizer 
+          ng-class="{ 'mainSearchBarSmall': !switchMainSearch,
+                      'type':'mainSearch' }"
+          ng-disabled="false"
+          md-no-cache="noCache"
+          md-selected-item="selectedItem"
+          md-search-text-change="searchTextChange(searchText)"
+          md-search-text="searchText"
+          md-selected-item-change="selectedItemChange(item)"
+          md-items="item in querySearch(searchText)"
+          md-item-text="item.name"
+          md-min-length="0"
+          placeholder="Search for Station Tags and Profiles..."
+          md-menu-class="autocomplete-custom-template" 
+          style = "flex-grow:5; flex-shrink:3; margin-top: .25%; background-color:white;"
+          class = "mainSearchBar">
+        <md-item-template>
+        <div ng-show = "item.searchType === 'station'">
+          <span class="item-title">
+            <md-icon class = 'glyphicon glyphicon-music'></md-icon>
+            <strong> {{item.name}} </strong>
+          </span>
+          <span class="item-metadata">
+            <span class="item-metastat">
+               songs: {{item.songs.length}}
+            </span>
+          </span>
+        </div>
+
+          <div ng-show = "item.searchType === 'user'">
+           <span class="item-title">
+             <md-icon class = 'glyphicon glyphicon-user'></md-icon>
+             <strong> {{item.name}} </strong>
+           </span>
+<!--            <span class="item-metadata">
+              <span class="item-metastat">
+                 songs: {{item.songs.length}}
+             </span>
+            </span> -->
+         </div>
+        </md-item-template>
+      </md-autocomplete>
+
+        <div style = "flex-grow:8; flex-shrink:0;">     </div>
+
+
+
+
+
+    <button type="button" class="btn btn-primary  logoutButton" ng-click="logout()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+        <span class="glyphicon glyphicon-log-out"></span> Logout
+        
+    </button>
+
+   <button class="btn btn-primary profileButton" ng-click = "goToProfile()">{{profileLetter }}</button>
+
+
+
+    </div>
+
+ <!-- <div class = "homeMessage">Current Station: {{currentStation}}</div> -->
+
+ <!-- <img src ='./media/pic/RadioRise5.jpg'/ class = 'homeLogo'> -->
+
+</div>
+     <md-autocomplete 
+          resizer 
+          ng-class="{ 'mainSearchBarSmall': switchMainSearch}"
+          ng-disabled="false"
+          md-no-cache="noCache"
+          md-selected-item="selectedItem"
+          md-search-text-change="searchTextChange(searchText)"
+          md-search-text="searchText"
+          md-selected-item-change="selectedItemChange(item)"
+          md-items="item in querySearch(searchText)"
+          md-item-text="item.name"
+          md-min-length="0"
+          placeholder="Search for Station Tags and Profiles..."
+          md-menu-class="autocomplete-custom-template" 
+          style = "flex-grow:5; flex-shrink:3; margin-top: .25%;"
+          class = "mainSearchBarUnderneath">
+        <md-item-template>
+        <div ng-show = "item.searchType === 'station'">
+          <span class="item-title">
+            <md-icon class = 'glyphicon glyphicon-music'></md-icon>
+            <strong> {{item.name}} </strong>
+          </span>
+          <span class="item-metadata">
+            <span class="item-metastat">
+               songs: {{item.songs.length}}
+            </span>
+          </span>
+        </div>
+
+          <div ng-show = "item.searchType === 'user'">
+           <span class="item-title">
+             <md-icon class = 'glyphicon glyphicon-user'></md-icon>
+             <strong> {{item.name}} </strong>
+           </span>
+<!--            <span class="item-metadata">
+              <span class="item-metastat">
+                 songs: {{item.songs.length}}
+             </span>
+            </span> -->
+         </div>
+        </md-item-template>
+      </md-autocomplete>
 <div class = "bubbleWrapperDiv">
 
 </div>
@@ -151,7 +350,7 @@
              <div style = "margin-top: 60px;
              margin-left:50px;" class = 'playButtonWrapper'>
             <img src = './media/pic/circleSelect.png' class = "circleSelect" ng-show = 'sound' ng-class = "{circleSelectSpin: sound.paused == true}">
-              <div ng-show="sound.paused" ng-click='playSongFromStation()' class = "playButton "></div>
+              <div  ng-click='playSongFromStation()' class = "playButton "></div>
               
             </img>  
           </div>
@@ -325,7 +524,8 @@
 
          <div style = "justify-content: flex-start; flex-wrap:wrap;" class = "songInformation flexVertical">
                 <div style = "width:100px; height: 285px;">
-         <div ng-show = "currentSong.rated" class = "favoriteButton" ng-click='favoriteSong()'>  </div>
+         <div ng-show = "!currentSong.favorited" class = "favoriteButton" ng-click='favoriteSong()'>  </div>
+         <div ng-show = "currentSong.favorited" class = "favoritedButton" ng-click='unfavoriteSong()'>  </div>
               </div>
 
 
