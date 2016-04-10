@@ -1,6 +1,6 @@
 app.controller('UploadController', function ($scope, $http, $modalInstance, $window, $timeout, $log,User, localStorageService, userProfile, ngAudio, FileUploader, basket) {
   
-
+  $scope.azureStorageName = 'https://practicespace.blob.core.windows.net';
   $scope.userData =  {username: '', password: ''};
   $scope.message = '';
   $scope.tagArray = [];
@@ -89,26 +89,26 @@ function getUser(){
 
 
 //MODAL FUNCTION FOR PROFILE/SONG MODAL
-    $scope.addTag = function (song) {
+  //   $scope.addTag = function (song) {
     
-    $scope.message = '';
+  //   $scope.message = '';
 
-    if(song.tags === undefined)
-    {
-      song.tags = [];
-    }
+  //   if(song.tags === undefined)
+  //   {
+  //     song.tags = [];
+  //   }
 
-    if(song.tags.length < 5)
-    {
-         song.tags.push({tagname: ""});
-    }
-    else
-    {
-      $scope.message = "Maximum 5 tags allowed";
-    }
+  //   if(song.tags.length < 5)
+  //   {
+  //        song.tags.push({tagname: ""});
+  //   }
+  //   else
+  //   {
+  //     $scope.message = "Maximum 5 tags allowed";
+  //   }
  
 
-  };
+  // };
 
     // $scope.modalUploadAll = function () {
 
@@ -161,10 +161,11 @@ $scope.activateAndPlaySong = function(song){
     console.log('activateSong() activated.');
     console.log('songPath ' + song.filepath);
 
-
-    $scope.sound = ngAudio.load(song.filepath);
+    var azureRetrievalPath = $scope.azureStorageName + "/" + song.creator + "/"+ song.filepath;
+    $scope.sound = ngAudio.load(azureRetrievalPath);
+    
     console.log($scope.currentSong);
-    $scope.shareURL=  "http://localhost:8000/#/s/" + $scope.currentSong._id;
+    $scope.shareURL =  "http://localhost:8000/#/s/" + $scope.currentSong._id;
     //callback Decorator calls the function after the song ends ($sound.progress === 1)
     $scope.sound.endSong = callbackDecorator($scope.sound.endSong, 
       function(){
@@ -212,7 +213,7 @@ $scope.sendEdits = function (song) {
           song.description = $scope.editChangesObj.description;
           song.name = $scope.editChangesObj.name;
           console.log(response);
-          $scope.cancel();
+          $scope.cancel({success:true});
         }).error(function(response){
         console.log(response.errors);
         
@@ -476,11 +477,12 @@ function getLocalStorage(key) {
             // User.storedData['claimCodeMap'][basket['uploadedSong']._id] = response["unhashedClaimCode"];
             $scope.modalMode = 'edit';
             // $scope.openUploadModal('lg');
-          $scope.activateAndPlaySong(response["songObj"]);
-            $scope.shareURL =  "http://localhost:8000/#/s/" + $scope.currentSong["_id"];
+           $scope.activateAndPlaySong(response["songObj"]);
+           $scope.shareURL =  "http://localhost:8000/#/s/" + $scope.currentSong["_id"];
            $scope.editChangesObj.name = $scope.currentSong["name"];
            console.log($scope.currentSong["tags"]);
            delete $scope.currentSong["tags"][0];
+           $scope.currentSong["tags"][0] = {name:'all'};
         };
         uploader.onErrorItem = function(fileItem, response, status, headers) {
             console.info('onErrorItem', fileItem, response, status, headers);

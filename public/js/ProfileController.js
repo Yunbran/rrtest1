@@ -1,5 +1,6 @@
 app.controller('ProfileController', function ($scope, $modal, $stateParams, $interval,$state, $http, $window, $log, $timeout, basket, User, localStorageService, ngAudio) {
   
+  $scope.azureStorageName = 'https://practicespace.blob.core.windows.net';
 
   $scope.userData = {};
   $scope.message = '';
@@ -13,7 +14,7 @@ app.controller('ProfileController', function ($scope, $modal, $stateParams, $int
  $scope.repos = []; 
 $scope.animationSwitch = true;
 $scope.isSongSelecting = false;
-
+ $scope.tagsForEditing = [];
 $scope.displayStations = [];
 
  $scope.displayProfile = {};
@@ -52,7 +53,7 @@ $scope.displayStations = [];
 
  $scope.check = function () {
 
-    console.log($scope.displayProfile); 
+    console.log($scope.currentSong); 
     // console.log( $scope.firstVisit );
     // console.log($scope.animationSwitch);
 
@@ -277,8 +278,9 @@ $scope.activateAndPlaySong = function(song){
     console.log('activateSong() activated.');
     console.log('songPath ' + song.filepath);
 
+    var azureRetrievalPath = $scope.azureStorageName + "/" + song.creator + "/"+ song.filepath;
+    $scope.sound = ngAudio.load(azureRetrievalPath);
 
-    $scope.sound = ngAudio.load(song.filepath);
     console.log($scope.currentSong);
     $scope.shareURL=  "http://localhost:8000/#/s/" + $scope.currentSong._id;
     //callback Decorator calls the function after the song ends ($sound.progress === 1)
@@ -306,12 +308,39 @@ $scope.activateAndPlaySong = function(song){
 
 
 $scope.setEditModeTrue = function(song){
+  
  $scope.editMode =  true; 
- if(song) {
-   $scope.editChangesObj = {name: song.name,
-    description: song.description};
+  console.log($scope.currentSong.tags);
+
+ 
+//remove duplicates and make object types match
+    $scope.tagsForEditing = _.map($scope.currentSong.tags, function(obj){
+      return {name: obj.tagname};
+    });
+
+ var usedNameHashMap  = [];
+ var finalSet = [];
+
+ for(var i =0; i < $scope.tagsForEditing.length; i++){
+  console.log($scope.tagsForEditing[i]);
+  if(!usedNameHashMap[$scope.tagsForEditing[i].name]){
+    usedNameHashMap[$scope.tagsForEditing[i].name] = $scope.tagsForEditing[i].name;
+    finalSet.push($scope.tagsForEditing[i]);
+  }
 
  }
+
+$scope.tagsForEditing = finalSet;
+
+
+ if(song) {
+
+
+   $scope.editChangesObj = {name: song.name,
+    description: song.description,
+    tags: $scope.tagsForEditing};
+ }
+
 };
 
  function getTags(callback){
@@ -326,6 +355,19 @@ $scope.setEditModeTrue = function(song){
 
 }
 
+ $scope.loadTags = function($query){
+
+  // console.log($query);
+  // console.log($scope.tagArray);
+  var returnArray = $scope.tagArray.filter(function(tag) {
+        return tag.name.toLowerCase().indexOf($query.toLowerCase()) != -1;
+      });
+
+  returnArray = _.uniq(returnArray);
+  console.log(returnArray);
+ return returnArray;
+
+}
 //GETS USERS FROM DATABASE AND STORES THEM IN LOCAL VAR $scope.allUsersArray
  function getAllUsers(callback){
 
@@ -346,8 +388,10 @@ $scope.setEditModeTrue = function(song){
 
 $scope.setEditModeFalse = function(){
  $scope.editMode =  false; 
+ $scope.tagsForEditing = [];
  $scope.editChangesObj = {name: '',
-description: ''};
+description: '',
+tags: []};
 };
 
 $scope.setMoreMode = function(){
@@ -359,12 +403,16 @@ $scope.setMoreModeFalse = function(){
 };
 
 $scope.sendEdits = function (song) {
-   $scope.editChangesObj = song;
+
     console.log($scope.editChangesObj);
-   $http.post("/api/editSong", $scope.editChangesObj)
+    song.tags = $scope.editChangesObj.tags;
+    song.name = $scope.editChangesObj.name;
+    song.description = $scope.editChangesObj.description;
+   $http.post("/api/editSong",song)
         .success(function(response) {
-          song.description = $scope.editChangesObj.description;
-          song.name = $scope.editChangesObj.name;
+          song.description = response.description;
+          song.name = response.name;
+          song.tags = response.tags;
           $scope.setEditModeFalse();
           console.log(response);
         });

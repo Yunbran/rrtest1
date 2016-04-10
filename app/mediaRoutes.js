@@ -81,20 +81,34 @@ var containerName = 'mycontainer';
 
 
 
-//INTERCEPTOR FOR MEDIA ROUTE
-
-app.use('/media/sound/:user/:filepath', function(req, res, next) {
+//INTERCEPTOR FOR MEDIA ROUTE 
+///song/:user/:filepath
+app.use('TESTINTERCEPTOR/:user/:filepath', function(req, res, next) {
   //console.log('Request URL:', req.originalUrl);
   // console.log(res);
   //res.send(200)
   // console.log(req.param("user"));
 
-
   //next();
 
-   // console.log('triggered');
+   console.log(req.params.filepath);
+   console.log(req.params.user);
+
+   var containerName = req.params.user;
+   var fileName = req.params.filepath;
+
+var fileDestination = './public/media/sound/' + containerName + '/' + fileName
+blobSvc.getBlobToStream(containerName, fileName , fs.createWriteStream(fileDestination), function(error, result, response){
+  if(!error){
+    // blob retrieved
+    console.log(result);
+    // console.log(response);
+  } else {
+    console.log(error);
+  }
+})
     // var fileName = req.params.file;
-     var fileName = 'testpark.mp3'
+     // var fileName = 'testpark.mp3'
      
     // blobSvc.getBlobProperties(
     //     containerName,
@@ -106,11 +120,10 @@ app.use('/media/sound/:user/:filepath', function(req, res, next) {
     //             res.send(404, "The file %s does not exist", fileName);
     //         } else {
     //             res.header('Content-Type', properties.contentType);
-    // res.header('Range', properties.Range);
+    //              res.header('Range', properties.Range);
     //             blobSvc.createReadStream(containerName, fileName).pipe(res);
     //         }
     //     });
-
 
 
 next();

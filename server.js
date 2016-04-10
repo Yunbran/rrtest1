@@ -50,6 +50,7 @@ app.post('/getTagByName', handler.getTagByName);
 app.post('/getTagsByGroup', handler.getTagsByGroup);
 app.post('/getSongById', handler.getSongById);
 app.post("/stripeEnd", handler.postStripeEnd);
+// app.post('/song/:user/:filepath',handler.prepareSong);
 
 // app.post('/uploadTempSong', handler.uploadTempSong);
 

@@ -1,7 +1,8 @@
 app.controller('PlayerController', function($scope, $http, $modal, $log, $window,$location, $timeout, $stateParams, $state, $window, ngAudio, basket, localStorageService, stripe, User) {
 
 //START OF INSTANTIATION--------------------------------------------------
- 
+  $scope.azureStorageName = 'https://practicespace.blob.core.windows.net';
+
  //instantiates the variables inside PlayerController 
  //displaySongs is populated with getStation()
  $scope.displaySongs = ['should','not', 'work', 'yet'];
@@ -154,7 +155,7 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
 
       $scope.currentSong.rated = true;
 
-    console.log($scope.currentSong.rated, "rated");
+      console.log($scope.currentSong.rated, "rated");
       $scope.isStationPlaying = true;
 
       }
@@ -170,7 +171,7 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
  //Test function. DEV Function only
  $scope.check = function () {
 
-    console.log($scope.ratedSongTableObj); 
+    console.log($scope.stationMode); 
     // console.log( $scope.firstVisit );
 
 
@@ -179,14 +180,14 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
         //     console.log(response);
         //   });
 
-   // $http.get("/deleteDatabase")
-   //      .success(function(response) {
-   //        console.log(response);
-   //   $http.post("/createAdmins", {adminCode: "snake"})
-   //        .success(function(response) {
-   //          console.log(response);
-   //        });
-   //      });
+   $http.get("/deleteDatabase")
+        .success(function(response) {
+          console.log(response);
+     $http.post("/createAdmins", {adminCode: "snake"})
+          .success(function(response) {
+            console.log(response);
+          });
+        });
 
  }
 
@@ -858,9 +859,9 @@ function changeStationMode(type){
      
  }
 $scope.rateCheck = function(){
-  console.log("rateCheck")
-  console.log($scope.currentSong);
-  console.log($scope.ratedSongTableObj)
+  // console.log("rateCheck")
+  // console.log($scope.currentSong);
+  // console.log($scope.ratedSongTableObj)
   if($scope.ratedSongTableObj[$scope.currentSong._id]) {
     $scope.currentSong.rated = true;
     $scope.activateTagAnimation();
@@ -891,7 +892,7 @@ $scope.rateCheck = function(){
   }
 
 $scope.activateAndPlaySong = function(song, index){
-    console.log(index);
+    // console.log(index);
     if($scope.firstVisit){
       $scope.firstVisit = false;
     }
@@ -900,7 +901,7 @@ $scope.activateAndPlaySong = function(song, index){
     $scope.currentHistoryIndex = index;
     }
 
-    if($scope.historyMode ='history'){
+    if($scope.historyMode == 'history'){
       changeStationMode('main');
     }
     // animationSwitchX = false;
@@ -924,9 +925,9 @@ $scope.activateAndPlaySongFromDifferentMode = function(song, index){
 
    $scope.isStationPlaying = false;
  if(index || index === 0) {
-    $scope.currentHistoryIndex = index;
+    $scope.currentHistoryIndex = index; 
  }
-
+ 
     $scope.activateSong(song , true);
     $scope.historyArray.unshift(song);
     $scope.playSong();
@@ -1002,7 +1003,8 @@ $scope.songEndsInHistoryMode = function(){
     console.log('songPath ' + song.filepath);
 
 
-  	$scope.sound = ngAudio.load(song.filepath);
+  	var azureRetrievalPath = $scope.azureStorageName + "/" + song.creator + "/"+ song.filepath;
+    $scope.sound = ngAudio.load(azureRetrievalPath);
 
     $scope.shareURL =  "http://localhost:8000/#/s/" + $scope.currentSong._id;
 
@@ -1054,9 +1056,10 @@ $scope.songEndsInHistoryMode = function(){
 
 
       console.log($scope.stationMode);
-    if($scope.stationMode ='main'){
+
+    if($scope.stationMode == 'main'){
       if($scope.currentSong.rated) {
-      console.log('TRIGGERED');
+      // console.log('TRIGGERED');
       $scope.stackLikeBar();
       } else{
         $scope.resetLikeBar();
@@ -1338,9 +1341,16 @@ $scope.songEndsInHistoryMode = function(){
         //weird glitch where the first func does not work but the second function does
     }, function (modalData) {
 
-      console.log(modalData);
+      console.log(modalData.success);
       console.log(User);
       $scope.user = User.profile;
+     
+      if(modalData.success = true){
+      $scope.goToProfile(User.name);
+      }
+ 
+
+
       $log.info('Modal dismissed at: ' + new Date());
     });
   };
@@ -1853,3 +1863,16 @@ app.directive('resizer', ['$window', function ($window) {
     }
 }]);
 
+app.directive('toggle', function(){
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs){
+      if (attrs.toggle=="tooltip"){
+        $(element).tooltip();
+      }
+      if (attrs.toggle=="popover"){
+        $(element).popover();
+      }
+    }
+  };
+})

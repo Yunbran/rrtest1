@@ -482,9 +482,10 @@ width:100%;
     user-select: none;
 }
 .uploadRulesDiv{
-  height: 200px;
+  height: 260px;
     width: 100%;
     background-color: grey;
+        overflow-y: auto;
     text-align: center;
 }
 .uploadBox{
@@ -1499,7 +1500,7 @@ display:flex;
   position:fixed;
   color:white;
   font-size: 27px;
-    margin-top: -215px;
+    margin-top: -232px;
   margin-left: 0.5%;
 }
 .smallerImageMainPageFirst {
@@ -2448,4 +2449,8 @@ transition: none;
  opacity: 1;
  transition: .4s ease-in-out all;
   -webkit-transition:.4s ease-in-out all;
+}
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
+    display: none;
 }

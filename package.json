@@ -1,7 +1,7 @@
 {
   "name": "RadioRise",
   "version": "0.0.1",
-  "description": "simple music sharing app",
+  "description": "music indexing app",
   "main": "server.js",
   "repository": "",
   "scripts": {
@@ -9,12 +9,12 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "azure-storage": "^0.4.2",
+    "azure-storage": "^0.10.0",
     "basic-auth": "^1.0.0",
     "bcryptjs": "^2.1.0",
     "body-parser": "^1.10.1",
     "chance": "^0.7.5",
-    "connect-mongo": "^0.5.3",
+    "connect-mongo": "^1.1.0",
     "cors": "^2.5.2",
     "express": "^4.10.6",
     "express-jwt": "^2.1.0",
@@ -24,7 +24,8 @@
     "jsonwebtoken": "^4.2.2",
     "lodash": "^3.5.0",
     "method-override": "^2.3.1",
-    "mongoose": "3.8",
+    "mongoose": "^4.4.12",
+    "multiparty": "^4.1.2",
     "nconf": "^0.7.1",
     "path": "^0.4.9",
     "stripe": "^4.1.0"

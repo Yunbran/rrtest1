@@ -2,7 +2,7 @@
 
         <div class = "flexHorizontalStart uploadHeaderRow uploadHeaderRow1">
                 <div ng-hide = "modalMode == 'edit'" style= "margin-top: -1%;margin-left: 1%" ng-click = "cancel()"><span class = "glyphicon glyphicon-remove"></span></div>
-          <div style = "margin-left: 29%;" ng-show = "modalMode == 'edit'">{{currentSong.name}}</div>
+          <div style = "margin-left: 40%;" ng-show = "modalMode == 'edit'">{{currentSong.name}}</div>
           <div style = "margin-left: 29%;" ng-show = "modalMode == 'form'"> Sign up or Sign in to upload your music! </div>
           <div style = "margin-left: 29%;" ng-show = "modalMode == 'upload'"> Upload a Song into RadioRise! </div>
 
@@ -110,13 +110,28 @@
         <div class = "uploadSongPanePlayer" ng-show = "modalMode == 'upload'">
        
 <div class = "uploadRulesDiv flexVertical">
-  <div style = "font-size: 20px;">
+  <div style = "    font-size: 16px;
+         margin-top: 310px;
+         align-content:center; 
+         padding-left: 25px;
+         padding-right: 35px;">
     <div>
-     Don't upload Copyrighted Music
+<h1 style = "margin-top:90px;">Hello everyone!</h1>
+<h4>We hope that you are enjoying your time on RadioRise. Things are new around here, so bear with us while we refine the website and develop our service. Our goal is to provide the most freedom possible to the RadioRise community. As a music service, we strive to promote creativity and limit restrictions on users. That being said, we do ask that you adhere to just a few conditions to help the site run smoothly and to keep us out of trouble. Also, keep in mind that these conditions will be periodically edited. Although we will do our best to notify you of any changes, your continued use of RadioRise constitutes an implied acceptance to anything outlined below or posted elsewhere on the website. </h4>
+<h1>Conditions</h1>
+<h5><ul>By uploading on to RadioRise you are willingly providing your copyrighted material to be publically streamed interactively by all users and you should not expect any monetary compensation for such material.</ul>
+<ul>Please do not spam the website in any way shape or form. Spam may consist of uploading duplicate recordings, installing bots, or creating multiple accounts for the sake of gaining an unfair advantage.</ul>
+<ul>Most importantly, please do not upload illegal material on the website. This includes any content in which you do not own the copyright for. We are aware that there is a grey area with covers, derivitive works, etc. But if you have any doubt whatsoever over a certain work, it is safer to just refrain from uploading it altogether.</ul></h5>
+<h1>Privacy</h1>
+<h5>Upon creating an account on RadioRise, we ask you to submit an eligible email address, username, and password. The email address is hidden from all other users on the website and can be used for logging in and facilitating communication between users and RadioRise. The username is displayed on the profile page and is meant to identify specific users on the website. The password is fully encrypted and securely stored away in a data base. Extra information we collect includes profile descriptions, track descriptions, and rating habits. As of right now, we do not share any data with third parties.</h5>
+<h5>DMCA "The Digital Millenium Copyright Act"
+DMCA take down requests allow us to know about any and all illegal material on RadioRise. If there is any content on RadioRise that infringes on your intellectual property rights, then please file a DMCA take down request to our designated DMCA agent. We hope that this is never the case, but it is a necessary precaution that we need to employ.</h5>
+--DMCA agent information–
+If you have any questions or concerns, please contact support@radiorise.com
     </div>
-    <div>
+<!--     <div>
        You are agreeing to the rest of the terms of service by uploading.
-    </div>
+    </div> -->
   </div>
 </div>
   
@@ -130,7 +145,8 @@
                     font-weight: 300;
                     font-size: 20px;  
                     color: white;
-                    font-family: Roboto;  ">
+                    font-family: Roboto; 
+                    margin-top:-50px; ">
                     Drag and Drop to Upload
                       <div style = "font-size: 30px;">
                       {{uploadMessage}}
@@ -183,7 +199,8 @@
     margin-top: -16%;
     height: 400px;" layout="" layout-sm="column">
     Type a Station Tag that doesn't exist in order to create a brand new station!
-                <tags-input ng-model="currentSong.tags" display-property="name" 
+          
+          <tags-input ng-model="currentSong.tags" display-property="name" 
                       placeholder="Station Tags" 
                       replace-spaces-with-dashes="false"
                       max-tags = "5"
@@ -197,6 +214,7 @@
                      source="loadTags($query)"
                      template="autocomplete-template"></auto-complete>
           </tags-input>
+          
         <md-input-container style = "    
         margin-bottom: -35%;
         margin-top: 5%;" flex="">

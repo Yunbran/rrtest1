@@ -1,7 +1,7 @@
 app.controller('SignupController', function ($scope, $http, $modalInstance,$timeout,  $window, $log, userProfile, ngAudio) {
   
 
-
+  $scope.azureStorageName = 'https://practicespace.blob.core.windows.net';
   $scope.userData = {};
 
   $scope.message = '';
@@ -125,8 +125,9 @@ $scope.activateAndPlaySong = function(song){
     console.log('activateSong() activated.');
     console.log('songPath ' + song.filepath);
 
-
-    $scope.sound = ngAudio.load(song.filepath);
+    var azureRetrievalPath = $scope.azureStorageName + "/" + song.creator + "/"+ song.filepath;
+    $scope.sound = ngAudio.load(azureRetrievalPath);
+    
     console.log($scope.currentSong);
     $scope.shareURL=  "http://localhost:8000/#/s/" + $scope.currentSong._id;
     //callback Decorator calls the function after the song ends ($sound.progress === 1)

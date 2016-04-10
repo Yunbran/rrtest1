@@ -412,6 +412,7 @@ exports.authenticate =  function (req, res) {
 
 };
 
+//Deprecated needs an update to new uploadRoute
 exports.uploadTempSong = function(req, res) {
         // console.log(req.headers);
         // console.log(req.user);
@@ -644,6 +645,28 @@ exports.uploadTempSong = function(req, res) {
 //Brace for end of route
 }
 
+// exports.prepareSong = function(req,res){
+
+//   console.log(req.params.filepath);
+//    console.log(req.params.user);
+
+//    var containerName = req.params.user;
+//    var fileName = req.params.filepath;
+
+// var fileDestination = './public/media/sound/' + containerName + '/' + fileName;
+
+// blobSvc.getBlobToStream(containerName, fileName , fs.createWriteStream(fileDestination), function(error, result, response){
+//   if(!error){
+//     // blob retrieved
+//     console.log(result);
+//      res.send(200);
+//   } else {
+//     console.log(error);
+//   }
+// })
+
+
+// }
 
 exports.postStripeEnd = function(req, res) {
   console.log("Stripe was called")

@@ -25,6 +25,7 @@ var partitionKey = nconf.get("PARTITION_KEY");
 var accountName = nconf.get("STORAGE_NAME");
 var accountKey = nconf.get("STORAGE_KEY");
 var blobSvc = azure.createBlobService(accountName, accountKey), tableName, partitionKey;
+var multiparty = require('multiparty');
 var stripe = require("stripe")('sk_test_xFjxzY53cPUz7ZzTXygItGcp');
 
 
@@ -63,7 +64,7 @@ exports.getProfile = function(req, res) {
                 };
 
                 // We are sending the profile inside the token
-                var token = jwt.sign(profile, secret, { expiresInMinutes: 60*5 });
+                var token = jwt.sign(profile, secret, { expiresInDays: 7 });
 
 
                   res.json({token: token,
@@ -106,7 +107,7 @@ exports.getProfile = function(req, res) {
         res.send("Song has already been voted by User");
       }
       else {
-     // console.log(req.user.station);
+     console.log(req.user.station);
      // console.log(songs[0]);
 
       var relevantTag = retrieveRelevantTagFromSong(songs[0] , req.user.station);
@@ -122,6 +123,7 @@ exports.getProfile = function(req, res) {
 
       songs[0].upvoteList.push(req.user.id);
       songs[0].ratedList.push(req.user.id);
+      console.log(songs[0]);
 
 
          songs[0].save(function(err, newSong) {
@@ -304,10 +306,11 @@ exports.downvoteSong = function(req, res) {
  
 
  }
+
 exports.uploadSong = function(req, res) {
         // console.log(req.headers);
         // console.log(req.user);
-        
+         
 
         //When instantiated, filepath is always the filename: Ex. "song.mp3"
         var filepath = req.headers.filepath;
@@ -363,7 +366,7 @@ exports.uploadSong = function(req, res) {
                  }
 
                  //if user.song[i].filepath exists then end the call
-                 if(user.songs[i].filepath === './media/sound/' + username + '/' +  filepath) {
+                 if(user.songs[i].filepath === songname) {
                   var exists = true;                  
                   res.status(300).end('The filepath of the file exists on your account.');
                   break;
@@ -378,8 +381,13 @@ else {
 
         // This pipes the data into the writeStream file path.
         // the file path is put into the username folder
-        var writeStream = fs.createWriteStream('./public/media/sound/' + username + '/' +  filepath);
-        req.pipe(writeStream);
+        // var writeStream = fs.createWriteStream('./public/media/sound/' + username + '/' +  filepath);
+        
+
+
+        // req.pipe(writeStream);
+
+
 
 
         //AZURE STORAGE START 
@@ -394,23 +402,55 @@ else {
         //azure storage end
 
        var size = 0;
-
-       //tells server what happens when, streaming data onto server
-      req.on('data', function (data) {
-          size += data.length;
-        
-         //console.log('Got chunk: ' + data.length + ' total: ' + size);
-
-            // blobSvc.createBlockBlobFromStream(username, songname, data, size, function (error) {
-            //     if (error) {
-            //         res.send(' Blob create: error ');
-            //     }
-            // });
       
+      var form = new multiparty.Form();
+      form.parse(req);
+       //tells server what happens when, streaming data onto server
+     
+form.on('part', function(part) {
+  // You *must* act on the part by reading it
+  // NOTE: if you want to ignore it, just call "part.resume()"
+
+  if (!part.filename) {
+    // filename is not defined when this is a field and not a file
+    console.log('got field named ' + part.name);
+    // ignore field's content
+    part.resume();
+  }
+
+  if (part.filename) {
+    // filename is defined when this is a file
+    // count++;
+    console.log('got file named ');
+    console.log(part.filename);
+    console.log(part.byteCount);
+
+    var filename = part.filename;
+    var size = part.byteCount;
+    blobSvc.createBlockBlobFromStream(username, filename, part, size, function (error) {
+          if (error) {
+              res.send(' Blob create: error ');
+          }
       });
 
+    // ignore file's content here
+    part.resume();
+  } else {
+   form.handlePart(part);
+    }
+
+  part.on('error', function(err) {
+    res.send('error in uploading');
+  });
+
+    size += part.length;
+  
+   console.log('Got chunk: ' + part.length + ' total: ' + size);
+
+
+});
       //end of streaming data onto server
-      req.on('end', function () {
+      form.on('close', function () {
 
 
           // console.log("total size = " + size);
@@ -486,7 +526,7 @@ else {
                 var downvotes = 0;
                 var description = description;
                 var createdAt = new Date();
-                var filepath = './media/sound/' + username + '/' +  filepath;
+                var filepath = songname;
 
                 //tagObjArr will create objects for each tag and put it into tagObjArr
                 var tagObjArr = [];
@@ -540,10 +580,11 @@ else {
                           //For each tag in newSong tags we will fire off a new async call.
                           for(var i = 0; i < newSong.tags.length;i++)
                           {
-                                console.log(newSong.tags[i]['tagname']);
+                        
+                          console.log(newSong.tags[i]['tagname']);
 
                           var passIntoAsync = newSong.tags[i]['tagname']; 
-                         console.log( passIntoAsync );
+                          console.log( passIntoAsync );
                     
                        function asyncTagOperations(tagNameAsync, newSong, creatorID, creator){
                              
@@ -619,7 +660,7 @@ else {
   });        
       
 
-    req.on('error', function(e) {
+   form.on('error', function(e) {
         console.log("ERROR ERROR: " + e.message);
         res.end(e.message);
     });
@@ -627,7 +668,7 @@ else {
 }
 //Brace for end of user query
  }); 
-
+  
 //Brace for end of route
 }
 
@@ -688,8 +729,8 @@ exports.editSong = function(req, res) {
 
 
         for(var i = 0; i < tagsFromDB.length; i ++) {
-           if(tagsFromDB[i]['name']){
-            databaseTagsConvertedToStrArr.push(tagsFromDB[i]['name'].toLowerCase());
+           if(tagsFromDB[i]['tagname']){
+            databaseTagsConvertedToStrArr.push(tagsFromDB[i]['tagname'].toLowerCase());
            }
             
           }   
@@ -699,12 +740,12 @@ exports.editSong = function(req, res) {
               editTagsConvertedToStrArr.push(editChangesObj.tags[i]['name'].toLowerCase());
              }
           }   
-          console.log('databaseTagsConvertedToStrArr: ' + databaseTagsConvertedToStrArr);
-
-          console.log('editTagsConvertedToStrArr: ' + editTagsConvertedToStrArr);
-      
        editTagsConvertedToStrArr.unshift('all');
        editTagsConvertedToStrArr = _.uniq(editTagsConvertedToStrArr);
+       databaseTagsConvertedToStrArr = _.uniq(databaseTagsConvertedToStrArr);
+      
+          console.log('databaseTagsConvertedToStrArr: ' + databaseTagsConvertedToStrArr);
+          console.log('editTagsConvertedToStrArr: ' + editTagsConvertedToStrArr);
 
        tagsToBeAdded = _.difference(editTagsConvertedToStrArr, databaseTagsConvertedToStrArr);
        tagsToBeRemoved = _.difference(databaseTagsConvertedToStrArr, editTagsConvertedToStrArr);
@@ -716,12 +757,16 @@ exports.editSong = function(req, res) {
             tagsToBeAdded = tagsToBeAdded.slice(0,5);
           }
 
-        //delete below 
-          for(var i = 0; i < tagsToBeAdded.length; i ++) {
-            console.log(tagsToBeAdded);
-          } 
-        //delete above
- 
+//duplicate check
+          // var duplicateHashMap = {};
+          // var duplicateArr = [];
+          // for(var i = 0; i < tagsFromDB.length; i ++) {
+          //   if(duplicateHashMap[tagsFromDB[i].tagname] = tagsFromDB[i].tagname){
+          //     duplicateArr.push(tagsFromDB[i].tagname);
+          //   }
+          //   duplicateHashMap[tagsFromDB[i].tagname] = tagsFromDB[i].tagname;
+          // } 
+//end duplicate check
  
                var tagObjArr = songs[0].tags;
 
@@ -755,9 +800,19 @@ exports.editSong = function(req, res) {
             if (err) {
                res.send(err); 
             } else {
-                    
-             addTagsToSong(newSong, tagsToBeAdded, songs[0].creatorID, songs[0].creator);
+
+              if(tagsToBeAdded){
+                if(tagsToBeAdded.length > 0) {
+                  addTagsToSong(newSong, tagsToBeAdded, songs[0].creatorID, songs[0].creator);
+                }  
+              }
+
+         if(tagsToBeRemoved){
+                if(tagsToBeRemoved.length > 0) {
              removeSongFromTags(newSong, tagsToBeRemoved);
+                              }  
+              }
+
               res.json(newSong);
        
           }
@@ -839,7 +894,7 @@ function addTagsToSong(newSong, tagsToBeAdded, creatorID, creator){
                   
                  }
 
-                                //if tagarray is greater than 5 they cheated and it'll be cut down to five
+               //if tagarray is greater than 5 they cheated and it'll be cut down to five
                 if(tagsToBeAdded.length > 5)
                   {
                     tagsToBeAdded = tagsToBeAdded.slice(0,5);
@@ -885,25 +940,32 @@ function removeSongFromTags(songToBeRemoved, tagsToBeRemovedFrom){
 
                    Tag.find({'name': tagsToBeRemovedFrom[i]},function (err, tags) {
                           if (err) return console.error(err);
-                       
+                        
+                        console.log(tags);
                           //if the tag was not found in the tag collection, it will do nothing
                            if(tags[0] == undefined || null) {
+
 
                            }
                            else
                            {
-                            var indexOfSong = _.indexOf(tags[0].songs, songToBeRemoved._id);
+                            // console.log("triggered");
+                            console.log(tags[0].songs);
+                            console.log( songToBeRemoved._id)
+                            var indexOfSong = _.findIndex(tags[0].songs, function(subject){
+                              return songToBeRemoved._id.equals(subject);
+                            });
                             console.log(tags[0].songs);
                             console.log(indexOfSong);
                             tags[0].songs.splice(indexOfSong,1);
-                            // tags[0].songs.push(newSong._id);
-                            // tags[0].save(function(err , tag){
-                            //     if (err) {
-                            //      console.log('errored out: ', err);
-                            //   } else {
-                            //      console.log('successfully pushed song into tag');
-                            //   } 
-                            // });
+                            
+                            tags[0].save(function(err , tag){
+                                if (err) {
+                                 console.log('errored out: ', err);
+                              } else {
+                                 console.log('successfully deleted song from tag');
+                              } 
+                            });
 
                            }
                      });

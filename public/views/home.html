@@ -467,7 +467,11 @@
     </div>
 
      <div class = "questionMarks">???
-      <div class = "questionNotice">All music is anonymous until rated to ensure the fairest ratings!</div>
+      <div class = "questionNotice">Songs on RadioRise are anonymous until voted. Rate to see who it is!<div  style = "    font-size: 12px;
+    font-weight: 600;
+        width: 50px;
+    margin-left: 270px;
+    margin-top: -25px;" title="Anonymity allows for the people to rate songs based on the strength of the music rather than the brand-name of the artist. We at RadioRise believe in fair exposure for every artist." data-toggle="tooltip"> Why?</div></div>
      </div> 
      <div>
         <div>
@@ -479,7 +483,14 @@
     font-weight: 200;
     color: white;" ng-show ="playerUpvoteInfoImageDisplay">
             Upvoted music will get more airtime
+          
           </div>
+   <div  ng-show ="playerUpvoteInfoImageDisplay" style = "    font-size: 12px;
+    font-weight: 600;
+        width: 50px;
+        color:white;
+      margin-left: 188px;
+    margin-top: -22px;" title="Songs in the radio are randomly selected. The higher the upvote count the higher the chance of being exposed to others." data-toggle="tooltip"> How?</div>
      </div>
    </div> 
 
@@ -579,7 +590,7 @@
                     
           </div> -->
               <div  ng-show="sound.paused"
-              style = "margin-left:0px;"
+              style = "margin-left:0px;    margin-top: -21px;"
                ng-click='playSongFromStation()' class = "playButton "></div>
      <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton "></div>
 
@@ -640,17 +651,17 @@
 <!-- START OF RIGHT CONTAINER -->
 <div class = "rightPlayerContainer" ng-show = 'switchMainHistory'>
 
-   <div class = "historyBox" ng-class = '{historyBoxOn:!switchMainHistory,playVerticalAnimation:animationSwitch1}' >
+   <div class = "historyBox" ng-class = '{historyBoxOn:!switchMainHistory,playVerticalAnimation:animationSwitch1}'  >
            <div class = "historyButtonRow">
-     <div ng-click = "changeHistoryMode('history')" ng-class = "{historyCategoryButtonActive: historyMode == 'history'}" style = "    margin-left: 20px;" class="historyCategoryButton">
+     <div title="History" data-toggle="tooltip"  ng-click = "changeHistoryMode('history')" ng-class = "{historyCategoryButtonActive: historyMode == 'history'}" style = "    margin-left: 20px;" class="historyCategoryButton">
        <div class = "glyphHistoryButton glyphicon glyphicon-time">
        </div>
      </div >
-     <div ng-click = "changeHistoryMode('favorite')" ng-class = "{historyCategoryButtonActive: historyMode == 'favorite'}"  class="historyCategoryButtonCenter">
+     <div title="Favorite" data-toggle="tooltip"  ng-click = "changeHistoryMode('favorite')" ng-class = "{historyCategoryButtonActive: historyMode == 'favorite'}"  class="historyCategoryButtonCenter">
         <div style = "margin-left: 2px;" class = "glyphHistoryButton glyphicon glyphicon-star">
         </div>
       </div >
-     <div ng-click = "changeHistoryMode('upvote')" ng-class = "{historyCategoryButtonActive: historyMode == 'upvote'}"  class="historyCategoryButton">
+     <div title="Upvoted" data-toggle="tooltip"  ng-click = "changeHistoryMode('upvote')" ng-class = "{historyCategoryButtonActive: historyMode == 'upvote'}"  class="historyCategoryButton">
        <div style = "margin-left: -3px;" class = "glyphHistoryButton glyphicon glyphicon-arrow-up">
        </div>
      </div >
@@ -748,7 +759,7 @@
 
 
   <div class = "mainTagBox" >
-      <div class = 'tagBoxHeader'> Station <c style = "color: #1677bb">Tags</c></div>
+      <div class = 'tagBoxHeader'> Station <c style = "color: #1677bb">Tags</c> - Choose a genre below!</div>
      <div class = "tagBox" >   
     
     <carousel  class = "tagCarousel" style = "cursor:default" interval="0">
@@ -816,8 +827,9 @@
   
 <div go-away class = "footer">
     <div style="
-    margin-left: 1%;" class = "footerButton"><a class = "footerLink" ui-sref="home.list">Home</a></div>
+    margin-left: 1%;" class = "footerButton"><a class = "footerLink" ui-sref="home">Home</a></div>
     <div class = "footerButton"><a class = "footerLink" ui-sref="home.about">About</a></div>
+    <div class = "footerButton"><a class = "footerLink" ui-sref="home.donate">Donate</a></div>
     <!-- <button class = "check" ng-click="goToPayment()">Payment Page!</button> -->
     <button class = "check" ng-click="check()">Check!</button>
 </div>
