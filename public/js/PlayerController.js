@@ -180,14 +180,14 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
         //     console.log(response);
         //   });
 
-   $http.get("/deleteDatabase")
-        .success(function(response) {
-          console.log(response);
-     $http.post("/createAdmins", {adminCode: "snake"})
-          .success(function(response) {
-            console.log(response);
-          });
-        });
+   // $http.get("/deleteDatabase")
+   //      .success(function(response) {
+   //        console.log(response);
+   //   $http.post("/createAdmins", {adminCode: "snake"})
+   //        .success(function(response) {
+   //          console.log(response);
+   //        });
+   //      });
 
  }
 

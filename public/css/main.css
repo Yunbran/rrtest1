@@ -94,9 +94,9 @@ color:black;
     font-weight: 800;
 }
 .headerLogo{
-      height: 50px;
-    width: 50px;
-    margin-top: -0.15%;
+     height: 50px;
+    /* width: 50px; */
+    margin-top: -0.1%;
    }
 .homeLogo {
 	order:1;
