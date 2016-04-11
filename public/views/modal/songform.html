@@ -2,23 +2,34 @@
 
         <div class = "flexHorizontalStart uploadHeaderRow uploadHeaderRow1">
                 <div ng-hide = "modalMode == 'edit'" style= "margin-top: -1%;margin-left: 1%" ng-click = "cancel()"><span class = "glyphicon glyphicon-remove"></span></div>
-          <div style = "margin-left: 40%;" ng-show = "modalMode == 'edit'">{{currentSong.name}}</div>
-          <div style = "margin-left: 29%;" ng-show = "modalMode == 'form'"> Sign up or Sign in to upload your music! </div>
-          <div style = "margin-left: 29%;" ng-show = "modalMode == 'upload'"> Upload a Song into RadioRise! </div>
+          <div style = "text-align: center;
+    width: 100%;" ng-show = "modalMode == 'edit'">{{currentSong.name}}</div>
+          <div style = "    text-align: center;
+    margin-left: -1%; 
+    width: 100%;" ng-show = "modalMode == 'form'"> Sign up or Sign in to upload your music! </div>
+          <div style = "    text-align: center;
+       margin-left: -1%; 
+    width: 100%;" ng-show = "modalMode == 'upload'"> Upload a Song into RadioRise! </div>
 
         </div>
             <!-- <h3 class="modal-title">{{userProfile.username}}</h3> -->
       <div class = "playerForModal flexHorizontal uploadHeaderRow uploadHeaderRow2"ng-class = "{playerForModalAnim: currentSong.filepath}">
-        <div style = "width: 90%;" class = "" ng-show = "currentSong.filepath">
+        <div style = "width: 80%;" class = "" ng-show = "currentSong.filepath">
+       
+
+
          <div class = "uploadHeaderRadioButtons">
                  <div ng-show="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' style = "    margin-right: -65px;" class = "playButton "></div>
                  <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
           </div>
-              <div class = " uploadProgressBar ">
+              <div style = "margin-top: -77px;" class = " uploadProgressBar ">
                        <md-slider step = "0.001" flex="" ng-model="sound.progress" min="0" max="1" aria-label="blue" id="blue-slider" class="md-primary">
                  </md-slider>
               </div>
           </div>
+          <div style = "margin-top: 25px;" ng-show = 'loadingAfterUpload'>
+         <img src = './media/pic/circleSelectBlack.png' class = "circleSelect circleSelectSpin" style = " height: 40px;
+         width: 40px;"></div>                
         </div>
 
 <div class="mainUploadModalDiv" ng-class = '{mainUploadModalDivAnimation: animationSwitch}'>

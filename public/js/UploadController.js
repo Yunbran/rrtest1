@@ -1,6 +1,7 @@
 app.controller('UploadController', function ($scope, $http, $modalInstance, $window, $timeout, $log,User, localStorageService, userProfile, ngAudio, FileUploader, basket) {
   
   $scope.azureStorageName = 'https://practicespace.blob.core.windows.net';
+  $scope.loadingAfterUpload = false;
   $scope.userData =  {username: '', password: ''};
   $scope.message = '';
   $scope.tagArray = [];
@@ -9,7 +10,7 @@ app.controller('UploadController', function ($scope, $http, $modalInstance, $win
   $scope.modalMode = 'form';  
   $scope.editChangesObj = {name: '',
 description: ''};
-  
+  $scope.songToBeLoaded = "";
  console.log(User.authToken);
  console.log(User.profile);
 
@@ -36,6 +37,8 @@ $scope.resetAndUploadAgain = function(){
     $scope.currentSong = undefined;
  $scope.editChangesObj = {name: '',
     description: ''};
+    $scope.loadingAfterUpload = false;
+    $scope.songToBeLoaded = false;
 }
 
 function getProfile(){
@@ -475,8 +478,39 @@ function getLocalStorage(key) {
 
             //Code Snippet below exists for claiming an anonymous song.
             // User.storedData['claimCodeMap'][basket['uploadedSong']._id] = response["unhashedClaimCode"];
-            $scope.modalMode = 'edit';
+      
+function recursiveLoadCheck(){
+
+        $timeout(function() {
+          console.log($scope.songToBeLoaded );
+          console.log($scope.sound.progress);
+            if($scope.sound.progress > 0){
+                $scope.loadingAfterUpload = false;
+            } else {
+              $scope.activateAndPlaySong($scope.songToBeLoaded);
+              recursiveLoadCheck();
+             }}, 2000);
+
+}
+function recursiveIconCheck(){
+
+    $timeout(function() {
+             if($scope.sound.progress > 0){
+                $scope.loadingAfterUpload = false;
+            } else{
+             recursiveIconCheck();
+            }
+          }, 20);
+      
+
+}
+
+recursiveLoadCheck();
+recursiveIconCheck();
             // $scope.openUploadModal('lg');
+            $scope.songToBeLoaded = response["songObj"]
+            $scope.loadingAfterUpload = true;
+            $scope.modalMode = 'edit';
            $scope.activateAndPlaySong(response["songObj"]);
            $scope.shareURL =  "http://localhost:8000/#/s/" + $scope.currentSong["_id"];
            $scope.editChangesObj.name = $scope.currentSong["name"];

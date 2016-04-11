@@ -38,6 +38,17 @@ exports.createUser = function(req, res) {
 
       var hashedPassword = bcrypt.hashSync(password);
 
+        //AZURE STORAGE START 
+
+
+        blobSvc.createContainerIfNotExists(username, {publicAccessLevel : 'blob'}, function(error, result, response){
+          if(!error){
+            console.log(username + " container created or exists");
+          }
+        });
+
+        //azure storage end
+
 
       //Test Purpose only, free to delete
       console.log("hashedPassword string: " + hashedPassword);
@@ -47,8 +58,8 @@ console.log("createUser ran");
   //check  length of username
   if(username === "anonymous") {
     res.status(300).send("Username is unavailable.");
-  } else if(username.length < 3 || username.length > 13) {
-    res.status(300).send("Username must be between 3 and 13 characters.");
+  } else if(username.length < 3 || username.length > 12) {
+    res.status(300).send("Username must be between 3 and 12 characters.");
   } else {
 
     var newUser = new User({

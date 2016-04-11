@@ -341,6 +341,17 @@ exports.uploadSong = function(req, res) {
                 console.log(dir +"not made!");
             }
           
+        //AZURE STORAGE START 
+
+
+        blobSvc.createContainerIfNotExists(username, {publicAccessLevel : 'blob'}, function(error, result, response){
+          if(!error){
+            console.log(username + " container created or exists");
+          }
+        });
+
+        //azure storage end
+
         //if the songname is blank or undefined, it is set as the filename 
           if(req.headers.songname == '' || undefined || null) {
             var songname = req.headers.filepath;
@@ -390,17 +401,6 @@ else {
 
 
 
-        //AZURE STORAGE START 
-
-
-        blobSvc.createContainerIfNotExists(username, {publicAccessLevel : 'blob'}, function(error, result, response){
-          if(!error){
-            console.log(username + " container created or exists");
-          }
-        });
-
-        //azure storage end
-
        var size = 0;
       
       var form = new multiparty.Form();
@@ -429,7 +429,8 @@ form.on('part', function(part) {
     var size = part.byteCount;
     blobSvc.createBlockBlobFromStream(username, filename, part, size, function (error) {
           if (error) {
-              res.send(' Blob create: error ');
+            console.log(error);
+              // res.send(' Blob create: error ');
           }
       });
 
