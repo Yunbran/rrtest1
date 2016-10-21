@@ -1,7 +1,7 @@
         <div class="uploadHeader">
 
         <div class = "flexHorizontalStart uploadHeaderRow uploadHeaderRow1">
-                <div ng-hide = "modalMode == 'edit'" style= "margin-top: -1%;margin-left: 1%" ng-click = "cancel()"><span class = "glyphicon glyphicon-remove"></span></div>
+         <div ng-hide = "modalMode == 'edit'" style= "margin-top: -1%;margin-left: 1%" ng-click = "cancel()"><span class = "glyphicon glyphicon-remove"></span></div>
           <div style = "text-align: center;
     width: 100%;" ng-show = "modalMode == 'edit'">{{currentSong.name}}</div>
           <div style = "    text-align: center;
@@ -23,7 +23,7 @@
                  <div ng-hide="sound.paused" ng-click='sound.paused ? sound.play() : sound.pause()' class = "pauseButton"></div>
           </div>
               <div style = "margin-top: -77px;" class = " uploadProgressBar ">
-                       <md-slider step = "0.001" flex="" ng-model="sound.progress" min="0" max="1" aria-label="blue" id="blue-slider" class="md-primary">
+                  <md-slider step = "0.001" flex="" ng-model="sound.progress" min="0" max="1" aria-label="blue" id="blue-slider" class="md-primary">
                  </md-slider>
               </div>
           </div>
@@ -43,8 +43,8 @@
    <div class =  "uploadSongPaneFormArea" ng-show = "!User.profile">
 
 
-   <tabset>
-    <tab heading="Log in">
+   <uib-tabset>
+    <uib-tab heading="Log in">
     <form ng-submit="login()">
       
 
@@ -74,8 +74,8 @@
             float:right;
     margin-right: 365px;
     margin-top: -44px;" ng-click="cancel()">Cancel</button>
-   </tab>
-    <tab heading="Sign Up">
+   </uib-tab>
+    <uib-tab heading="Sign Up">
     <form ng-submit="signup()">
 
 
@@ -112,8 +112,8 @@
             float:right;
     margin-right: 390px;
     margin-top: -44px;" ng-click="cancel()">Cancel</button>
-    </tab>
-  </tabset>
+    </uib-tab>
+  </uib-tabset>
   </div>
   </div>
 
@@ -311,13 +311,13 @@ If you have any questions or concerns, please contact support@radiorise.com
 
         <div class="modal-footer songFormFooter">
           <div class = "flexHorizontal" ng-show = "modalMode == 'edit'">
-            Choose some station tags to have your song rated!
+            <!-- Choose some station tags to have your song rated! -->
           </div>
           <div class = "flexHorizontal" ng-show = "modalMode == 'upload'">
-            Upload your music.
+<!--             Upload your music. -->
           </div>
           <div class = "flexHorizontal" ng-show = "modalMode == 'form'">
-            Sign up or Sign in to upload your music!
+            <!-- Sign up or Sign in to upload your music! -->
           </div>
         </div>
 
@@ -327,8 +327,9 @@ If you have any questions or concerns, please contact support@radiorise.com
         </div>
         <div class="right-panel">
           <span style = "font-weight:900">{{data.name}}</span>
-          <span>Created By: {{data.creator}}</span>
           <span>Number of Songs: {{data.songs.length}} </span>
         </div>
       </div>
     </script>
+    
+     <!--      <span>Created By: {{data.creator}}</span> -->

@@ -1,4 +1,4 @@
-app.controller('SignupController', function ($scope, $http, $modalInstance,$timeout,  $window, $log, userProfile, ngAudio) {
+app.controller('SignupController', function ($scope, $http,  $uibModalInstance,$timeout,  $window, $log, userProfile, ngAudio) {
   
 
   $scope.azureStorageName = 'https://practicespace.blob.core.windows.net';
@@ -20,13 +20,13 @@ description: ''};
 
  //useless example function
   $scope.ok = function () {
-    $modalInstance.close($scope.selected.item);
+     $uibModalInstance.close($scope.selected.item);
   };
 
 //MODAL FUNCTION FOR LOGIN MODAL
   $scope.login = function () {
     console.log('login activated');
-    $modalInstance.close($scope.userData);
+     $uibModalInstance.close($scope.userData);
   };
       
       
@@ -41,7 +41,7 @@ description: ''};
      .success(function(response) {
        console.log(response);
       
-       $modalInstance.close($scope.userData);
+        $uibModalInstance.close($scope.userData);
       }).error(function(response){
         console.log(response.errors);
         
@@ -77,7 +77,7 @@ description: ''};
 
     $scope.modalUploadAll = function () {
 
-    $modalInstance.dismiss({
+     $uibModalInstance.dismiss({
       uploader: $scope.uploader,
        uploadBool: true
      });
@@ -91,7 +91,7 @@ description: ''};
       $scope.sound.stop();  
     }
 
-    $modalInstance.dismiss('cancel');
+     $uibModalInstance.dismiss('cancel');
 
   };
 

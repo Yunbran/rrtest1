@@ -208,7 +208,7 @@
   </div>
  -->
 
-<div class = 'mainBox fx-fade-right fx-speed-1000' ng-show = 'animationSwitch'>
+<div class = 'mainBox'>
    <!-- LEFT CONTAINER START -->
    <div class = "leftPlayerContainer">
   
@@ -226,18 +226,18 @@
 <!--START OF REGULAR CONTAINER-->
     <div class = "mainPlayerContainer">
     
-      <c class = 'playBoxHeader' ng-class = '{playBoxHeaderAnimation:animationSwitch2,
-      playBoxHeaderAdjustment:!mainPlayHeaderSwitch}'> 
-       <div class = 'flexHorizontalStart' style = "width: 78%;">
-      <div style  = 'flex-grow: 3; flex-shrink: 0; display:flex; flex-wrap:nowrap;'>
+<c class = 'playBoxHeader' style = " margin-top: 100px;" ng-class = '{playBoxHeaderAnimation:animationSwitch2,
+      playBoxHeaderAdjustment:!mainPlayHeaderSwitch}' ng-show = "!firstVisit"> 
          <div style = "    flex-grow: 1;
     flex-shrink: 1;
     display:flex;
     margin-bottom: 15px;
     margin-left: 10px;
     cursor: default;
-    color: white;"
-     class = "noPointer"> Station:  
+    color: white;
+    margin-top: -85px;"
+     class = "noPointer"> 
+     <!-- Station: -->  
 
   <div ng-if = "stationMode == 'upvote'"  style ="width: 24px;
     height: 50px;
@@ -284,7 +284,43 @@
 
       
       <div style ="margin-left:24px;"></div>
+  <div class = "glyphicon glyphicon-share-alt shareButton" style= "font-size: 20px;
+    margin-top: 25px;
+    margin-left: -15px;
+    "> 
     </div>
+        <div style = "    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items:center;
+    flex-wrap:nowrap;
+    height: 30px;
+    margin-left: -110px;
+    margin-top: 30px;
+    opacity:0.7;">
+          <div style = "margin-top:-5.5%; margin-left:5%"
+                    socialshare 
+                    socialshare-provider="twitter"
+                    socialshare-text= ""
+                    socialshare-url="http://radiorise.com/#/s/{{currentSong._id}}"
+                    class = 'socialIcons twitterShareButton'> </div>
+                    <div style = "margin-top:-5.5%;"
+                    socialshare 
+                    socialshare-provider="facebook"
+                    socialshare-text= ""
+                    socialshare-url="http://radiorise.com/#/s/{{currentSong._id}}"
+                    class = 'socialIcons facebookShareButton'> </div>
+                    <div style = "margin-top:-5.5%;"
+                    socialshare 
+                    socialshare-provider="google+"
+                    socialshare-text= ""
+                    socialshare-url="http://radiorise.com/#/s/{{currentSong._id}}"
+                    class = 'socialIcons googleShareButton'> </div>
+            </div>
+    </div>
+       <div class = 'flexHorizontalStart' style = "width: 78%;">
+      <div style  = 'flex-grow: 3; flex-shrink: 0; display:flex; flex-wrap:nowrap;'>
+
 
 
 
@@ -339,54 +375,81 @@
     <div style = ' flex-grow:40; display:flex;    justify-content: center; max-width: 900px; min-width:650px'>
     
     <div class = "firstVisitMainLabel ">
-    <div style = "width:100%;   text-align: left; font-size:35px;  margin-top:30px;   margin-bottom: 20px;   
+    <div style = "width:100%;   text-align: center; font-size:35px;  margin-top:45px;   margin-bottom: 20px;   
     font-family: Roboto;
-    font-weight: 200;"> RadioRise is a free and unbiased internet radio where the best artists always rise to the top.
+    font-weight: 200;"> Radiorise is a free and unbiased internet radio where the best artists always rise to the top.
     </div>
-   <div style =  "    margin-top: -10px; width:120%; display:flex; text-align:center;  justify-content: flex-start;  font-size:22px; 
+   <div style =  "    margin-top: -10px; width:700px; display:flex; text-align:center;  justify-content: flex-start;  font-size:22px; 
     font-family: Roboto;
     font-weight: 200;">
-      <div style = "width:25%; margin-left: -10%;">
-             <div style = "margin-top: 60px;
-             margin-left:50px;" class = 'playButtonWrapper'>
-            <img src = './media/pic/circleSelect.png' class = "circleSelect" ng-show = 'sound' ng-class = "{circleSelectSpin: sound.paused == true}">
-              <div  ng-click='playSongFromStation()' class = "playButton "></div>
-              
-            </img>  
-          </div>
-       <div style = "margin-left:62px; width:150%; margin-top:45px;">
-       Press play to discover trending music!
+      <div ng-show = '!sound' style = "width:349px;">
+             <div style = "
+    margin-left: -55px;
+    width: 150%;
+    margin-top: 40px;">
+       Discover trending music!
        </div>
-      </div>
 
+             <div style = "margin-top: 70px;
+            margin-left: 130px;" class = 'playButtonWrapper'>
+            <img src = './media/pic/circleSelect.png' class = "circleSelect">
+              <div class = "playButtonTitle "></div>    
+            </img> 
+          </div>
+        <div style = "font-size:35px;
+            margin-left: 45px;
+            margin-top:20px;"> Loading... </div> 
+
+      </div>
+      <div ng-show = 'sound' style = "width:349px;">
+             <div style = "
+    margin-left: -55px;
+    width: 150%;
+    margin-top: 40px;">
+       Discover trending music!
+       </div>
+
+             <div style = "margin-top: 70px;
+            margin-left: 130px;" class = 'playButtonWrapper'>
+            <img src = './media/pic/circleSelect.png' class = "circleSelect" ng-class = "{circleSelectSpin: sound.paused == true}">
+              <div  ng-click='playSongFromStation()' class = "playButtonTitle "></div>    
+            </img> 
+          </div>
+        <div style = "font-size:35px;
+            margin-left: 45px;
+            margin-top:20px;"> Start</div> 
+
+      </div>
+<!-- 
     <div style =  " width:25%;">
       <img style = "margin-left:3%"class = "smallerImageMainPageFirst" src = "{{imageSourceArray[1]}}"></img>
 
-       </div>
+       </div> -->
 
       
        <div style =  "display:flex; text-align:center;  justify-content: space-around;">
              <div style =  "margin-left: 50px; width:1px; margin-right: 25px;">
-        <div style = "width:1px; height:260px; background-color:white;">
+        <div style = "width:1px; height:365px; background-color:white;">
         </div>
       </div>
 
        </div> 
 
-      <div style =  "width:25%;">
-      <img style = "margin-left:-5%"class = "smallerImageMainPage" src = "{{imageSourceArray[0]}}"></img>
-             <div style = "margin-left:40px; width:150%; margin-top:-4px;">
-       Upload a song to any station tag! Or create your own!
+      <div style =  "width:349px;">
+<!--       <img style = "margin-left:-5%"class = "smallerImageMainPage" src = "{{imageSourceArray[0]}}"></img> -->
+       <div style = "
+       margin-left: 24px;
+    width: 80%;
+    margin-top: 40px;">
+       Enter your song for exposure!
        </div>
-      </div>
 
-         <div style =  "width:25%;">
-    <div style ="
-    margin-top: 80px;
+       <div style ="
+    margin-top: 52px;
     margin-right: 10px;
-    margin-left: -10px;
+    margin-left: 80px;
     width: 130px;
-    float: right;" class="uploadBox"  ng-click = "clickUpload()">
+    height: 75px;" class="uploadBox"  ng-click = "clickUpload()">
                 <div class="my-drop-zone">
                  <!-- glyphicon glyphicon-cloud-upload -->
                  <div class = "">
@@ -395,14 +458,20 @@
                     font-size: 20px;  
                     color: white;
                     font-family: Roboto;  ">
-                    Upload
-                    <div class = "glyphicon glyphicon-music" style = "margin-left:0%"></div>
+                    Release Your Single
+                    <div class = "glyphicon glyphicon-music" style = "margin-left:2%; margin-top:2%"></div>
                     </div>
                  </div>
                 </div>
 
             </div>
+            
+            <div style = "font-size:35px;
+            margin-left: -22px;
+            margin-top: 31px;">Upload</div>  
+
       </div>
+
     
 
   <!--   <div  style =  "width:25%;">
@@ -462,35 +531,92 @@
 
     <div ng-hide="currentSong.rated" style = ' flex-grow:40; display:flex; max-width: 900px; min-width:650px'>
     <div class = "votingArea">
-      <div ng-hide = "currentSong.rated " ng-click='upvoteSong()' class = "upvoteButton"></div>
-      <div ng-hide = "currentSong.rated" ng-click='downvoteSong()' class = "downvoteButton"></div>
+<div ng-hide = "currentSong.rated " ng-click='upvoteSong()' id = "upvoteButt" class = "upvoteButton" ng-mouseover = "blurBlink = true;" ng-mouseleave = "blurBlink = false;">
+  <img id = "upvoteButtonImg" src = "./media/pic/upvote.png"></img>
+</div>
+      <div  ng-hide = "currentSong.rated" ng-click='downvoteSong()' id = "downvoteButt" class = "downvoteButton" ng-mouseover = "blurBlink = true;" ng-mouseleave = "blurBlink = false;">
+          <img id = "downvoteButtonImg" src = "./media/pic/downvote.png"></img>
+      </div>
     </div>
+        <div style = "justify-content: flex-start; flex-wrap:wrap;" ng-class ="{songInformationUnblur:blurBlink}"  class = "songInformationBlur flexVertical">
+                <div style = "width:100px; height: 285px;">
+         <div ng-show = "!currentSong.favorited" class = "favoriteButton" >  </div>
+         <div ng-show = "currentSong.favorited" class = "favoritedButton" >  </div>
+              </div>
 
-     <div class = "questionMarks">???
-      <div class = "questionNotice">Songs on RadioRise are anonymous until voted. Rate to see who it is!<div  style = "    font-size: 12px;
+
+         <div style = "      margin-top: 60px;
+    height: 90px;
+    width: 380px;
+    font-size: 30px;
+    overflow-wrap: break-word;">
+          {{currentSong.name}}
+         </div> 
+         <div ng-click = "goToProfile(currentSong.creator)" style = "font-size:20px; color: rgba(0, 253, 183, 1);">
+          {{currentSong.creator}}
+         </div>
+          <div style = "font-size:15px;  
+           overflow-wrap: break-word;
+    width: 355px;color: white; margin-top:10px;"> 
+            <div style = "font-size:15px;">Uploaded on {{currentSong.createdAt |date:'dd, MMMM yyyy'}}</div>
+          <div style = " font-size:12px; margin-top:5px;" ng-show = "currentSong.description">{{currentSong.description}}</div>
+          <div style = "font-size:12px; margin-top:5px;" ng-hide = "currentSong.description"> No description available</div>
+          </div>
+
+
+
+          
+          </div>
+     <div style= "position: relative;
+    margin-left: -340px;" class = "questionMarks">???
+      <div ng-hide = "blurBlink" class = "questionNotice">
+<!--       <div  style = "    font-size: 12px;
     font-weight: 600;
         width: 50px;
     margin-left: 270px;
-    margin-top: -25px;" title="Anonymity allows for the people to rate songs based on the strength of the music rather than the brand-name of the artist. We at RadioRise believe in fair exposure for every artist." data-toggle="tooltip"> Why?</div></div>
+    margin-top: -25px;" title="Anonymity allows for the people to rate songs based on the strength of the music rather than the brand-name of the artist. We at RadioRise believe in fair exposure for every artist." data-toggle="tooltip"> Why?</div> -->
+    </div>
+    <div ng-show = "blurBlink" class = "questionNotice">
+    </div>
+
      </div> 
      <div>
-        <div>
+        <div ng-show = "blurBlink">
            <div style=" margin-left:10%;" ng-show ="playerUpvoteInfoImageDisplay" ng-class = "{animationForUpvotePng: !upvoteAnimationFrame,
            animationForUpvotePngSecondFrame: upvoteAnimationFrame}"></div>
         </div>
-          <div style = "    font-size: 22px;
+        <div ng-show = "!blurBlink">
+           <div style=" margin-left:10%;" ng-show ="playerUpvoteInfoImageDisplay" ng-class = "{animationForRatingPng: !upvoteAnimationFrame,
+           animationForRatingPngSecondFrame: upvoteAnimationFrame}"></div>
+        </div>
+    <div ng-show ="playerUpvoteInfoImageDisplay">
+          <div style = "    margin-left: 40px;
+    font-size: 18px;
     font-family: Roboto;
     font-weight: 200;
-    color: white;" ng-show ="playerUpvoteInfoImageDisplay">
-            Upvoted music will get more airtime
+    color: white;" 
+     ng-show = "!blurBlink">
+        Songs are anonymous until voted. Rate to see who it is!
           
           </div>
-   <div  ng-show ="playerUpvoteInfoImageDisplay" style = "    font-size: 12px;
+          <div style = " 
+             margin-left: 32px;
+    font-size: 18px;
+    font-family: Roboto;
+    font-weight: 200;
+    color: white;" 
+    ng-show = "blurBlink">
+        If you enjoy a song, upvote it to give it more airtime!!!
+          
+          </div>
+</div>
+
+<!--    <div  ng-show ="playerUpvoteInfoImageDisplay" style = "    font-size: 12px;
     font-weight: 600;
         width: 50px;
         color:white;
       margin-left: 188px;
-    margin-top: -22px;" title="Songs in the radio are randomly selected. The higher the upvote count the higher the chance of being exposed to others." data-toggle="tooltip"> How?</div>
+    margin-top: -22px;" title="Songs in the radio are randomly selected. The higher the upvote count the higher the chance of being exposed to others." data-toggle="tooltip"> How?</div> -->
      </div>
    </div> 
 
@@ -653,15 +779,15 @@
 
    <div class = "historyBox" ng-class = '{historyBoxOn:!switchMainHistory,playVerticalAnimation:animationSwitch1}'  >
            <div class = "historyButtonRow">
-     <div title="History" data-toggle="tooltip"  ng-click = "changeHistoryMode('history')" ng-class = "{historyCategoryButtonActive: historyMode == 'history'}" style = "    margin-left: 20px;" class="historyCategoryButton">
+     <div tooltip-placement="top" tooltip-is-open = "historyMode == 'history' && historyTooltipTimeHotfix"  tooltip-trigger = "none" data-toggle="timedtooltip" uib-tooltip="History" ng-click = "changeHistoryMode('history')" ng-class = "{historyCategoryButtonActive: historyMode == 'history'}" style = "    margin-left: 20px;" class="historyCategoryButton">
        <div class = "glyphHistoryButton glyphicon glyphicon-time">
        </div>
      </div >
-     <div title="Favorite" data-toggle="tooltip"  ng-click = "changeHistoryMode('favorite')" ng-class = "{historyCategoryButtonActive: historyMode == 'favorite'}"  class="historyCategoryButtonCenter">
+     <div tooltip-placement="top" tooltip-is-open = "historyMode == 'favorite'" tooltip-trigger = "none" data-toggle="tooltip" uib-tooltip="Favorited"  ng-click = "changeHistoryMode('favorite')" ng-class = "{historyCategoryButtonActive: historyMode == 'favorite'}"  class="historyCategoryButtonCenter">
         <div style = "margin-left: 2px;" class = "glyphHistoryButton glyphicon glyphicon-star">
         </div>
       </div >
-     <div title="Upvoted" data-toggle="tooltip"  ng-click = "changeHistoryMode('upvote')" ng-class = "{historyCategoryButtonActive: historyMode == 'upvote'}"  class="historyCategoryButton">
+     <div tooltip-placement="top" tooltip-is-open = "historyMode == 'upvote'" tooltip-trigger = "none" data-toggle="tooltip" uib-tooltip="Upvoted" ng-click = "changeHistoryMode('upvote')" ng-class = "{historyCategoryButtonActive: historyMode == 'upvote'}"  class="historyCategoryButton">
        <div style = "margin-left: -3px;" class = "glyphHistoryButton glyphicon glyphicon-arrow-up">
        </div>
      </div >
@@ -681,9 +807,10 @@
         </div>
       </div>
 
-            <div ng-if = "historyMode == 'history'" class = 'historyNameDiv' ng-class = "{historyNameDivUp: song.rating == 'up',
+            <div tooltip-placement="left" tooltip-trigger = "mouseenter" data-toggle="tooltip" uib-tooltip= "Rate to Reveal" tooltip-enable = "!song.rated" ng-if = "historyMode == 'history'" class = 'historyNameDiv' ng-class = "{historyNameDivUp: song.rating == 'up',
             historyNameDivDown: song.rating == 'down',
-            historyNameDivSelected: $index == currentHistoryIndex}" ng-repeat="song in historyArray track by $index" ng-click="activateAndPlaySong(song, $index);" >     <div ng-show = "song.rated">
+            historyNameDivSelected: $index == currentHistoryIndex}" ng-repeat="song in historyArray track by $index" ng-click="activateAndPlaySong(song, $index);" >   
+            <div ng-show = "song.rated">
                   {{song.name}}
                 </div>  
 
@@ -770,7 +897,7 @@
              <div class = 'rotateButton'>
               <div class = "tagDivider"> 
                Total Songs: {{tag.songs.length}}
-               <p style = "font-size:14px; color:black;">{{tag.creator}}</p>
+               <!-- <p style = "font-size:14px; color:black;">{{tag.creator}}</p> -->
               </div>
              </div>
               <div class = "tagDisplayButton"> 
@@ -831,5 +958,5 @@
     <div class = "footerButton"><a class = "footerLink" ui-sref="home.about">About</a></div>
     <div class = "footerButton"><a class = "footerLink" ui-sref="home.donate">Donate</a></div>
     <!-- <button class = "check" ng-click="goToPayment()">Payment Page!</button> -->
-    <!-- <button class = "check" ng-click="check()">Check!</button> -->
+    <button class = "check" ng-click="check()">Check!</button>
 </div>

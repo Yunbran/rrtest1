@@ -166,11 +166,11 @@
  <div class = 'introProfileSubMessage'> Welcome to {{displayProfile.username}}'s profile page!</div>
 
  </div>
-<tabset>
-<tab style = "padding-left: 33% ">
-    <tab-heading>
+<uib-tabset>
+<uib-tab style = "padding-left: 33% ">
+    <uib-tab-heading>
         Upload <div style = "margin-left:5px;" class="glyphicon glyphicon-cloud"></div >
-    </tab-heading>
+    </uib-tab-heading>
 
             <v-accordion style = "width:100%" class="vAccordion--default">
 
@@ -383,11 +383,11 @@
 
             </v-accordion>
 
-</tab>
-<tab style>
-    <tab-heading >
+</uib-tab>
+<uib-tab style>
+    <uib-tab-heading >
         Favorites <div style = "margin-left:5px;" class="glyphicon glyphicon-star"></div >
-    </tab-heading>
+    </uib-tab-heading>
 
             <v-accordion style = "width:100%" class="vAccordion--default">
 
@@ -596,11 +596,11 @@
 
             </v-accordion>
 
-</tab>
-<tab style>
-    <tab-heading>
+</uib-tab>
+<uib-tab style>
+    <uib-tab-heading>
         Upvoted <div style = "margin-left:5px;" class="glyphicon glyphicon-arrow-up"></div >
-    </tab-heading>
+    </uib-tab-heading>
 
             <v-accordion style = "width:100%" class="vAccordion--default">
 
@@ -808,12 +808,12 @@
 
             </v-accordion>
 
-</tab>
+</uib-tab>
    
-<tab style>
-    <tab-heading>
+<!-- <uib-tab style>
+    <uib-tab-heading>
         Stations <div style = "margin-left:5px;" class="glyphicon glyphicon-music"></div >
-    </tab-heading>
+    </uib-tab-heading>
     <div style = " 
     margin-left: 25%;">     
     <div style = " font-weight: 300;
@@ -837,8 +837,8 @@
     </div>
     <div ng-hide = 'displayStations'></div>
      </div>
-    </tab>
-  </tabset>
+    </uib-tab> -->
+  </uib-tabset>
 
 
 
@@ -861,8 +861,9 @@
         </div>
         <div class="right-panel">
           <span style = "font-weight:900">{{data.name}}</span>
-          <span>Created By: {{data.creator}}</span>
           <span>Number of Songs: {{data.songs.length}} </span>
         </div>
       </div>
     </script>
+
+  <!--  <span>Created By: {{data.creator}}</span> -->

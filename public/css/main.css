@@ -121,7 +121,7 @@ background-color: grey;
 .loginInput{
   margin-left: 1%;
   /*font-size: 20px;*/
-  height: 15%;
+  height: 20%;
 
     min-width: 75px;
     max-width: 200px;
@@ -133,7 +133,7 @@ background-color: grey;
 .passwordInput{
 	  margin-left: 5%;
   /*font-size: 20px;*/
-  height: 15%;
+  height: 20%;
      min-width: 75px;
     max-width: 200px;
     width: 40%;
@@ -172,7 +172,7 @@ border-radius: 0px;
 	display: flex;
 	flex-grow:1;
    flex-shrink:0;
-
+    height: 120px;
     margin-right: 2.5%;
 }
 
@@ -552,7 +552,8 @@ background-color: rgba(#0087fa, 40);
   border-color: silver;
 }
 .mainBox{
-
+  opacity: 1;
+  transform: matrix(1, 0, 0, 1, 0, 0);
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -930,8 +931,8 @@ background-color: white;
   display:flex; flex-direction:column;
 }
 .circleSelect{
-    height:75px;
-  width:75px;
+    height:100px;
+  width:100px;
 }
 .circleSelectSpin{
     -webkit-animation:spin 3.5s linear infinite;
@@ -1527,6 +1528,27 @@ background: url('../media/pic/3animation.png') 200px 0px;
     width: 200px;
     height: 200px;
 }
+.animationForRatingPng{
+transform: scale(0.75, 0.75);
+-ms-transform: scale(0.75, 0.75);
+-webkit-transform: scale(0.75, 0.75);
+background: url('../media/pic/2_1.png') 0px 0px;
+
+    width: 200px;
+    height: 200px;
+}
+.animationForRatingPngSecondFrame{
+  
+transform: scale(0.75, 0.75);
+-ms-transform: scale(0.75, 0.75);
+-webkit-transform: scale(0.75, 0.75);
+background: url('../media/pic/2_2.png') 0px 0px;
+
+    width: 200px;
+    height: 200px;
+}
+
+
 
 .smallerImageMainPage {
   transform: scale(0.75, 0.75);
@@ -1534,53 +1556,87 @@ background: url('../media/pic/3animation.png') 200px 0px;
 -webkit-transform: scale(0.75, 0.75);
 }
 .upvoteButton{
-transform: scale(0.50, 0.50);
--ms-transform: scale(0.50, 0.50);
--webkit-transform: scale(0.50, 0.50);
-    opacity: 0.70;
-    margin-top:4px;
-
-    margin-bottom: -110px;
+transform: scale(0.6, 0.6);
+-ms-transform: scale(0.6, 0.6);
+-webkit-transform: scale(0.6, 0.6);
+opacity: .85;
+    margin-top: -90px;
+margin-bottom: -190px;
 margin-left: 1%;
 margin-right:1%;
-  cursor:pointer;
-zoom: 100%;
+cursor:pointer;
+/*zoom: 100%;*/
 width:138px;
 height:138px;
-background: url('../media/pic/upvote.png') 0px 0px;
-border:none;
+outline : none;
+/*background: url('../media/pic/upvote.png') 0px 0px;*/
+border: white 1px solid;
 }
+
 .upvoteButton:hover{
-
-    opacity: 1;
+  border:#89E04B  1px solid;
+opacity: 2;
 width:138px;
 height:138px;
-background: url('../media/pic/upvote.png') 138px 0px;
+/*background: url('../media/pic/upvote.png') 138px 0px;*/
 }
 
+#upvoteButtonImg{
+      -ms-transform: rotate(-7deg);
+    -webkit-transform: rotate(-7deg); 
+    transform: rotate(-7deg);
+margin-top: 25%;
+width:138px;
+/*height:138px;*/
+outline : none;
+}
+#upvoteButt:hover > #upvoteButtonImg {
+      -ms-transform: rotate(-14deg);
+    -webkit-transform: rotate(-14deg); 
+    transform: rotate(-14deg);
+    /*background: #ccc*/
+}
 .downvoteButton{
-transform: scale(0.50, 0.50);
--ms-transform: scale(0.50, 0.50);
--webkit-transform: scale(0.50, 0.50);
-    opacity: 0.70;
+transform: scale(0.6, 0.6);
+-ms-transform: scale(0.6, 0.6);
+-webkit-transform: scale(0.6, 0.6);
+opacity: .85;
+margin-top:4px;
+margin-bottom: -110px;
+
+    margin-top: -90px;
 margin-left: 1%;
 margin-right:1%;
-  cursor:pointer;
-	zoom: 100%;
+cursor:pointer;
+/*zoom: 100%;*/
 width:138px;
 height:138px;
-background: url('../media/pic/downvote.png') 0px 0px;
-
+/*background: url('../media/pic/downvote.png') 0px 0px;*/
+border:white 1px solid;
 }
-
 
 .downvoteButton:hover{
-
-    opacity: 1;
+opacity: 2;
 width:138px;
 height:138px;
-background: url('../media/pic/downvote.png') 138px 0px;
+border: #FF003C 1px solid;
+/*background: url('../media/pic/downvote.png') 138px 0px;*/
+}
 
+#downvoteButtonImg{
+      -ms-transform: rotate(7deg);
+    -webkit-transform: rotate(7deg); 
+    transform: rotate(7deg);
+margin-top: 25%;
+width:138px;
+outline : none;
+/*height:138px;*/
+}
+#downvoteButt:hover > #downvoteButtonImg {
+      -ms-transform: rotate(14deg);
+    -webkit-transform: rotate(14deg); 
+    transform: rotate(14deg);
+    /*background: #ccc*/
 }
 
 .favoriteButton{
@@ -1696,6 +1752,29 @@ background: url('../media/pic/play.png') 96px 0px;
     width: 96px;
     height: 107px;
 }
+
+.playButtonTitle{
+
+  cursor:pointer;
+transform: scale(0.5, 0.5);
+-ms-transform: scale(0.5, 0.5);
+-webkit-transform: scale(0.5, 0.5);
+background: url('../media/pic/play.png') 1px 0px;
+    margin-left: -90px;
+    margin-top: -5px;
+    width: 96px;
+    height: 107px;
+}
+.playButtonTitle:hover{
+transform: scale(0.5, 0.5);
+-ms-transform: scale(0.5, 0.5);
+-webkit-transform: scale(0.5, 0.5);
+background: url('../media/pic/play.png') 96px 0px;
+
+    width: 96px;
+    height: 107px;
+}
+
 .playProfileButton{
 
   cursor:pointer;
@@ -1737,9 +1816,28 @@ transform: scale(0.4, 0.4);
 width:96px;
 height:107px;
 }
+.shareButton{
+      color: white;
+    opacity: 0.4;
+}
+.opacityFull{
+   opacity: 1;
+}
 .songInformation{
     text-align: left;
   color:white;
+}
+.songInformationBlur{
+        text-align: left;
+      pointer-events: none;
+  color:white;
+  -webkit-filter: blur(10px);
+}
+.songInformationUnblur{
+      text-align: left;
+      pointer-events: none;
+  color:white;
+-webkit-filter: blur(6.5px);
 }
 /*playerbar*/
 .progressBar{
@@ -1898,8 +1996,12 @@ background-color: white;
   margin-top:0px;
 background-color: white;
 }
+.socialIcons{
 
-
+}
+.socialIcons:hover{
+  opacity: 1;
+}
 .nav-tabs{
   background: #f9f9f9; /* Old browsers */
 border-bottom: 1px solid #0063B7;
@@ -1980,7 +2082,7 @@ border-bottom: 1px solid #0063B7;
     justify-content: flex-start;
 }
 .mainUploadModalDivAnimation{
-  transition:all 1s;
+  /*transition:all 1s;*/
     height: 400px;
 }
 .uploadPaneContent{
@@ -2072,11 +2174,16 @@ display:none;
 	     transition: all 0s;
 }
 .uploadModal{
-   left: -28%;
+   /*left: -28%;*/
 }
 .modal-content {
-	width:898px;
-	position: 	absolute;
+	/*width:898px;*/
+	/*position: 	absolute;*/
+}
+
+
+body.modal-open {
+padding-right: 0 !important;
 }
 
 .noselect {

@@ -1,4 +1,4 @@
-app.controller('UploadController', function ($scope, $http, $modalInstance, $window, $timeout, $log,User, localStorageService, userProfile, ngAudio, FileUploader, basket) {
+app.controller('UploadController', function ($scope, $http,  $uibModalInstance, $window, $timeout, $log,User, localStorageService, userProfile, ngAudio, FileUploader, basket) {
   
   $scope.azureStorageName = 'https://practicespace.blob.core.windows.net';
   $scope.loadingAfterUpload = false;
@@ -11,6 +11,7 @@ app.controller('UploadController', function ($scope, $http, $modalInstance, $win
   $scope.editChangesObj = {name: '',
 description: ''};
   $scope.songToBeLoaded = "";
+  $scope.loggedIn = false;
  console.log(User.authToken);
  console.log(User.profile);
 
@@ -57,6 +58,7 @@ function getProfile(){
           console.log($scope.userProfile);
           User['profile'] = $scope.userProfile;
           $scope.modalMode = 'upload';
+          modalData['user'] = User;
           console.log(User);
         })
         .error(function(){
@@ -115,7 +117,7 @@ function getUser(){
 
     // $scope.modalUploadAll = function () {
 
-    // $modalInstance.dismiss({
+    //  $uibModalInstance.dismiss({
     //   uploader: $scope.uploader,
     //    uploadBool: true
     //  });
@@ -124,12 +126,23 @@ function getUser(){
 //MODAL FUNCTION FOR EVERY MODAL
   $scope.cancel = function (cancelType) {
    console.log(userProfile);
-  
+    
+    if(cancelType == undefined){
+      console.log("ASSSS");
+      console.log($scope.loggedIn);
+      if($scope.loggedIn){
+      var cancelType = {};
+      cancelType.userData = $scope.userData;
+      }
+
+    } else {
+    }
+
     if($scope.sound){
       $scope.sound.stop();  
     }
 
-    $modalInstance.dismiss(cancelType);
+     $uibModalInstance.dismiss(cancelType);
 
   };
 
@@ -234,7 +247,8 @@ $scope.sendEdits = function (song) {
         User.authToken = data.token;
 
         console.log("Log in!", data);
-
+        
+        $scope.loggedIn = true;
         getUser();
 
         var storageString = 'data.' + $scope.userData.username;
@@ -505,8 +519,9 @@ function recursiveIconCheck(){
 
 }
 
-recursiveLoadCheck();
-recursiveIconCheck();
+            recursiveLoadCheck();
+            recursiveIconCheck();
+            
             // $scope.openUploadModal('lg');
             $scope.songToBeLoaded = response["songObj"]
             $scope.loadingAfterUpload = true;

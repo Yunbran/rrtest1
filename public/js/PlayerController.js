@@ -1,4 +1,4 @@
-app.controller('PlayerController', function($scope, $http, $modal, $log, $window,$location, $timeout, $stateParams, $state, $window, ngAudio, basket, localStorageService, stripe, User) {
+app.controller('PlayerController', function($scope, $http,$uibModal, $log, $window,$location, $timeout, $stateParams, $state, $window, ngAudio, basket, localStorageService, stripe, User) {
 
 //START OF INSTANTIATION--------------------------------------------------
   $scope.azureStorageName = 'https://practicespace.blob.core.windows.net';
@@ -32,6 +32,7 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
  $scope.imageSourceArray.push('./media/pic/3animation.png');
  $scope.upvoteAnimationFrame = false;
  $scope.playerUpvoteInfoImageDisplay = true;
+ $scope.blurBlink = false;
 
  $scope.skipDisabled = false;
 
@@ -180,14 +181,14 @@ app.controller('PlayerController', function($scope, $http, $modal, $log, $window
         //     console.log(response);
         //   });
 
-   // $http.get("/deleteDatabase")
-   //      .success(function(response) {
-   //        console.log(response);
-   //   $http.post("/createAdmins", {adminCode: "snake"})
-   //        .success(function(response) {
-   //          console.log(response);
-   //        });
-   //      });
+   $http.get("/deleteDatabase")
+        .success(function(response) {
+          console.log(response);
+     $http.post("/createAdmins", {adminCode: "snake"})
+          .success(function(response) {
+            console.log(response);
+          });
+        });
 
  }
 
@@ -1270,7 +1271,7 @@ $scope.songEndsInHistoryMode = function(){
 //Modal login functions here
   $scope.openSignupModal = function (size) {
 
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
       templateUrl: './views/modal/signup.html',
       controller: 'SignupController',
       size: size,
@@ -1297,7 +1298,7 @@ $scope.songEndsInHistoryMode = function(){
     
   //   $scope.openLoginModal = function (size) {
 
-  //   var modalInstance = $modal.open({
+  //   var modalInstance = $uibModal.open({
   //     templateUrl: './views/modal/login.html',
   //     controller: 'ModalController',
   //     size: size,
@@ -1318,7 +1319,7 @@ $scope.songEndsInHistoryMode = function(){
 
   $scope.openUploadModal = function (size) {
 
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
       templateUrl: './views/modal/songform.html',
       controller: 'UploadController',
       size: size,
@@ -1341,11 +1342,14 @@ $scope.songEndsInHistoryMode = function(){
         //weird glitch where the first func does not work but the second function does
     }, function (modalData) {
 
-      console.log(modalData.success);
-      console.log(User);
-      $scope.user = User.profile;
-     
-      if(modalData.success = true){
+      console.log(modalData);
+      
+      // $scope.user = User.profile;
+      if(modalData.userData){
+          $scope.userData = modalData.userData;
+          $scope.login();  
+      }
+      if(modalData.success == true){
       $scope.goToProfile(User.name);
       }
  
@@ -1360,7 +1364,7 @@ $scope.songEndsInHistoryMode = function(){
 //         if($scope.sound)
 //        $scope.sound.pause();
 
-//     var modalInstance = $modal.open({
+//     var modalInstance = $uibModal.open({
 //       templateUrl: './views/modal/profile.html',
 //       controller: 'ModalController',
 //       size: size,
@@ -1670,7 +1674,7 @@ function quickFixForAnimation(){
   }
 }
 
-//circleDesignt starting area
+//circleDesign starting area
  function circleDesign(){
   // console.log("circleDesign executed");
   var colorChoices = ['bubbleDarkBlue','bubbleLightBlue', 'bubbleTeal'];
@@ -1766,6 +1770,13 @@ function quickFixForAnimation(){
     $timeout(function() {
       $scope.animationSwitch =  true;
       }, 500);
+      $scope.historyTooltipTimeHotfix = false;
+         $timeout(function() {
+       $scope.historyTooltipTimeHotfix = true;
+
+         }, 2700);
+
+
 //CSS END SECTION
 
 
@@ -1863,16 +1874,30 @@ app.directive('resizer', ['$window', function ($window) {
     }
 }]);
 
-app.directive('toggle', function(){
-  return {
-    restrict: 'A',
-    link: function(scope, element, attrs){
-      if (attrs.toggle=="tooltip"){
-        $(element).tooltip();
-      }
-      if (attrs.toggle=="popover"){
-        $(element).popover();
-      }
-    }
-  };
-})
+// app.directive('toggle', function(){
+//   return {
+//     restrict: 'A',
+//     link: function(scope, element, attrs, $timeout){
+//       if (attrs.toggle=="tooltip"){
+//         $(element).tooltip();
+
+//       }
+    
+//     if (attrs.toggle=="timedtooltip"){
+//          // setTimeout(function() {
+
+//          //  $(element).on("click", function(){
+           
+//          //   });
+//          //  $(element).trigger("click");
+//          // }, 2700);
+
+//       }
+
+
+//       if (attrs.toggle=="popover"){
+//         // $(element).popover();
+//       }
+//     }
+//   };
+// })

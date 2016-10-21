@@ -1,4 +1,4 @@
-app.controller('ProfileController', function ($scope, $modal, $stateParams, $interval,$state, $http, $window, $log, $timeout, basket, User, localStorageService, ngAudio) {
+app.controller('ProfileController', function ($scope, $uibModal, $stateParams, $interval,$state, $http, $window, $log, $timeout, basket, User, localStorageService, ngAudio) {
   
   $scope.azureStorageName = 'https://practicespace.blob.core.windows.net';
 
@@ -213,7 +213,7 @@ function getUser(){
 }
     $scope.modalUploadAll = function () {
 
-    $modalInstance.dismiss({
+    $uibModalInstance.dismiss({
       uploader: $scope.uploader,
        uploadBool: true
      });
@@ -227,7 +227,7 @@ function getUser(){
       $scope.sound.stop();  
     }
 
-    $modalInstance.dismiss('cancel');
+    $uibModalInstance.dismiss('cancel');
 
   };
 
@@ -421,7 +421,7 @@ $scope.sendEdits = function (song) {
 
   $scope.openSignupModal = function (size) {
 
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
       templateUrl: './views/modal/signup.html',
       controller: 'SignupController',
       size: size,

@@ -101,12 +101,12 @@ app.get('/getDocs', function(req, res){
 // handler.findUser('findest');
 // handler.listSongs();
 
-app.get('/deleteDatabase', function(req,res){
-  handler.deleteFolderRecursive("./public/media/sound/");
-  handler.deleteDatabase();
-  console.log("Data Deleted");
-  res.status(200).end("database deleted");
-});
+// app.get('/deleteDatabase', function(req,res){
+//   handler.deleteFolderRecursive("./public/media/sound/");
+//   handler.deleteDatabase();
+//   console.log("Data Deleted");
+//   res.status(200).end("database deleted");
+// });
 
 app.post('/createAdmins', handler.createAdmins);
 /*END OF DEV CODE*/

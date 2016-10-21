@@ -1,9 +1,9 @@
 var app = angular.module('radioApp',
  ['ui.router',
+  'ui.bootstrap',
   'ngAudio',
   'angularFileUpload',
   'ngAnimate',
-  'ui.bootstrap',
   'LocalStorageModule',
   'ngFx',
   'vAccordion',
@@ -13,7 +13,7 @@ var app = angular.module('radioApp',
   'angular-stripe',
   'ngAria',
   'ngMessages',
-  'angular-svg-round-progress']);
+  'angular-svg-round-progressbar']);
    
 
 app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvider){
@@ -48,7 +48,7 @@ app.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvi
       //sharedStation access
         .state('sharedStation', {
               url: "/station/{stationName}",
-              templateUrl: "views/home.list.html",
+              templateUrl: "views/home.html",
               controller: 'PlayerController'
          })
           //placeholder for other views
