@@ -74,8 +74,9 @@ The glamour of RadioRise is reducing the total number of clicks to access any as
 
 # Demonstration
 
-[User Page Demo](https://www.youtube.com/watch?v=i0FIHvfk_HY) (Older Build)
+[RadioRise Demo](https://youtu.be/51yeg3ecG2s)
 
+[User Page Demo](https://www.youtube.com/watch?v=i0FIHvfk_HY) (Older Build)
 
 [RadioRise Demo Video](https://youtu.be/51yeg3ecG2s) (Newer Build)
 
