@@ -1,6 +1,6 @@
 # The Ultimate Music Democracy
 
-![](Untitled (1).gif)
+![](Untitled(1).gif)
 
 
 RadioRise is a MEAN stack web app formerly hosted on Microsoft Azure.
