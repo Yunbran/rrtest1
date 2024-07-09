@@ -51,7 +51,7 @@ When a song is voted on the history queue inserts a new song at the top of the q
 A User may access all of his favorite songs, or Upvoted songs from these buttons. They play in sequential order.
 
 
-##Station Tags
+## Station Tags
 
 ![](https://i.imgur.com/spfq74O.png)
 
